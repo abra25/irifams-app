@@ -1,0 +1,226 @@
+
+<section class="profile">
+  <!-- Head -->
+  <div class="phead">
+    <div>
+      <h2 class="ptitle">Profile</h2>
+      <p class="psub">Manage your personal and farm-related details (UI only).</p>
+    </div>
+
+    <div class="pactions">
+      <button class="btn btn--primary" type="button">
+        <i data-lucide="save"></i>
+        <span>Save changes</span>
+      </button>
+      <a class="btn btn--ghost" routerLink="/farmer/dashboard">
+        <i data-lucide="arrow-left"></i>
+        <span>Back</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary card -->
+  <section class="card summary">
+    <div class="summary__left">
+      <div class="avatar-lg">F</div>
+      <div class="summary__meta">
+        <strong class="name">Farmer Name</strong>
+        <span class="muted">Member ID: —</span>
+        <div class="chips">
+          <span class="chip">
+            <i data-lucide="shield-check"></i>
+            Verified: —
+          </span>
+          <span class="chip">
+            <i data-lucide="map-pin"></i>
+            Scheme: —
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary__right">
+      <button class="btn btn--soft" type="button">
+        <i data-lucide="camera"></i>
+        Change photo
+      </button>
+      <button class="btn btn--ghost" type="button">
+        <i data-lucide="key-round"></i>
+        Change password
+      </button>
+    </div>
+  </section>
+
+  <!-- Main grid -->
+  <div class="grid">
+    <!-- Personal info -->
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h3>Personal information</h3>
+          <p>Basic identity and contact details.</p>
+        </div>
+        <span class="hint-pill">
+          <i data-lucide="info"></i> UI only
+        </span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Full name</label>
+          <input placeholder="Farmer Name" />
+        </div>
+
+        <div class="field">
+          <label>Phone number</label>
+          <input placeholder="+255 ..." />
+        </div>
+
+        <div class="field">
+          <label>Email (optional)</label>
+          <input placeholder="email@example.com" />
+        </div>
+
+        <div class="field">
+          <label>National ID (NIDA)</label>
+          <input placeholder="—" />
+        </div>
+
+        <div class="field">
+          <label>Region</label>
+          <select>
+            <option selected>— Select region —</option>
+            <option>Morogoro</option>
+            <option>Mbeya</option>
+            <option>Shinyanga</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>District</label>
+          <select>
+            <option selected>— Select district —</option>
+            <option>District A</option>
+            <option>District B</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Farm & membership -->
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h3>Farm & membership</h3>
+          <p>Scheme membership and farm details.</p>
+        </div>
+        <span class="hint-pill">
+          <i data-lucide="info"></i> UI only
+        </span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Scheme / Irrigation area</label>
+          <select>
+            <option selected>— Select scheme —</option>
+            <option>Scheme A</option>
+            <option>Scheme B</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Membership number</label>
+          <input placeholder="—" />
+        </div>
+
+        <div class="field">
+          <label>Ownership type</label>
+          <select>
+            <option selected>— Select type —</option>
+            <option>Owner</option>
+            <option>Lease</option>
+            <option>Group</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Farm location (Ward/Village)</label>
+          <input placeholder="e.g. Ward name / Village" />
+        </div>
+
+        <div class="field">
+          <label>Emergency contact name</label>
+          <input placeholder="—" />
+        </div>
+
+        <div class="field">
+          <label>Emergency contact phone</label>
+          <input placeholder="+255 ..." />
+        </div>
+      </div>
+    </section>
+
+    <!-- Preferences -->
+    <section class="card wide">
+      <div class="card-head">
+        <div>
+          <h3>Preferences</h3>
+          <p>How you want to receive updates and alerts.</p>
+        </div>
+        <span class="hint-pill">
+          <i data-lucide="settings"></i> UI only
+        </span>
+      </div>
+
+      <div class="prefs">
+        <label class="switch">
+          <input type="checkbox" />
+          <span class="slider"></span>
+          <span class="sw-text">
+            <strong>SMS notifications</strong>
+            <small>Schedules, approvals, payment updates</small>
+          </span>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" />
+          <span class="slider"></span>
+          <span class="sw-text">
+            <strong>Email notifications</strong>
+            <small>Optional if email is provided</small>
+          </span>
+        </label>
+
+        <label class="switch">
+          <input type="checkbox" />
+          <span class="slider"></span>
+          <span class="sw-text">
+            <strong>Service reminders</strong>
+            <small>Remind me about upcoming services</small>
+          </span>
+        </label>
+
+        <div class="note">
+          <i data-lucide="lock"></i>
+          <div>
+            <strong>Privacy note</strong>
+            <p>Your data is protected and only used for irrigation services & reporting.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom actions -->
+  <div class="bottom-actions">
+    <button class="btn btn--primary" type="button">
+      <i data-lucide="save"></i>
+      Save changes
+    </button>
+    <button class="btn btn--ghost" type="button">
+      <i data-lucide="rotate-ccw"></i>
+      Reset
+    </button>
+  </div>
+</section>

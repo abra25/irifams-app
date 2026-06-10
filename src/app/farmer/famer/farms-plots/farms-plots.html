@@ -1,0 +1,299 @@
+<section class="fp">
+  <!-- Head -->
+  <div class="fp-head">
+    <div>
+      <h2 class="fp-title">Farms &amp; Plots</h2>
+      <p class="fp-sub">Manage your farms, plots and location (UI only).</p>
+    </div>
+
+    <div class="fp-actions">
+      <button class="btn btn--primary" type="button" (click)="openFarmModal()">
+        <i data-lucide="sprout"></i>
+        <span>Add farm</span>
+      </button>
+      <button class="btn btn--ghost" type="button" (click)="openPlotModal()">
+        <i data-lucide="plus"></i>
+        <span>Add plot</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist" aria-label="Farms and plots tabs">
+    <button class="tab" type="button" role="tab"
+      [class.active]="activeTab==='farms'"
+      (click)="setTab('farms')"
+      aria-selected="{{activeTab==='farms'}}">
+      <i data-lucide="sprout"></i>
+      <span>Farms</span>
+    </button>
+
+    <button class="tab" type="button" role="tab"
+      [class.active]="activeTab==='plots'"
+      (click)="setTab('plots')"
+      aria-selected="{{activeTab==='plots'}}">
+      <i data-lucide="grid-2x2"></i>
+      <span>Plots</span>
+    </button>
+
+    <button class="tab" type="button" role="tab"
+      [class.active]="activeTab==='map'"
+      (click)="setTab('map')"
+      aria-selected="{{activeTab==='map'}}">
+      <i data-lucide="map"></i>
+      <span>Map</span>
+    </button>
+  </div>
+
+  <div class="fp-grid">
+    <!-- Main -->
+    <section class="card">
+      <!-- FARMS -->
+      <div *ngIf="activeTab==='farms'">
+        <div class="card-head">
+          <div>
+            <h3>Farms</h3>
+            <p>Register a farm and attach plots to it.</p>
+          </div>
+          <span class="pill">
+            <i data-lucide="info"></i> UI only
+          </span>
+        </div>
+
+        <div class="empty">
+          <div class="empty-ico"><i data-lucide="sprout"></i></div>
+          <strong>No farms yet</strong>
+          <span>Click <b>Add farm</b> to create your first farm record.</span>
+          <div class="empty-actions">
+            <button class="btn btn--primary" type="button" (click)="openFarmModal()">
+              <i data-lucide="sprout"></i> Add farm
+            </button>
+            <button class="btn btn--ghost" type="button" (click)="openPlotModal()">
+              <i data-lucide="plus"></i> Add plot
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLOTS -->
+      <div *ngIf="activeTab==='plots'">
+        <div class="card-head">
+          <div>
+            <h3>Plots</h3>
+            <p>Plots represent irrigated rice fields.</p>
+          </div>
+          <span class="pill">
+            <i data-lucide="info"></i> UI only
+          </span>
+        </div>
+
+        <div class="empty">
+          <div class="empty-ico"><i data-lucide="grid-2x2"></i></div>
+          <strong>No plots yet</strong>
+          <span>Add plots to request services and track water usage.</span>
+          <div class="empty-actions">
+            <button class="btn btn--primary" type="button" (click)="openPlotModal()">
+              <i data-lucide="plus"></i> Add plot
+            </button>
+            <a class="btn btn--ghost" routerLink="/farmer/requests">
+              <i data-lucide="file-plus"></i> Go to requests
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP -->
+      <div *ngIf="activeTab==='map'">
+        <div class="card-head">
+          <div>
+            <h3>Farm location (GIS)</h3>
+            <p>View location markers (placeholder).</p>
+          </div>
+          <span class="pill">
+            <i data-lucide="map-pin"></i> GIS
+          </span>
+        </div>
+
+        <div class="mapbox">
+          <div class="mapbox__top">
+            <span class="k">
+              <i data-lucide="layers"></i> Map view
+            </span>
+            <span class="k">
+              <i data-lucide="mouse-pointer-2"></i> Drag / zoom
+            </span>
+          </div>
+
+          <div class="mapbox__body">
+            <div class="map-placeholder">
+              <i data-lucide="map"></i>
+              <strong>Map placeholder</strong>
+              <span>Farms/plots markers will display here.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Side info -->
+    <aside class="card">
+      <div class="card-head">
+        <div>
+          <h3>Guidelines</h3>
+          <p>What to register for better services.</p>
+        </div>
+      </div>
+
+      <ul class="tips">
+        <li>
+          <span class="t-ico"><i data-lucide="badge-check"></i></span>
+          <div>
+            <strong>Accurate plot size</strong>
+            <p>Helps with fair water allocation and input distribution.</p>
+          </div>
+        </li>
+        <li>
+          <span class="t-ico"><i data-lucide="map-pin"></i></span>
+          <div>
+            <strong>Correct location</strong>
+            <p>Improves GIS planning and monitoring.</p>
+          </div>
+        </li>
+        <li>
+          <span class="t-ico"><i data-lucide="file-text"></i></span>
+          <div>
+            <strong>Ownership/lease details</strong>
+            <p>Supports contracts and land use tracking.</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="mini">
+        <i data-lucide="message-square"></i>
+        <div>
+          <strong>Tip</strong>
+          <p>After adding plots, you can request irrigation and tractor services.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FARM MODAL -->
+  <div class="modal" [class.show]="farmModalOpen">
+    <div class="modal__card" role="dialog" aria-modal="true" aria-label="Add farm">
+      <div class="modal__head">
+        <div>
+          <strong>Add farm</strong>
+          <div class="muted">Create a farm record (UI only)</div>
+        </div>
+        <button class="icon-close" type="button" (click)="closeFarmModal()" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <div class="form-grid">
+          <div class="field">
+            <label>Farm name</label>
+            <input placeholder="e.g. Mkunazini Farm" />
+          </div>
+
+          <div class="field">
+            <label>Scheme / Irrigation area</label>
+            <select>
+              <option selected>— Select scheme —</option>
+              <option>Scheme A</option>
+              <option>Scheme B</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Location (Ward/Village)</label>
+            <input placeholder="e.g. Ward name / Village" />
+          </div>
+
+          <div class="field">
+            <label>Ownership type</label>
+            <select>
+              <option selected>— Select —</option>
+              <option>Owner</option>
+              <option>Lease</option>
+              <option>Group</option>
+            </select>
+          </div>
+
+          <div class="field wide">
+            <label>Notes (optional)</label>
+            <input placeholder="Any extra details..." />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal__foot">
+        <button class="btn btn--ghost" type="button" (click)="closeFarmModal()">Cancel</button>
+        <button class="btn btn--primary" type="button">
+          <i data-lucide="save"></i> Save farm
+        </button>
+      </div>
+    </div>
+
+    <button class="modal__backdrop" type="button" (click)="closeFarmModal()" aria-label="Close modal"></button>
+  </div>
+
+  <!-- PLOT MODAL -->
+  <div class="modal" [class.show]="plotModalOpen">
+    <div class="modal__card" role="dialog" aria-modal="true" aria-label="Add plot">
+      <div class="modal__head">
+        <div>
+          <strong>Add plot</strong>
+          <div class="muted">Register a plot (UI only)</div>
+        </div>
+        <button class="icon-close" type="button" (click)="closePlotModal()" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <div class="form-grid">
+          <div class="field">
+            <label>Farm</label>
+            <select>
+              <option selected>— Select farm —</option>
+              <option>Farm A</option>
+              <option>Farm B</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Plot code</label>
+            <input placeholder="e.g. A2" />
+          </div>
+
+          <div class="field">
+            <label>Size (acres/ha)</label>
+            <input placeholder="e.g. 1.5 acres" />
+          </div>
+
+          <div class="field">
+            <label>Rice variety (optional)</label>
+            <input placeholder="e.g. SARO 5" />
+          </div>
+
+          <div class="field wide">
+            <label>GPS / Coordinates (optional)</label>
+            <input placeholder="e.g. -6.1234, 35.5678" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal__foot">
+        <button class="btn btn--ghost" type="button" (click)="closePlotModal()">Cancel</button>
+        <button class="btn btn--primary" type="button">
+          <i data-lucide="save"></i> Save plot
+        </button>
+      </div>
+    </div>
+
+    <button class="modal__backdrop" type="button" (click)="closePlotModal()" aria-label="Close modal"></button>
+  </div>
+</section>

@@ -1,0 +1,183 @@
+<section class="noti">
+  <!-- Head -->
+  <div class="noti-head">
+    <div>
+      <h2 class="noti-title">Notifications</h2>
+      <p class="noti-sub">Schedules, approvals and payment updates (UI only).</p>
+    </div>
+
+    <div class="noti-actions">
+      <button class="btn btn--ghost" type="button">
+        <i data-lucide="check-check"></i>
+        <span>Mark all as read</span>
+      </button>
+      <button class="btn btn--primary" type="button" (click)="openPreview()">
+        <i data-lucide="eye"></i>
+        <span>Preview</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <section class="card">
+    <div class="tools">
+      <div class="search">
+        <i data-lucide="search"></i>
+        <input placeholder="Search notifications..." />
+      </div>
+
+      <select class="select">
+        <option selected>All categories</option>
+        <option>Irrigation</option>
+        <option>Tractor</option>
+        <option>Inputs</option>
+        <option>Harvesting</option>
+        <option>Payments</option>
+      </select>
+
+      <select class="select">
+        <option selected>All status</option>
+        <option>Unread</option>
+        <option>Read</option>
+      </select>
+
+      <button class="btn btn--ghost" type="button">
+        <i data-lucide="filter"></i>
+        <span>Filter</span>
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty">
+      <div class="empty-ico"><i data-lucide="bell"></i></div>
+      <strong>No notifications yet</strong>
+      <span>When the system approves, schedules, or updates payments, you will see them here.</span>
+      <div class="empty-actions">
+        <a class="btn btn--primary" routerLink="/farmer/requests">
+          <i data-lucide="file-plus"></i> Create request
+        </a>
+        <button class="btn btn--ghost" type="button" (click)="openPreview()">
+          <i data-lucide="eye"></i> Preview UI
+        </button>
+      </div>
+    </div>
+
+    <!-- List shell (disabled, UI only) -->
+    <div class="list" aria-hidden="true">
+      <button class="nitem" type="button" disabled>
+        <span class="dot"></span>
+        <span class="nbody">
+          <strong>—</strong>
+          <small>—</small>
+        </span>
+        <span class="ntime">—</span>
+      </button>
+
+      <button class="nitem" type="button" disabled>
+        <span class="dot"></span>
+        <span class="nbody">
+          <strong>—</strong>
+          <small>—</small>
+        </span>
+        <span class="ntime">—</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Preview Drawer -->
+  <div class="drawer" [class.show]="previewOpen">
+    <aside class="drawer__panel" role="dialog" aria-modal="true" aria-label="Notification preview">
+      <div class="drawer__head">
+        <div>
+          <strong>Notification preview</strong>
+          <div class="muted">Template preview (UI only)</div>
+        </div>
+        <button class="icon-close" type="button" (click)="closePreview()" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="drawer__body">
+        <div class="preview-card">
+          <div class="pc-top">
+            <span class="pc-ico"><i data-lucide="droplets"></i></span>
+            <div class="pc-meta">
+              <strong>Irrigation schedule assigned</strong>
+              <small class="muted">Your irrigation request has been scheduled.</small>
+            </div>
+            <span class="pill">Unread</span>
+          </div>
+
+          <div class="pc-content">
+            <div class="row">
+              <span class="muted">Plot</span>
+              <strong>—</strong>
+            </div>
+            <div class="row">
+              <span class="muted">Date</span>
+              <strong>—</strong>
+            </div>
+            <div class="row">
+              <span class="muted">Time</span>
+              <strong>—</strong>
+            </div>
+            <div class="row wide">
+              <span class="muted">Message</span>
+              <strong>Follow the assigned schedule to avoid delays.</strong>
+            </div>
+          </div>
+
+          <div class="pc-actions">
+            <button class="btn btn--primary" type="button">
+              <i data-lucide="check"></i> Mark as read
+            </button>
+            <button class="btn btn--ghost" type="button">
+              <i data-lucide="external-link"></i> Open requests
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <div class="pc-top">
+            <span class="pc-ico green"><i data-lucide="wallet"></i></span>
+            <div class="pc-meta">
+              <strong>Payment confirmed</strong>
+              <small class="muted">Your payment was received successfully.</small>
+            </div>
+            <span class="pill">Read</span>
+          </div>
+
+          <div class="pc-content">
+            <div class="row">
+              <span class="muted">Reference</span>
+              <strong>—</strong>
+            </div>
+            <div class="row">
+              <span class="muted">Amount</span>
+              <strong>—</strong>
+            </div>
+            <div class="row wide">
+              <span class="muted">Next step</span>
+              <strong>Receipt can be downloaded from Payments.</strong>
+            </div>
+          </div>
+
+          <div class="pc-actions">
+            <button class="btn btn--ghost" type="button">
+              <i data-lucide="receipt"></i> View receipt
+            </button>
+            <button class="btn btn--ghost" type="button">
+              <i data-lucide="bell-off"></i> Mute category
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer__foot">
+        <button class="btn btn--ghost" type="button" (click)="closePreview()">Close</button>
+      </div>
+    </aside>
+
+    <button class="drawer__backdrop" type="button" (click)="closePreview()" aria-label="Close drawer"></button>
+  </div>
+</section>

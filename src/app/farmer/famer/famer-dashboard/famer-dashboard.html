@@ -1,0 +1,185 @@
+<section class="dash">
+  <!-- Page head -->
+  <div class="dash-head">
+    <div>
+      <h2 class="dash-title">Dashboard</h2>
+      <p class="dash-sub">Quick overview of your farming services and account status.</p>
+    </div>
+
+    <div class="dash-actions">
+      <a class="btn btn--primary" routerLink="/farmer/requests">
+        <i data-lucide="plus"></i>
+        <span>New Request</span>
+      </a>
+      <a class="btn btn--ghost" routerLink="/farmer/payments">
+        <i data-lucide="receipt"></i>
+        <span>Payments</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI cards (no data) -->
+  <div class="kpis">
+    <article class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico">
+          <i data-lucide="sprout"></i>
+        </div>
+        <span class="kpi-label">Registered plots</span>
+      </div>
+      <div class="kpi-val">—</div>
+      <div class="kpi-foot">No plots data yet</div>
+    </article>
+
+    <article class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico">
+          <i data-lucide="droplets"></i>
+        </div>
+        <span class="kpi-label">Water usage</span>
+      </div>
+      <div class="kpi-val">—</div>
+      <div class="kpi-foot">No irrigation data yet</div>
+    </article>
+
+    <article class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico">
+          <i data-lucide="tractor"></i>
+        </div>
+        <span class="kpi-label">Service requests</span>
+      </div>
+      <div class="kpi-val">—</div>
+      <div class="kpi-foot">No requests yet</div>
+    </article>
+
+    <article class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico">
+          <i data-lucide="wallet"></i>
+        </div>
+        <span class="kpi-label">Total payments</span>
+      </div>
+      <div class="kpi-val">—</div>
+      <div class="kpi-foot">No payment records yet</div>
+    </article>
+  </div>
+
+  <!-- Main grid -->
+  <div class="dash-grid">
+    <!-- Left: activity -->
+    <section class="card">
+      <div class="card-head">
+        <div>
+          <h3>Recent activity</h3>
+          <p>Latest requests and updates will appear here.</p>
+        </div>
+        <a class="link-soft" routerLink="/farmer/requests">View requests</a>
+      </div>
+
+      <div class="empty">
+        <div class="empty-ico">
+          <i data-lucide="inbox"></i>
+        </div>
+        <strong>No activity yet</strong>
+        <span>When you make requests or receive approvals, you will see them here.</span>
+      </div>
+    </section>
+
+    <!-- Right: quick actions -->
+    <aside class="card">
+      <div class="card-head">
+        <div>
+          <h3>Quick actions</h3>
+          <p>Start tasks faster from here.</p>
+        </div>
+      </div>
+
+      <div class="qa">
+        <a class="qa-item" routerLink="/farmer/requests">
+          <span class="qa-ico"><i data-lucide="file-plus"></i></span>
+          <div class="qa-body">
+            <strong>Create request</strong>
+            <span>Water, tractor, inputs, harvesting</span>
+          </div>
+          <i class="qa-arrow" data-lucide="chevron-right"></i>
+        </a>
+
+        <a class="qa-item" routerLink="/farmer/farms-plots">
+          <span class="qa-ico"><i data-lucide="map"></i></span>
+          <div class="qa-body">
+            <strong>Manage farms & plots</strong>
+            <span>View and update your land details</span>
+          </div>
+          <i class="qa-arrow" data-lucide="chevron-right"></i>
+        </a>
+
+        <a class="qa-item" routerLink="/farmer/payments">
+          <span class="qa-ico"><i data-lucide="credit-card"></i></span>
+          <div class="qa-body">
+            <strong>View payments</strong>
+            <span>Receipts and payment history</span>
+          </div>
+          <i class="qa-arrow" data-lucide="chevron-right"></i>
+        </a>
+
+        <a class="qa-item" routerLink="/farmer/notifications">
+          <span class="qa-ico"><i data-lucide="bell"></i></span>
+          <div class="qa-body">
+            <strong>Open notifications</strong>
+            <span>Schedules, approvals, reminders</span>
+          </div>
+          <i class="qa-arrow" data-lucide="chevron-right"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Bottom: summary panel -->
+    <section class="card card--wide">
+      <div class="card-head">
+        <div>
+          <h3>Service status</h3>
+          <p>Overview of key services (UI placeholders).</p>
+        </div>
+      </div>
+
+      <div class="status-grid">
+        <div class="status">
+          <div class="status-top">
+            <i data-lucide="droplets"></i>
+            <strong>Irrigation</strong>
+          </div>
+          <span class="status-pill">No schedule</span>
+          <p>Once a schedule is assigned, it will be shown here.</p>
+        </div>
+
+        <div class="status">
+          <div class="status-top">
+            <i data-lucide="tractor"></i>
+            <strong>Tractor</strong>
+          </div>
+          <span class="status-pill">No request</span>
+          <p>Request tractor services to get a schedule.</p>
+        </div>
+
+        <div class="status">
+          <div class="status-top">
+            <i data-lucide="package"></i>
+            <strong>Inputs</strong>
+          </div>
+          <span class="status-pill">No request</span>
+          <p>Seeds, fertilizer, pesticides request summary appears here.</p>
+        </div>
+
+        <div class="status">
+          <div class="status-top">
+            <i data-lucide="combine"></i>
+            <strong>Harvesting</strong>
+          </div>
+          <span class="status-pill">No request</span>
+          <p>Harvesting and post-harvest updates will appear here.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

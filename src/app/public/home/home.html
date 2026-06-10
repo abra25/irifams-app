@@ -1,0 +1,242 @@
+<div class="landing-page">
+  <!-- Navbar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">
+        <img src="img/logo-tr.png" alt="logo">
+      </div>
+      <span>IRIFAMS</span>
+    </div>
+
+      <!-- MOBILE TOGGLE -->
+      <button class="menu-toggle" (click)="mobileMenuOpen = !mobileMenuOpen">
+        <i
+          [attr.data-lucide]="mobileMenuOpen ? 'x' : 'menu'"
+        ></i>
+      </button>
+
+      <!-- NAV LINKS -->
+      <nav class="nav-links" [class.active]="mobileMenuOpen">
+        <a (click)="scrollToSection('hero')">
+          Home
+        </a>
+        <a (click)="scrollToSection('about')">
+          About
+        </a>
+        <a (click)="scrollToSection('services')">
+          Services
+        </a>
+        <a (click)="scrollToSection('contact')">
+          Contact
+        </a>
+        <a
+          routerLink="/login"
+          class="btn btn-primary mobile-login"
+          (click)="mobileMenuOpen = false" style="color: #fff;"
+        >
+          Login
+        </a>
+      </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero-section" id="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <h1>
+          Empowering Farmers, <br />
+          <span>Building a Better Future</span>
+        </h1>
+
+        <p class="hero-text">
+          IRIFAMS is a digital platform that simplifies access to farm services,
+          agricultural inputs, irrigation support, and management tools for
+          irrigated rice farmers.
+        </p>
+
+        <div class="hero-buttons">
+          <a routerLink="/login" class="btn btn-primary">
+            Get Started
+          </a>
+
+          <a
+            (click)="scrollToSection('about')"
+            class="btn btn-light"
+          >
+          Learn More
+        </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats-section">
+    <div class="stat-card" *ngFor="let stat of stats">
+      <div class="stat-icon">
+        <i [attr.data-lucide]="stat.icon"></i>
+      </div>
+
+      <div class="stat-content">
+        <h3>{{ stat.value }}</h3>
+        <p>{{ stat.label }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about-section" id="about">
+    <div class="about-image">
+      <img src="img/about us.png" alt="Rice farming" />
+    </div>
+
+    <div class="about-content">
+      <p class="section-tag">ABOUT IRIFAMS</p>
+
+      <h2>
+        Smart Digital Management for Irrigated Rice Farming
+      </h2>
+
+      <p>
+        The IRIFAMS (Irrigated Rice Farm Management System) is a web-based
+        platform developed to modernize and simplify rice farming activities.
+        The system replaces manual records and phone communication with a fast,
+        organized, and transparent digital solution.
+      </p>
+
+      <p>
+        Farmers, supervisors, and administrators can manage farm plots,
+        irrigation activities, service requests, input distribution, and payment
+        tracking in one centralized platform.
+      </p>
+
+      <div class="about-features">
+        <div class="about-item">
+          <i data-lucide="check-circle"></i>
+          <span>Farm Plot Registration</span>
+        </div>
+
+        <div class="about-item">
+          <i data-lucide="check-circle"></i>
+          <span>Input Distribution Tracking</span>
+        </div>
+
+        <div class="about-item">
+          <i data-lucide="check-circle"></i>
+          <span>Transparent Payment Management</span>
+        </div>
+
+        <div class="about-item">
+          <i data-lucide="check-circle"></i>
+          <span>Service Request Coordination</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services-section" id="services">
+    <div class="section-header">
+      <p class="section-tag">OUR SERVICES</p>
+
+      <h2>Digital Services for Better Rice Farming Operations</h2>
+
+      <p>
+        IRIFAMS provides integrated farm management services that improve
+        productivity, transparency, and coordination between farmers and
+        supervisors.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let feature of features">
+        <div class="service-icon">
+          <i [attr.data-lucide]="feature.icon"></i>
+        </div>
+
+        <h3>{{ feature.title }}</h3>
+
+        <p>{{ feature.text }}</p>
+
+        <a routerLink="/login" class="service-link">
+          Learn More
+          <i data-lucide="arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>
+        Ready to simplify irrigated rice farming management?
+      </h2>
+
+      <p>
+        Access digital tools for service requests, input distribution, payment
+        tracking, and farm management.
+      </p>
+
+      <a routerLink="/login" class="btn btn-primary">
+        Go to Login
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="brand footer-brand">
+          <div class="brand-icon">
+            <img src="img/logo.png" alt="logo" 
+            style="
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            ">
+          </div>
+
+          <span>IRIFAMS</span>
+        </div>
+
+        <p>
+          Irrigated Rice Farm Management System designed to improve coordination,
+          transparency, and productivity in modern rice farming.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+
+        <a  (click)="scrollToSection('hero')">Home</a>
+        <a  (click)="scrollToSection('about')">About</a>
+        <a  (click)="scrollToSection('services')">Services</a>
+        <a routerLink="/login">Login</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+
+        <p>+255 777 617 786</p>
+        <p>info@irifams.com</p>
+        <p>Zanzibar, Tanzania</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>System Users</h4>
+
+        <p>Farmers</p>
+        <p>Block Supervisors</p>
+        <p>Administrators</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 IRIFAMS. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
