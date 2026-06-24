@@ -1,0 +1,125 @@
+<div class="stakeholder-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>
+                Government Stakeholder Dashboard
+            </h2>
+
+            <p>
+                Monitor irrigated rice farming performance and reports.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card"
+             *ngFor="let stat of stats">
+
+            <i [class]="stat.icon"></i>
+
+            <h3>{{stat.value}}</h3>
+
+            <span>{{stat.title}}</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+
+            <h3>Farmers per Block</h3>
+
+            <canvas id="farmerChart"></canvas>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h3>Payment Status</h3>
+
+            <canvas id="paymentChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- REPORTS + ACTIVITIES -->
+
+    <div class="widgets-grid">
+
+        <div class="widget-card">
+
+            <h3>Available Reports</h3>
+
+            <div class="report-item"
+                 *ngFor="let report of reports">
+
+                <i class="fas fa-file-alt"></i>
+
+                <span>{{report}}</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="widget-card">
+
+            <h3>Recent Activities</h3>
+
+            <div class="activity-item"
+                 *ngFor="let activity of activities">
+
+                <i class="fas fa-history"></i>
+
+                <div>
+
+                    <p>{{activity.text}}</p>
+
+                    <small>{{activity.time}}</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="notification-card">
+
+        <h3>Notifications</h3>
+
+        <div class="note"
+             *ngFor="let note of notifications">
+
+            <i class="fas fa-bell"></i>
+
+            {{note}}
+
+        </div>
+
+    </div>
+
+</div>

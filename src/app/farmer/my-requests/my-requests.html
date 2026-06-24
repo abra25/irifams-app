@@ -1,0 +1,246 @@
+<div class="requests-page">
+
+    <div class="page-header">
+
+        <div>
+            <h2>My Requests</h2>
+            <p>View all submitted service requests.</p>
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-clipboard-list"></i>
+
+            <div>
+                <h3>{{requests.length}}</h3>
+                <span>Total Requests</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+                <h3>1</h3>
+                <span>Pending</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-check-circle"></i>
+
+            <div>
+                <h3>2</h3>
+                <span>Completed</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Request ID</th>
+                        <th>Plot</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let request of requests">
+
+                        <td>{{request.id}}</td>
+
+                        <td>{{request.plot}}</td>
+
+                        <td>{{request.service}}</td>
+
+                        <td>{{request.date}}</td>
+
+                        <td>
+                            TZS {{request.amount | number}}
+                        </td>
+
+                        <td>
+
+                            <span class="status-badge"
+                                  [ngClass]="request.status.toLowerCase()">
+
+                                {{request.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+
+  <div class="action-buttons">
+
+    <button class="view-btn"
+            (click)="openDetails(request)">
+
+      <i class="fas fa-eye"></i>
+
+    </button>
+
+    <button
+      *ngIf="
+      request.status === 'Approved'
+      && !request.controlNumber"
+      class="control-btn"
+      (click)="generateControlNumber(request)">
+
+      Generate Control No
+
+    </button>
+
+  </div>
+
+
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- DETAILS MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Request Details</h3>
+
+            <button (click)="showModal=false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="detail-row">
+
+                <span>Request ID</span>
+
+                <strong>{{selectedRequest?.id}}</strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Plot</span>
+
+                <strong>{{selectedRequest?.plot}}</strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Service</span>
+
+                <strong>{{selectedRequest?.service}}</strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Date</span>
+
+                <strong>{{selectedRequest?.date}}</strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Amount</span>
+
+                <strong>
+                    TZS {{selectedRequest?.amount | number}}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+    <span>Status</span>
+
+    <strong>{{selectedRequest?.status}}</strong>
+
+</div>
+
+
+<!-- WEKA HAPA -->
+
+<div class="detail-row"
+     *ngIf="selectedRequest?.controlNumber">
+
+    <span>Control Number</span>
+
+    <strong>
+      {{selectedRequest?.controlNumber}}
+    </strong>
+
+</div>
+
+
+<div class="detail-row">
+
+    <span>Notes</span>
+
+    <strong>{{selectedRequest?.notes}}</strong>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+

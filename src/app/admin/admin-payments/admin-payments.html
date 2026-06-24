@@ -1,1 +1,200 @@
-<p>admin-payments works!</p>
+<div class="payments-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Payments Management</h2>
+            <p>
+                Verify and manage all farmers payments.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <h3>{{payments.length}}</h3>
+            <span>Total Payments</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>{{paidCount}}</h3>
+            <span>Paid</span>
+        </div>
+
+        <div class="summary-card">
+            <h3>{{waitingCount}}</h3>
+            <span>Waiting Verification</span>
+        </div>
+
+    </div>
+
+    <!-- SEARCH -->
+
+    <div class="toolbar">
+
+        <input
+            type="text"
+            placeholder="Search payment..."
+            [(ngModel)]="searchTerm">
+
+    </div>
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Payment ID</th>
+                        <th>Farmer</th>
+                        <th>Control No</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let payment of filteredPayments">
+
+                        <td>{{payment.id}}</td>
+
+                        <td>{{payment.farmer}}</td>
+
+                        <td>{{payment.controlNumber}}</td>
+
+                        <td>{{payment.service}}</td>
+
+                        <td>
+                            TZS {{payment.amount | number}}
+                        </td>
+
+                        <td>
+
+                            <span class="status-badge"
+                                  [ngClass]="payment.status.toLowerCase().replace(' ','-')">
+
+                                {{payment.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="view-btn"
+                                    (click)="openDetails(payment)">
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DETAILS MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Payment Details</h3>
+
+            <button (click)="showModal=false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="detail-row">
+                <span>Payment ID</span>
+                <strong>{{selectedPayment?.id}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Farmer</span>
+                <strong>{{selectedPayment?.farmer}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Control Number</span>
+                <strong>{{selectedPayment?.controlNumber}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Amount</span>
+                <strong>
+                    TZS {{selectedPayment?.amount | number}}
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Status</span>
+                <strong>{{selectedPayment?.status}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Receipt No</span>
+                <strong>{{selectedPayment?.receiptNo}}</strong>
+            </div>
+
+        </div>
+
+        <div class="modal-footer"
+
+             *ngIf="selectedPayment?.status==='Waiting Verification'">
+
+            <button class="reject-btn"
+                    (click)="rejectPayment(selectedPayment)">
+
+                Reject
+
+            </button>
+
+            <button class="save-btn"
+                    (click)="verifyPayment(selectedPayment)">
+
+                Verify Payment
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

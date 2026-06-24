@@ -1,0 +1,228 @@
+.reports-page{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+/* HEADER */
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.export-btn{
+    border:none;
+    background:#145528;
+    color:#fff;
+    padding:12px 20px;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+/* STATS */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+}
+
+.stat-card{
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    display:flex;
+    gap:15px;
+
+    align-items:center;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+
+    animation:fadeUp .6s ease;
+}
+
+.icon{
+
+    width:65px;
+    height:65px;
+
+    border-radius:50%;
+
+    background:#eef8f0;
+
+    color:#145528;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:1.5rem;
+}
+
+/* FLOW */
+
+.flow-card{
+
+    background:#fff;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.flow-container{
+
+    margin-top:30px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+}
+
+.step{
+
+    width:150px;
+
+    text-align:center;
+
+    animation:float 3s infinite;
+}
+
+.step i{
+
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+
+    background:#eef8f0;
+
+    color:#145528;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin:auto;
+
+    font-size:1.8rem;
+}
+
+/* CHARTS */
+
+.charts-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:20px;
+}
+
+.chart-card{
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+/* REPORTS */
+
+.report-list{
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.report-item{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:15px 0;
+
+    border-bottom:1px solid #eee;
+}
+
+.report-item button{
+
+    border:none;
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    background:#145528;
+
+    color:#fff;
+
+    cursor:pointer;
+}
+
+/* ANIMATION */
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes float{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .page-header{
+
+        flex-direction:column;
+        align-items:flex-start;
+
+        gap:15px;
+    }
+
+    .flow-container{
+
+        justify-content:center;
+    }
+
+}
+

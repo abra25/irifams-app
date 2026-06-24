@@ -1,0 +1,170 @@
+.stakeholder-page{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.page-header h2{
+    margin:0;
+    color:#1e293b;
+}
+
+.page-header p{
+    color:#64748b;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(230px,1fr));
+
+    gap:20px;
+}
+
+.summary-card{
+
+    background:#fff;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+    transition:.3s;
+}
+
+.summary-card:hover{
+    transform:translateY(-5px);
+}
+
+.summary-card i{
+
+    font-size:2rem;
+
+    color:#145528;
+
+    margin-bottom:15px;
+}
+
+.summary-card h3{
+    margin:10px 0;
+    color:#145528;
+}
+
+.summary-card span{
+    color:#64748b;
+}
+
+.charts-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.chart-card{
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+    min-height:420px;
+}
+
+.chart-card canvas{
+    width:100% !important;
+    max-height:320px !important;
+}
+
+.widgets-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+}
+
+.widget-card{
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+.report-item,
+.activity-item,
+.note{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:15px 0;
+
+    border-bottom:1px solid #f1f5f9;
+}
+
+.report-item i{
+    color:#2563eb;
+}
+
+.activity-item i{
+    color:#16a34a;
+}
+
+.note i{
+    color:#f59e0b;
+}
+
+.activity-item p{
+    margin:0;
+}
+
+.activity-item small{
+    color:#64748b;
+}
+
+.notification-card{
+
+    background:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+@media(max-width:992px){
+
+    .charts-grid,
+    .widgets-grid{
+
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+
+}

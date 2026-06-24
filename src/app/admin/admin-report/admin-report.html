@@ -1,1 +1,118 @@
-<p>admin-report works!</p>
+<div class="reports-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>Reports & Analytics</h2>
+
+            <p>
+                System reports, statistics and analytics.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card"
+             *ngFor="let item of summary">
+
+            <i [class]="item.icon"></i>
+
+            <h3>{{item.value}}</h3>
+
+            <span>{{item.title}}</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+
+            <h3>Service Requests Distribution</h3>
+
+            <canvas id="serviceChart"></canvas>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h3>Payment Status</h3>
+
+            <canvas id="paymentChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <div class="chart-card full-width">
+
+        <h3>Monthly Revenue</h3>
+
+        <canvas id="revenueChart"></canvas>
+
+    </div>
+
+
+    <!-- REPORTS -->
+
+    <div class="reports-grid">
+
+        <button
+            class="report-btn"
+            (click)="generateReport('Farmers')">
+
+            <i class="fas fa-users"></i>
+
+            Farmers Report
+
+        </button>
+
+
+        <button
+            class="report-btn"
+            (click)="generateReport('Requests')">
+
+            <i class="fas fa-clipboard-list"></i>
+
+            Requests Report
+
+        </button>
+
+
+        <button
+            class="report-btn"
+            (click)="generateReport('Payments')">
+
+            <i class="fas fa-money-check-alt"></i>
+
+            Payments Report
+
+        </button>
+
+
+        <button
+            class="report-btn"
+            (click)="generateReport('Inputs')">
+
+            <i class="fas fa-seedling"></i>
+
+            Inputs Report
+
+        </button>
+
+    </div>
+
+</div>

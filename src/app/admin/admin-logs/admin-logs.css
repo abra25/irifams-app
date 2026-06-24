@@ -1,0 +1,58 @@
+.logs-page{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.table-card{
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#f8fafc;
+}
+
+th,td{
+    padding:16px;
+    text-align:left;
+}
+
+tbody tr{
+    border-top:1px solid #eef2f7;
+}
+
+tbody tr:hover{
+    background:#f8fafc;
+}
+
+.status-badge{
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    font-weight:600;
+}
+
+.status-badge.failed{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}

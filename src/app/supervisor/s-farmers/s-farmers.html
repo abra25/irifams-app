@@ -1,0 +1,294 @@
+<div class="farmers-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Farmers Management</h2>
+            <p>Manage all registered farmers.</p>
+        </div>
+
+        <button class="add-btn"
+                (click)="showAddModal=true">
+
+            <i class="fas fa-plus"></i>
+            Register Farmer
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <h3>{{farmers.length}}</h3>
+            <span>Total Farmers</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>
+              {{ activeFarmersCount }}
+            </h3>
+
+            <span>Active Farmers</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <i class="fas fa-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search farmer..."
+          [(ngModel)]="searchTerm">
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Farmer No</th>
+                        <th>Full Name</th>
+                        <th>Phone</th>
+                        <th>Block</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let farmer of farmers">
+
+                        <td>{{farmer.farmerNo}}</td>
+                        <td>{{farmer.fullName}}</td>
+                        <td>{{farmer.phone}}</td>
+                        <td>{{farmer.block}}</td>
+
+                        <td>
+
+                            <span class="status"
+                                  [class.inactive]="farmer.status==='Inactive'">
+
+                                {{farmer.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                  class="view-btn"
+                                  (click)="viewFarmer(farmer)">
+
+                                  <i class="fas fa-eye"></i>
+
+                                </button>
+
+                                <button
+                                  class="edit-btn"
+                                  (click)="editFarmer(farmer)">
+
+                                  <i class="fas fa-edit"></i>
+
+                                </button>
+
+                                <button
+                                  class="status-btn"
+                                  (click)="toggleStatus(farmer)">
+
+                                  <i class="fas fa-power-off"></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ADD MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showAddModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Register Farmer</h3>
+
+      <button (click)="showAddModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Farmer Number</label>
+
+        <input
+          [(ngModel)]="newFarmer.farmerNo">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Full Name</label>
+
+        <input
+          [(ngModel)]="newFarmer.fullName">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Phone Number</label>
+
+        <input
+          [(ngModel)]="newFarmer.phone">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Block</label>
+
+        <input
+          [(ngModel)]="newFarmer.block">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Gender</label>
+
+        <select
+          [(ngModel)]="newFarmer.gender">
+
+          <option>Male</option>
+          <option>Female</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="showAddModal=false">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="save-btn"
+        (click)="addFarmer()">
+
+        Save Farmer
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Farmer Details</h3>
+
+      <button (click)="showViewModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="detail-row">
+        <span>Farmer No</span>
+        <strong>{{selectedFarmer?.farmerNo}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Name</span>
+        <strong>{{selectedFarmer?.fullName}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Phone</span>
+        <strong>{{selectedFarmer?.phone}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Block</span>
+        <strong>{{selectedFarmer?.block}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Gender</span>
+        <strong>{{selectedFarmer?.gender}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Status</span>
+        <strong>{{selectedFarmer?.status}}</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

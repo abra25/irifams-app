@@ -1,0 +1,73 @@
+<div class="notifications-page">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Notifications</h2>
+            <p>
+                View all system notifications and updates.
+            </p>
+        </div>
+
+        <button class="mark-btn"
+                (click)="markAllAsRead()">
+
+            Mark All as Read
+
+        </button>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-card">
+
+        <h3>{{unreadCount}}</h3>
+
+        <span>Unread Notifications</span>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="notifications-list">
+
+        <div class="notification-card"
+
+             *ngFor="let notification of notifications"
+
+             [class.read]="notification.read">
+
+            <div class="icon-box"
+                 [ngClass]="notification.color">
+
+                <i [class]="notification.icon"></i>
+
+            </div>
+
+            <div class="notification-content">
+
+                <h4>{{notification.title}}</h4>
+
+                <p>{{notification.message}}</p>
+
+                <small>{{notification.time}}</small>
+
+            </div>
+
+            <button class="read-btn"
+
+                    *ngIf="!notification.read"
+
+                    (click)="markAsRead(notification)">
+
+                Mark Read
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

@@ -715,3 +715,73 @@ body {
     font-size: 0.92rem;
   }
 }
+
+.brand img{
+    width:55px;
+    height:55px;
+    object-fit: contain;
+}
+
+.stat-icon i{
+    font-size: 2.8rem;
+}
+
+.service-icon i{
+    font-size: 2rem;
+}
+
+.users-section{
+    max-width: 1320px;
+    margin: auto;
+    padding: 0 40px 90px;
+}
+
+.users-grid{
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:24px;
+}
+
+.user-card{
+    background:#fff;
+    padding:40px 30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+    transition:.3s;
+}
+
+.user-card:hover{
+    transform: translateY(-8px);
+}
+
+.user-card i{
+    font-size:3rem;
+    color:#1d7a38;
+    margin-bottom:20px;
+}
+
+.user-card h3{
+    margin-bottom:12px;
+}
+
+.user-card p{
+    color:#666;
+    line-height:1.8;
+}
+
+@media(max-width:1100px){
+
+    .users-grid{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .users-grid{
+        grid-template-columns:1fr;
+    }
+
+}

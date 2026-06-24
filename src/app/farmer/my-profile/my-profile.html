@@ -1,0 +1,287 @@
+<div class="profile-page">
+
+  <div class="page-header">
+
+    <div>
+      <h2>My Profile</h2>
+      <p>View your personal and account information.</p>
+    </div>
+
+  </div>
+
+
+  <div class="profile-grid">
+
+    <!-- PROFILE CARD -->
+
+    <div class="profile-card">
+
+      <div class="avatar-section">
+
+        <img src="img/user.png">
+
+        <h3>{{ farmer.fullName }}</h3>
+
+        <span>{{ farmer.role }}</span>
+
+      </div>
+
+      <div class="status-badge">
+
+        <i class="fas fa-circle"></i>
+
+        {{ farmer.status }}
+
+      </div>
+
+    </div>
+
+
+    <!-- DETAILS -->
+
+    <div class="details-card">
+
+      <h3>Personal Information</h3>
+
+      <div class="info-grid">
+
+        <div class="info-item">
+          <label>Full Name</label>
+          <span>{{ farmer.fullName }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>ZANID</label>
+          <span>{{ farmer.zanId }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Gender</label>
+          <span>{{ farmer.gender }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Age</label>
+          <span>{{ farmer.age }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Phone Number</label>
+          <span>{{ farmer.phone }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Address</label>
+          <span>{{ farmer.address }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Block</label>
+          <span>{{ farmer.block }}</span>
+        </div>
+
+        <div class="info-item">
+          <label>Registration Date</label>
+          <span>{{ farmer.registrationDate }}</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCOUNT INFORMATION -->
+
+  <div class="account-card">
+
+    <h3>Account Information</h3>
+
+    <div class="info-grid">
+
+      <div class="info-item">
+        <label>Username</label>
+        <span>{{ farmer.username }}</span>
+      </div>
+
+      <div class="info-item">
+        <label>Role</label>
+        <span>{{ farmer.role }}</span>
+      </div>
+
+      <div class="info-item">
+        <label>Account Status</label>
+        <span>{{ farmer.status }}</span>
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="btn btn-primary"
+        (click)="showEditModal=true">
+        <i class="fas fa-edit"></i>
+        Edit Profile
+      </button>
+
+      <button class="btn btn-secondary" 
+        (click)="showPasswordModal=true">
+        <i class="fas fa-key"></i>
+        Change Password
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showEditModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Edit Profile</h3>
+
+      <button (click)="showEditModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Full Name</label>
+
+        <input
+          type="text"
+          [(ngModel)]="editData.fullName">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Phone Number</label>
+
+        <input
+          type="text"
+          [(ngModel)]="editData.phone">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Address</label>
+
+        <textarea
+          rows="4"
+          [(ngModel)]="editData.address">
+        </textarea>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="btn btn-secondary"
+              (click)="showEditModal=false">
+
+        Cancel
+
+      </button>
+
+      <button class="btn btn-primary"
+              (click)="saveProfile()">
+
+        Save Changes
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- CHANGE PASSWORD MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showPasswordModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Change Password</h3>
+
+      <button (click)="showPasswordModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Current Password</label>
+
+        <input
+          type="password"
+          [(ngModel)]="passwordData.currentPassword">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>New Password</label>
+
+        <input
+          type="password"
+          [(ngModel)]="passwordData.newPassword">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Confirm Password</label>
+
+        <input
+          type="password"
+          [(ngModel)]="passwordData.confirmPassword">
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="btn btn-secondary"
+              (click)="showPasswordModal=false">
+
+        Cancel
+
+      </button>
+
+      <button class="btn btn-primary"
+              (click)="changePassword()">
+
+        Change Password
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

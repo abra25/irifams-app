@@ -1,0 +1,185 @@
+<div class="request-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Request Farm Service</h2>
+            <p>
+                Submit tractor or harvesting service requests.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS -->
+
+    <div class="success-alert"
+         *ngIf="submitted">
+
+        <i class="fas fa-check-circle"></i>
+
+        Service request submitted successfully.
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <div class="form-card">
+
+        <form (ngSubmit)="submitRequest()">
+
+            <!-- Plot -->
+
+            <div class="form-group">
+
+                <label>Farm Plot *</label>
+
+                <select
+                    [(ngModel)]="request.plotId"
+                    name="plotId"
+                    (change)="onPlotChange()"
+                    required>
+
+                    <option value="">
+                        Select Plot
+                    </option>
+
+                    <option *ngFor="let plot of plots"
+                            [value]="plot.id">
+
+                        {{plot.plotNo}}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- AUTO DETAILS -->
+
+            <div class="plot-details"
+                 *ngIf="selectedPlot">
+
+                <div class="detail-box">
+
+                    <span>Block</span>
+
+                    <strong>
+                        {{selectedPlot.block}}
+                    </strong>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <span>Land Size</span>
+
+                    <strong>
+                        {{selectedPlot.size}} Acres
+                    </strong>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <span>Soil Type</span>
+
+                    <strong>
+                        {{selectedPlot.soilType}}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICE -->
+
+            <div class="form-group">
+
+                <label>Service Type *</label>
+
+                <select
+                    [(ngModel)]="request.serviceType"
+                    name="serviceType"
+                    required>
+
+                    <option value="">
+                        Select Service
+                    </option>
+
+                    <option *ngFor="let service of services">
+
+                        {{service}}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DATE -->
+
+            <div class="form-group">
+
+                <label>Preferred Date *</label>
+
+                <input
+                    type="date"
+                    name="date"
+                    [(ngModel)]="request.preferredDate"
+                    required>
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="form-group">
+
+                <label>Additional Notes</label>
+
+                <textarea
+                    rows="5"
+                    name="notes"
+                    [(ngModel)]="request.notes"
+                    placeholder="Write additional information here...">
+                </textarea>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-group">
+
+                <button
+                    type="button"
+                    class="clear-btn"
+                    (click)="clearForm()">
+
+                    Clear
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="submit-btn">
+
+                    Submit Request
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

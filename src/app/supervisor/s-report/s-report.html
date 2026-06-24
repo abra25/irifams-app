@@ -1,0 +1,170 @@
+<div class="reports-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Reports & Analytics</h2>
+            <p>
+                Overview of system activities and performance.
+            </p>
+        </div>
+
+        <button class="export-btn">
+
+            <i class="fas fa-download"></i>
+
+            Export Report
+
+        </button>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card"
+             *ngFor="let stat of stats">
+
+            <div class="icon">
+
+                <i [class]="stat.icon"></i>
+
+            </div>
+
+            <div>
+
+                <h3>{{stat.value}}</h3>
+
+                <span>{{stat.title}}</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FLOW -->
+
+    <div class="flow-card">
+
+        <h3>Request & Payment Flow</h3>
+
+        <div class="flow-container">
+
+            <div class="step">
+
+                <i class="fas fa-file-signature"></i>
+
+                <span>Request Submitted</span>
+
+            </div>
+
+            <i class="fas fa-arrow-right"></i>
+
+            <div class="step">
+
+                <i class="fas fa-user-check"></i>
+
+                <span>Approved</span>
+
+            </div>
+
+            <i class="fas fa-arrow-right"></i>
+
+            <div class="step">
+
+                <i class="fas fa-receipt"></i>
+
+                <span>Control Number</span>
+
+            </div>
+
+            <i class="fas fa-arrow-right"></i>
+
+            <div class="step">
+
+                <i class="fas fa-money-bill-wave"></i>
+
+                <span>Payment</span>
+
+            </div>
+
+            <i class="fas fa-arrow-right"></i>
+
+            <div class="step">
+
+                <i class="fas fa-check-circle"></i>
+
+                <span>Verified</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+
+            <h3>Service Requests</h3>
+
+            <canvas id="serviceChart"></canvas>
+
+        </div>
+
+        <div class="chart-card">
+
+            <h3>Monthly Revenue</h3>
+
+            <canvas id="revenueChart"></canvas>
+
+        </div>
+
+        <div class="chart-card">
+
+            <h3>Request Trends</h3>
+
+            <canvas id="trendChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- REPORTS -->
+
+    <div class="report-list">
+
+        <h3>Available Reports</h3>
+
+        <div class="report-item"
+             *ngFor="let report of reports">
+
+            <div>
+
+                <i class="fas fa-file-alt"></i>
+
+                {{report}}
+
+            </div>
+
+            <button>
+
+                <i class="fas fa-download"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,203 @@
+<div class="dashboard-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Supervisor Dashboard</h2>
+            <p>Welcome back! Here's what is happening today.</p>
+        </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card"
+             *ngFor="let stat of stats">
+
+            <div class="stat-icon">
+
+                <i [class]="stat.icon"></i>
+
+            </div>
+
+            <div>
+
+                <h3>{{stat.value}}</h3>
+
+                <p>{{stat.title}}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <h3>Quick Actions</h3>
+
+        </div>
+
+        <div class="quick-actions">
+
+            <button>
+                <i class="fas fa-user-plus"></i>
+                Register Farmer
+            </button>
+
+            <button>
+                <i class="fas fa-map"></i>
+                Register Plot
+            </button>
+
+            <button>
+                <i class="fas fa-tint"></i>
+                Create Water Schedule
+            </button>
+
+            <button>
+                <i class="fas fa-seedling"></i>
+                Distribute Inputs
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECENT REQUESTS -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <h3>Recent Service Requests</h3>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Request ID</th>
+                        <th>Farmer</th>
+                        <th>Service</th>
+                        <th>Plot</th>
+                        <th>Date</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let request of recentRequests">
+
+                        <td>{{request.id}}</td>
+                        <td>{{request.farmer}}</td>
+                        <td>{{request.service}}</td>
+                        <td>{{request.plot}}</td>
+                        <td>{{request.date}}</td>
+
+                        <td>
+
+                            <span class="status-badge"
+                            [ngClass]="request.status.toLowerCase()">
+
+                                {{request.status}}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOTTOM SECTION -->
+
+    <div class="bottom-grid">
+
+        <!-- PAYMENTS -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h3>Pending Payments</h3>
+
+            </div>
+
+            <div class="payment-item"
+                 *ngFor="let payment of payments">
+
+                <div>
+
+                    <strong>{{payment.controlNo}}</strong>
+
+                    <p>{{payment.farmer}}</p>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        TZS {{payment.amount | number}}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTIFICATIONS -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <h3>Recent Notifications</h3>
+
+            </div>
+
+            <ul class="notification-list">
+
+                <li *ngFor="let note of notifications">
+
+                    <i class="fas fa-bell"></i>
+
+                    {{note}}
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>

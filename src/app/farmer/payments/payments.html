@@ -1,0 +1,252 @@
+<div class="payments-page">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Payments</h2>
+            <p>View your payment information and control numbers.</p>
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-money-check-alt"></i>
+
+            <div>
+                <h3>TZS {{totalPaid | number}}</h3>
+                <span>Total Paid</span>
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+                <h3>TZS {{pendingAmount | number}}</h3>
+                <span>Pending Amount</span>
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <i class="fas fa-file-invoice-dollar"></i>
+
+            <div>
+                <h3>{{payments.length}}</h3>
+                <span>Total Payments</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Control No</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let payment of payments">
+
+                        <td>{{payment.controlNumber}}</td>
+
+                        <td>{{payment.service}}</td>
+
+                        <td>
+                            TZS {{payment.amount | number}}
+                        </td>
+
+                        <td>{{payment.paymentDate}}</td>
+
+                        <td>
+
+                          
+
+    <span class="status-badge"
+
+          [ngClass]="{
+            'paid': payment.status === 'Paid',
+            'pending': payment.status === 'Pending',
+            'waiting': payment.status === 'Waiting Verification',
+            'rejected': payment.status === 'Rejected'
+          }">
+
+        {{payment.status}}
+
+    </span>
+
+
+
+                        </td>
+
+                        <td>
+
+                        
+
+    <div class="action-buttons">
+
+        <button class="view-btn"
+                (click)="openDetails(payment)">
+
+            <i class="fas fa-eye"></i>
+
+        </button>
+
+        <button
+            *ngIf="payment.status === 'Pending'"
+            class="pay-btn"
+            (click)="markAsPaid(payment)">
+
+            I Have Paid
+
+        </button>
+
+    </div>
+
+
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Payment Details</h3>
+
+            <button (click)="showModal = false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="detail-row">
+
+                <span>Control Number</span>
+
+                <strong>
+                    {{selectedPayment?.controlNumber}}
+                </strong>
+
+            </div>
+
+            <div class="payment-instruction"
+     *ngIf="selectedPayment?.status === 'Pending'">
+
+    <h4>Payment Instructions</h4>
+
+    <p>
+        Please use the above Control Number to make payment
+        through Bank or Mobile Money.
+    </p>
+
+</div>
+
+            <div class="detail-row">
+
+                <span>Service</span>
+
+                <strong>
+                    {{selectedPayment?.service}}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Amount</span>
+
+                <strong>
+                    TZS {{selectedPayment?.amount | number}}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Payment Date</span>
+
+                <strong>
+                    {{selectedPayment?.paymentDate}}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Status</span>
+
+                <strong>
+                    {{selectedPayment?.status}}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Receipt Number</span>
+
+                <strong>
+                    {{selectedPayment?.receiptNo}}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

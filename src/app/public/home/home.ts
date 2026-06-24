@@ -1,60 +1,87 @@
-import { AfterViewInit, Component, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
-declare const lucide: any;
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  styleUrl: './home.css'
 })
-export class Home implements AfterViewInit {
+export class Home {
+
   mobileMenuOpen = false;
+
   stats = [
     {
-      icon: 'users',
+      icon: 'fas fa-users',
       value: '1,250+',
       label: 'Registered Farmers'
     },
     {
-      icon: 'tractor',
+      icon: 'fas fa-tractor',
       value: '320+',
       label: 'Tractor Services'
     },
     {
-      icon: 'combine',
-      value: '540+',
-      label: 'Harvesting Services'
-    },
-    {
-      icon: 'package',
+      icon: 'fas fa-seedling',
       value: '870+',
       label: 'Inputs Distributed'
+    },
+    {
+      icon: 'fas fa-water',
+      value: '120+',
+      label: 'Water Schedules'
     }
   ];
 
   features = [
     {
-      icon: 'clipboard-list',
-      title: 'Track Requests',
-      text: 'Monitor tractor, harvesting, and farm service requests with ease.'
+      icon: 'fas fa-tractor',
+      title: 'Farm Service Requests',
+      text:
+        'Request tractor and harvesting services digitally.'
     },
+
     {
-      icon: 'sprout',
-      title: 'Manage Inputs',
-      text: 'Record and manage seed and fertilizer distribution effectively.'
+      icon: 'fas fa-seedling',
+      title: 'Agricultural Inputs',
+      text:
+        'Manage and track seed and fertilizer distribution.'
     },
+
     {
-      icon: 'badge-dollar-sign',
-      title: 'Control Payments',
-      text: 'Generate control numbers and follow up payment confirmations.'
+      icon: 'fas fa-money-bill-wave',
+      title: 'Payment Tracking',
+      text:
+        'Generate control numbers and monitor payment status.'
+    },
+
+    {
+      icon: 'fas fa-tint',
+      title: 'Water Scheduling',
+      text:
+        'View and manage irrigation water schedules.'
+    },
+
+    {
+      icon: 'fas fa-chart-line',
+      title: 'Reports & Analytics',
+      text:
+        'Generate reports for decision making and monitoring.'
+    },
+
+    {
+      icon: 'fas fa-map-marked-alt',
+      title: 'Farm Plot Management',
+      text:
+        'Register and manage irrigated rice farm plots.'
     }
   ];
 
-   // SCROLL FUNCTION
   scrollToSection(sectionId: string) {
+
     const element = document.getElementById(sectionId);
 
     if (element) {
@@ -67,12 +94,4 @@ export class Home implements AfterViewInit {
     this.mobileMenuOpen = false;
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    }, 0);
-  }
 }
-

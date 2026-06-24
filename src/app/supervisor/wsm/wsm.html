@@ -1,0 +1,282 @@
+<div class="schedule-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Water Schedule Management</h2>
+            <p>Create and manage irrigation schedules.</p>
+        </div>
+
+        <button class="add-btn"
+                (click)="showAddModal=true">
+
+            <i class="fas fa-plus"></i>
+            Create Schedule
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <h3>{{schedules.length}}</h3>
+            <span>Total Schedules</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>{{activeSchedulesCount}}</h3>
+            <span>Active Schedules</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Block</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Season</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let schedule of schedules">
+
+                        <td>{{schedule.block}}</td>
+
+                        <td>{{schedule.day}}</td>
+
+                        <td>
+                            {{schedule.startTime}}
+                            -
+                            {{schedule.endTime}}
+                        </td>
+
+                        <td>{{schedule.season}}</td>
+
+                        <td>
+
+                            <span class="status-badge"
+                                  [class.completed]="schedule.status==='Completed'">
+
+                                {{schedule.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button class="view-btn"
+                                        (click)="viewSchedule(schedule)">
+
+                                    <i class="fas fa-eye"></i>
+
+                                </button>
+
+                                <button class="edit-btn"
+                                        (click)="editSchedule(schedule)">
+
+                                    <i class="fas fa-edit"></i>
+
+                                </button>
+
+                                <button class="status-btn"
+                                        (click)="toggleStatus(schedule)">
+
+                                    <i class="fas fa-power-off"></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="modal-overlay"
+     *ngIf="showAddModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Create Water Schedule</h3>
+
+            <button (click)="showAddModal=false">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="form-group">
+
+                <label>Block</label>
+
+                <input
+                    [(ngModel)]="newSchedule.block">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Day</label>
+
+                <select
+                    [(ngModel)]="newSchedule.day">
+
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                    <option>Sunday</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Start Time</label>
+
+                <input type="time"
+                       [(ngModel)]="newSchedule.startTime">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>End Time</label>
+
+                <input type="time"
+                       [(ngModel)]="newSchedule.endTime">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Season</label>
+
+                <input
+                    [(ngModel)]="newSchedule.season">
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="cancel-btn"
+                    (click)="showAddModal=false">
+
+                Cancel
+
+            </button>
+
+            <button class="save-btn"
+                    (click)="addSchedule()">
+
+                Save Schedule
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Schedule Details</h3>
+
+            <button (click)="showViewModal=false">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="detail-row">
+                <span>Block</span>
+                <strong>{{selectedSchedule?.block}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Day</span>
+                <strong>{{selectedSchedule?.day}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Time</span>
+                <strong>
+                    {{selectedSchedule?.startTime}}
+                    -
+                    {{selectedSchedule?.endTime}}
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Season</span>
+                <strong>{{selectedSchedule?.season}}</strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Status</span>
+                <strong>{{selectedSchedule?.status}}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

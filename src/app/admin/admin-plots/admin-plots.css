@@ -1,0 +1,477 @@
+.users-page{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* HEADER */
+
+.page-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.page-header h2{
+    margin: 0;
+    color: #1e293b;
+}
+
+.page-header p{
+    margin-top: 5px;
+    color: #64748b;
+}
+
+.add-btn{
+    border: none;
+    background: #145528;
+    color: white;
+
+    padding: 12px 22px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    transition: .3s;
+}
+
+.add-btn:hover{
+    transform: translateY(-2px);
+}
+
+/* SUMMARY */
+
+.summary-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+}
+
+.summary-card{
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+}
+
+.summary-card h3{
+    margin: 0;
+    font-size: 2rem;
+    color: #145528;
+}
+
+.summary-card span{
+    color: #64748b;
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.toolbar input{
+    width: 320px;
+    max-width: 100%;
+
+    padding: 14px 18px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 12px;
+
+    outline: none;
+}
+
+.tabs{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tabs button{
+    border: none;
+
+    background: #e2e8f0;
+
+    padding: 12px 20px;
+
+    border-radius: 30px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .3s;
+}
+
+.tabs button.active{
+    background: #145528;
+    color: white;
+}
+
+/* TABLE */
+
+.table-card{
+    background: white;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+
+    overflow: hidden;
+}
+
+.table-wrapper{
+    overflow-x: auto;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+thead{
+    background: #f8fafc;
+}
+
+thead th{
+    padding: 16px;
+
+    text-align: left;
+
+    color: #64748b;
+
+    font-size: .9rem;
+}
+
+tbody td{
+    padding: 16px;
+
+    border-top: 1px solid #eef2f7;
+}
+
+tbody tr:hover{
+    background: #f8fafc;
+}
+
+/* ROLE BADGES */
+
+.role-badge{
+    padding: 7px 14px;
+
+    border-radius: 30px;
+
+    font-size: .85rem;
+
+    font-weight: 600;
+}
+
+.role-badge.admin{
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.role-badge.supervisor{
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.role-badge.farmer{
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* STATUS */
+
+.status-badge{
+    padding: 7px 14px;
+
+    border-radius: 30px;
+
+    font-size: .85rem;
+
+    font-weight: 600;
+}
+
+.status-badge.active{
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge.inactive{
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ACTIONS */
+
+.actions{
+    display: flex;
+    gap: 10px;
+}
+
+.actions button{
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+.view-btn{
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.edit-btn{
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-btn{
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.actions button:hover{
+    transform: translateY(-2px);
+}
+
+/* MODALS */
+
+.modal-overlay{
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+.modal-card{
+    width: 100%;
+    max-width: 600px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.modal-header{
+    padding: 20px;
+
+    border-bottom: 1px solid #eee;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body{
+    padding: 20px;
+
+    display: grid;
+    gap: 16px;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group input,
+.form-group select{
+    padding: 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    outline: none;
+}
+
+.modal-footer{
+    padding: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-btn,
+.save-btn{
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+.cancel-btn{
+    background: #e2e8f0;
+}
+
+.save-btn{
+    background: #145528;
+    color: white;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .toolbar{
+        flex-direction: column;
+    }
+
+    .toolbar input{
+        width: 100%;
+    }
+
+    .page-header{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+.modal-overlay{
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+.modal-card{
+    width: 100%;
+    max-width: 650px;
+
+    background: #fff;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.modal-header{
+    padding: 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header button{
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.modal-body{
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 18px;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group input,
+.form-group select{
+    padding: 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    outline: none;
+}
+
+.modal-footer{
+    padding: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-btn,
+.save-btn{
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+.cancel-btn{
+    background: #e2e8f0;
+}
+
+.save-btn{
+    background: #145528;
+    color: white;
+}
+
+@media(max-width:768px){
+
+    .modal-card{
+        width: 95%;
+    }
+
+    .modal-body{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+button{
+    border: none;
+}

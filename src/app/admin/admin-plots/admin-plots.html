@@ -1,1 +1,290 @@
-<p>admin-plots works!</p>
+<div class="plots-page">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Farm Plots Management</h2>
+            <p>
+                Manage all registered farm plots.
+            </p>
+        </div>
+
+        <button class="add-btn"
+                (click)="showAddModal=true">
+
+            <i class="fas fa-plus"></i>
+            Add Plot
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <h3>{{plots.length}}</h3>
+            <span>Total Plots</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>{{activePlotsCount}}</h3>
+
+            <span>Active Plots</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="toolbar">
+
+        <input
+            type="text"
+            placeholder="Search plot..."
+            [(ngModel)]="searchTerm">
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Plot No</th>
+                        <th>Farmer</th>
+                        <th>Block</th>
+                        <th>Size</th>
+                        <th>Soil Type</th>
+                        <th>Season</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let plot of filteredPlots">
+
+                        <td>{{plot.plotNo}}</td>
+
+                        <td>{{plot.farmer}}</td>
+
+                        <td>{{plot.block}}</td>
+
+                        <td>{{plot.size}} Acres</td>
+
+                        <td>{{plot.soilType}}</td>
+
+                        <td>{{plot.season}}</td>
+
+                        <td>
+
+                            <span class="status-badge"
+                                  [ngClass]="plot.status.toLowerCase()">
+
+                                {{plot.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button class="view-btn"
+                                        (click)="viewPlot(plot)">
+
+                                    <i class="fas fa-eye"></i>
+
+                                </button>
+
+                                <button class="edit-btn"
+                                        (click)="editPlot(plot)">
+
+                                    <i class="fas fa-edit"></i>
+
+                                </button>
+
+                                <button class="status-btn"
+                                        (click)="toggleStatus(plot)">
+
+                                    <i class="fas fa-power-off"></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ADD PLOT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showAddModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Add New Farm Plot</h3>
+
+            <button (click)="showAddModal=false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="form-group">
+
+                <label>Plot Number</label>
+
+                <input
+                    type="text"
+                    placeholder="PLT-001"
+                    [(ngModel)]="newPlot.plotNo">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Farmer Name</label>
+
+                <input
+                    type="text"
+                    placeholder="Enter farmer name"
+                    [(ngModel)]="newPlot.farmer">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Block</label>
+
+                <input
+                    type="text"
+                    placeholder="Cheju A"
+                    [(ngModel)]="newPlot.block">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Land Size (Acres)</label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="newPlot.size">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Soil Type</label>
+
+                <select [(ngModel)]="newPlot.soilType">
+
+                    <option value="">
+                        Select Soil Type
+                    </option>
+
+                    <option value="Clay">
+                        Clay
+                    </option>
+
+                    <option value="Clay Loam">
+                        Clay Loam
+                    </option>
+
+                    <option value="Sandy">
+                        Sandy
+                    </option>
+
+                    <option value="Silty Clay">
+                        Silty Clay
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Season</label>
+
+                <select [(ngModel)]="newPlot.season">
+
+                    <option value="">
+                        Select Season
+                    </option>
+
+                    <option value="Season A">
+                        Season A
+                    </option>
+
+                    <option value="Season B">
+                        Season B
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="cancel-btn"
+                (click)="showAddModal=false">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="save-btn"
+                (click)="addPlot()">
+
+                Save Plot
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

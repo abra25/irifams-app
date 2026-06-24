@@ -1,0 +1,194 @@
+<div class="schedule-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Water Schedules</h2>
+            <p>
+                View irrigation schedules assigned to your block.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-calendar-alt"></i>
+
+            <div>
+                <h3>{{schedules.length}}</h3>
+                <span>Total Schedules</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-tint"></i>
+
+            <div>
+                <h3>Cheju Block A</h3>
+                <span>My Block</span>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+                <h3>06:00 AM</h3>
+                <span>Next Water Time</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCHEDULE CARDS -->
+
+    <div class="schedule-grid">
+
+        <div class="schedule-card"
+             *ngFor="let schedule of schedules">
+
+            <div class="card-header">
+
+                <h3>{{schedule.day}}</h3>
+
+                <span class="status-badge"
+                      [ngClass]="schedule.status.toLowerCase()">
+
+                    {{schedule.status}}
+
+                </span>
+
+            </div>
+
+            <div class="card-body">
+
+                <p>
+                    <i class="fas fa-layer-group"></i>
+                    {{schedule.block}}
+                </p>
+
+                <p>
+                    <i class="fas fa-clock"></i>
+                    {{schedule.startTime}}
+                    -
+                    {{schedule.endTime}}
+                </p>
+
+                <p>
+                    <i class="fas fa-seedling"></i>
+                    {{schedule.season}}
+                </p>
+
+            </div>
+
+            <button class="view-btn"
+                    (click)="openDetails(schedule)">
+
+                <i class="fas fa-eye"></i>
+                View Details
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DETAILS MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Schedule Details</h3>
+
+            <button (click)="showModal = false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="detail-row">
+
+                <span>Block</span>
+                <strong>{{selectedSchedule?.block}}</strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Day</span>
+                <strong>{{selectedSchedule?.day}}</strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Time</span>
+
+                <strong>
+
+                    {{selectedSchedule?.startTime}}
+                    -
+                    {{selectedSchedule?.endTime}}
+
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Season</span>
+
+                <strong>
+                    {{selectedSchedule?.season}}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>Status</span>
+
+                <strong>
+                    {{selectedSchedule?.status}}
+                </strong>
+
+            </div>
+
+            <div class="detail-description">
+
+                <h4>Description</h4>
+
+                <p>
+                    {{selectedSchedule?.description}}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

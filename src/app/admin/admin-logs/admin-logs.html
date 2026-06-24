@@ -1,0 +1,71 @@
+<div class="logs-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>System Activity Logs</h2>
+
+            <p>
+                View all activities performed in the system.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Action</th>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let log of logs">
+
+                        <td>{{log.action}}</td>
+
+                        <td>{{log.user}}</td>
+
+                        <td>{{log.role}}</td>
+
+                        <td>{{log.date}}</td>
+
+                        <td>
+
+                            <span class="status-badge"
+                                  [class.failed]="log.status==='Failed'">
+
+                                {{log.status}}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

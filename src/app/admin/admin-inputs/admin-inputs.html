@@ -1,1 +1,375 @@
-<p>admin-inputs works!</p>
+<div class="inputs-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Inputs Management</h2>
+            <p>
+                Manage seeds and fertilizers stock.
+            </p>
+        </div>
+
+        <button class="add-btn"
+                (click)="showAddModal=true">
+
+            <i class="fas fa-plus"></i>
+            Add Input
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <h3>{{inputs.length}}</h3>
+            <span>Total Inputs</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>{{availableCount}}</h3>
+            <span>Available Inputs</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="toolbar">
+
+        <input
+            type="text"
+            placeholder="Search input..."
+            [(ngModel)]="searchTerm">
+
+    </div>
+
+
+    <!-- CARDS -->
+
+    <div class="inputs-grid">
+
+        <div class="input-card"
+             *ngFor="let input of filteredInputs">
+
+            <img
+                [src]="input.image"
+                [alt]="input.name">
+
+            <div class="card-content">
+
+                <span class="category">
+
+                    {{input.category}}
+
+                </span>
+
+                <h3>{{input.name}}</h3>
+
+                <p>
+
+                    Quantity:
+
+                    <strong>
+
+                        {{input.quantity}}
+                        {{input.unit}}
+
+                    </strong>
+
+                </p>
+
+                <p>{{input.season}}</p>
+
+                <span class="status-badge"
+                      [class.out]="input.status === 'Out of Stock'">
+
+                    {{input.status}}
+
+                </span>
+
+            </div>
+
+            <div class="card-actions">
+
+                <button class="view-btn"
+                        (click)="viewInput(input)">
+
+                    <i class="fas fa-eye"></i>
+
+                </button>
+
+                <button class="edit-btn"
+                        (click)="editInput(input)">
+
+                    <i class="fas fa-edit"></i>
+
+                </button>
+
+                <button class="status-btn"
+                        (click)="toggleStatus(input)">
+
+                    <i class="fas fa-power-off"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ADD INPUT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showAddModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <h3>Add New Input</h3>
+
+      <button (click)="showAddModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+        <label>Input Name</label>
+        <input type="text"
+               [(ngModel)]="newInput.name">
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+
+        <select [(ngModel)]="newInput.category">
+          <option value="">Select Category</option>
+          <option value="Seed">Seed</option>
+          <option value="Fertilizer">Fertilizer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Image Path</label>
+
+        <input type="text"
+               placeholder="img/inputs/saro5.jpg"
+               [(ngModel)]="newInput.image">
+      </div>
+
+      <div class="form-group">
+        <label>Quantity</label>
+
+        <input type="number"
+               [(ngModel)]="newInput.quantity">
+      </div>
+
+      <div class="form-group">
+        <label>Unit</label>
+
+        <input type="text"
+               [(ngModel)]="newInput.unit">
+      </div>
+
+      <div class="form-group">
+        <label>Season</label>
+
+        <input type="text"
+               [(ngModel)]="newInput.season">
+      </div>
+
+      <div class="image-preview">
+
+        <img *ngIf="newInput.image"
+             [src]="newInput.image">
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="cancel-btn"
+              (click)="showAddModal=false">
+        Cancel
+      </button>
+
+      <button class="save-btn"
+              (click)="addInput()">
+        Save Input
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- VIEW MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showViewModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Input Details</h3>
+
+      <button (click)="showViewModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <img class="preview-img"
+           [src]="selectedInput?.image">
+
+      <div class="detail-row">
+        <span>Name</span>
+        <strong>{{selectedInput?.name}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Category</span>
+        <strong>{{selectedInput?.category}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Quantity</span>
+
+        <strong>
+
+          {{selectedInput?.quantity}}
+          {{selectedInput?.unit}}
+
+        </strong>
+
+      </div>
+
+      <div class="detail-row">
+        <span>Season</span>
+        <strong>{{selectedInput?.season}}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Status</span>
+        <strong>{{selectedInput?.status}}</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showEditModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Edit Input</h3>
+
+      <button (click)="showEditModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+        <label>Name</label>
+
+        <input type="text"
+               [(ngModel)]="selectedInput.name">
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+
+        <select [(ngModel)]="selectedInput.category">
+          <option value="Seed">Seed</option>
+          <option value="Fertilizer">Fertilizer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Image</label>
+
+        <input type="text"
+               [(ngModel)]="selectedInput.image">
+      </div>
+
+      <div class="form-group">
+        <label>Quantity</label>
+
+        <input type="number"
+               [(ngModel)]="selectedInput.quantity">
+      </div>
+
+      <div class="form-group">
+        <label>Unit</label>
+
+        <input type="text"
+               [(ngModel)]="selectedInput.unit">
+      </div>
+
+      <div class="form-group">
+        <label>Season</label>
+
+        <input type="text"
+               [(ngModel)]="selectedInput.season">
+      </div>
+
+      <div class="image-preview">
+
+        <img *ngIf="selectedInput?.image"
+             [src]="selectedInput.image">
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="cancel-btn"
+              (click)="showEditModal=false">
+
+        Cancel
+
+      </button>
+
+      <button class="save-btn"
+              (click)="saveInput()">
+
+        Save Changes
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

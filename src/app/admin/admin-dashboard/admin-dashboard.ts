@@ -1,134 +1,187 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import {
+  Chart,
+  DoughnutController,
+  ArcElement,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
 
-declare const lucide: any;
+Chart.register(
+  DoughnutController,
+  ArcElement,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule],
   templateUrl: './admin-dashboard.html',
-  styleUrl: './admin-dashboard.css',
+  styleUrl: './admin-dashboard.css'
 })
 export class AdminDashboard implements AfterViewInit {
-  sidebarItems = [
-    { label: 'Dashboard', icon: 'layout-dashboard', route: '/admin-dashboard', active: true },
-    { label: 'Users', icon: 'user-cog', route: '/users', active: false },
-    { label: 'Farm Plots', icon: 'map', route: '/farm-plots', active: false },
-    { label: 'Service Requests', icon: 'clipboard-list', route: '/service-requests', active: false },
-    { label: 'Input Management', icon: 'package', route: '/input-management', active: false },
-    { label: 'Payments', icon: 'wallet', route: '/payments', active: false },
-    { label: 'Reports', icon: 'bar-chart-3', route: '/reports', active: false },
-    { label: 'Logout', icon: 'log-out', route: '/login', active: false }
-  ];
 
   stats = [
     {
-      title: 'Total Farmers',
+      title: 'Farmers',
       value: '1,250',
-      icon: 'users',
-      theme: 'green'
+      icon: 'fas fa-users',
+      growth: '+12%'
     },
+
     {
-      title: 'Tractor Requests',
-      value: '320',
-      icon: 'tractor',
-      theme: 'blue'
+      title: 'Farm Plots',
+      value: '842',
+      icon: 'fas fa-map-marked-alt',
+      growth: '+8%'
     },
+
     {
-      title: 'Harvest Requests',
-      value: '540',
-      icon: 'cloud-sun',
-      theme: 'orange'
+      title: 'Requests',
+      value: '356',
+      icon: 'fas fa-clipboard-list',
+      growth: '+15%'
     },
+
     {
-      title: 'Inputs Distributed',
-      value: '870',
-      icon: 'package',
-      theme: 'olive'
+      title: 'Revenue',
+      value: 'TZS 12.4M',
+      icon: 'fas fa-money-bill-wave',
+      growth: '+18%'
     }
   ];
 
-  recentRequests = [
+  activities = [
+
     {
-      id: 'REQ1001',
-      farmer: 'John Mushi',
-      serviceType: 'Tractor Ploughing',
-      date: '15 May 2024',
-      status: 'Approved'
+      icon:'fas fa-user-plus',
+      text:'New farmer registered',
+      time:'5 min ago'
     },
+
     {
-      id: 'REQ1002',
-      farmer: 'Anna Komba',
-      serviceType: 'Harvesting',
-      date: '15 May 2024',
-      status: 'Pending'
+      icon:'fas fa-check-circle',
+      text:'Payment verified',
+      time:'25 min ago'
     },
+
     {
-      id: 'REQ1003',
-      farmer: 'Peter John',
-      serviceType: 'Tractor Ploughing',
-      date: '14 May 2024',
-      status: 'Completed'
+      icon:'fas fa-tractor',
+      text:'Service approved',
+      time:'1 hour ago'
     }
+
   ];
 
-  quickActions = [
-    { label: 'Add Farmer', icon: 'user-plus' },
-    { label: 'Add Service Request', icon: 'plus-square' },
-    { label: 'Record Payment', icon: 'badge-dollar-sign' },
-    { label: 'Generate Report', icon: 'file-text' }
+  notifications = [
+
+    '12 payments waiting verification',
+    '5 new service requests',
+    'Water schedule updated'
+
   ];
 
-  lineChartPoints = [
-    { day: 'Mon', tractor: 35, harvest: 22 },
-    { day: 'Tue', tractor: 45, harvest: 28 },
-    { day: 'Wed', tractor: 26, harvest: 25 },
-    { day: 'Thu', tractor: 48, harvest: 29 },
-    { day: 'Fri', tractor: 32, harvest: 41 },
-    { day: 'Sat', tractor: 44, harvest: 36 },
-    { day: 'Sun', tractor: 30, harvest: 50 }
+  recentUsers = [
+
+    {
+      name:'Ali Hassan',
+      role:'Farmer',
+      status:'Active'
+    },
+
+    {
+      name:'Fatma Omar',
+      role:'Supervisor',
+      status:'Active'
+    },
+
+    {
+      name:'Ahmed Suleiman',
+      role:'Farmer',
+      status:'Inactive'
+    }
+
   ];
-
-  get tractorPolyline(): string {
-    return this.buildPolyline(this.lineChartPoints.map(item => item.tractor), 220, 110, 10);
-  }
-
-  get harvestPolyline(): string {
-    return this.buildPolyline(this.lineChartPoints.map(item => item.harvest), 220, 110, 10);
-  }
-
-  buildPolyline(values: number[], width: number, height: number, padding: number): string {
-    const max = Math.max(...values);
-    const min = Math.min(...values);
-    const usableWidth = width - padding * 2;
-    const usableHeight = height - padding * 2;
-
-    return values
-      .map((value, index) => {
-        const x = padding + (index * usableWidth) / (values.length - 1);
-        const y =
-          padding +
-          usableHeight -
-          ((value - min) / ((max - min) || 1)) * usableHeight;
-        return `${x},${y}`;
-      })
-      .join(' ');
-  }
-
-  getStatusClass(status: string): string {
-    const normalized = status.toLowerCase();
-    if (normalized === 'approved') return 'approved';
-    if (normalized === 'pending') return 'pending';
-    if (normalized === 'completed') return 'completed';
-    return 'default';
-  }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+
+    new Chart('requestChart', {
+
+      type:'line',
+
+      data: {
+
+        labels:[
+          'Jan','Feb','Mar',
+          'Apr','May','Jun'
+        ],
+
+        datasets:[{
+
+          label:'Requests',
+
+          data:[45,60,75,55,82,96],
+
+          borderColor:'#16a34a',
+
+          backgroundColor:'rgba(22,163,74,.15)',
+
+          fill:true,
+
+          tension:.4
+
+        }]
+
       }
-    }, 0);
+
+    });
+
+    new Chart('paymentChart', {
+
+      type:'doughnut',
+
+      data: {
+
+        labels:[
+          'Paid',
+          'Pending',
+          'Rejected'
+        ],
+
+        datasets:[{
+
+          data:[65,25,10],
+
+          backgroundColor:[
+            '#16a34a',
+            '#f59e0b',
+            '#ef4444'
+          ]
+
+        }]
+
+      }
+
+    });
+
   }
+
 }

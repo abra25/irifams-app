@@ -1,0 +1,164 @@
+.plots-page{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.page-header h2{
+    margin:0;
+}
+
+.page-header p{
+    color:#777;
+    margin-top:5px;
+}
+
+.summary-cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.summary-card{
+    background:#fff;
+    border-radius:18px;
+    padding:25px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.summary-card i{
+    width:60px;
+    height:60px;
+    border-radius:15px;
+    background:#eaf7ee;
+    color:#145528;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.5rem;
+}
+
+.plots-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+}
+
+.plot-card{
+    background:#fff;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.status{
+    padding:6px 12px;
+    border-radius:20px;
+    background:#d4edda;
+    color:#155724;
+    font-size:.85rem;
+}
+
+.status.inactive{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.plot-info{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.plot-info p{
+    margin:0;
+    color:#555;
+}
+
+.plot-info i{
+    width:22px;
+    color:#145528;
+}
+
+.view-btn{
+    width:100%;
+    margin-top:25px;
+    border:none;
+    background:#145528;
+    color:#fff;
+    padding:13px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding:20px;
+}
+
+.modal-card{
+    width:100%;
+    max-width:500px;
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    border-bottom:1px solid #eee;
+}
+
+.modal-header button{
+    border:none;
+    background:none;
+    font-size:1.2rem;
+    cursor:pointer;
+}
+
+.modal-body{
+    padding:25px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid #f1f1f1;
+}
+
+@media(max-width:992px){
+
+    .plots-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .summary-cards,
+    .plots-grid{
+        grid-template-columns:1fr;
+    }
+
+}

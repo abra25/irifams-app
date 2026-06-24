@@ -1,0 +1,169 @@
+<div class="login-page">
+
+  <div class="bg-overlay"></div>
+
+  <div class="login-card">
+
+    <!-- LOGO -->
+
+    <div class="logo-wrap">
+
+      <div class="brand">
+
+        <img
+          src="img/logo.png"
+          alt="IRIFAMS"
+          class="logo-img">
+
+        <h1>IRIFAMS</h1>
+
+      </div>
+
+      <p>Please sign in to your account</p>
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <form class="login-form"
+          (ngSubmit)="onLogin()">
+
+      <!-- Username -->
+
+      <div class="form-group">
+
+        <label>Username</label>
+
+        <div class="input-wrap">
+
+          <i class="fas fa-user"></i>
+
+          <input
+            type="text"
+            name="username"
+            [(ngModel)]="loginData.username"
+            placeholder="Enter username"
+            required>
+
+        </div>
+
+      </div>
+
+
+      <!-- Password -->
+
+      <div class="form-group">
+
+        <label>Password</label>
+
+        <div class="input-wrap">
+
+          <i class="fas fa-lock"></i>
+
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="loginData.password"
+            placeholder="Enter password"
+            required>
+
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePassword()">
+
+            <i class="fas"
+               [ngClass]="showPassword ?
+               'fa-eye-slash' : 'fa-eye'">
+            </i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- Remember Me -->
+
+      <div class="remember-row">
+
+        <label class="remember-check">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="loginData.rememberMe"
+            name="remember">
+
+          <span>Remember Me</span>
+
+        </label>
+
+      </div>
+
+
+      <!-- BUTTON -->
+
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="loading">
+
+        <span *ngIf="!loading">
+          Login
+        </span>
+
+        <span *ngIf="loading">
+          Signing in...
+        </span>
+
+      </button>
+
+
+      <!-- LINKS -->
+
+      <div class="bottom-links">
+
+        <a
+           routerLink="/reset-password"
+           class="forgot-link">
+
+          Forgot Password?
+
+        </a>
+
+        <p class="register-text">
+
+          Account creation is managed by
+          the System Administrator or
+          Block Supervisor.
+
+        </p>
+
+      </div>
+
+    </form>
+
+
+    <!-- BACK -->
+
+    <div class="back-home">
+
+      <a routerLink="/">
+
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <footer class="login-footer">
+    © 2026 IRIFAMS. All rights reserved.
+  </footer>
+
+</div>

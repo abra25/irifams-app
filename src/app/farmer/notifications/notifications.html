@@ -1,0 +1,87 @@
+<div class="notifications-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h2>Notifications</h2>
+            <p>
+                View important updates and announcements.
+            </p>
+        </div>
+
+        <button class="mark-all-btn"
+                (click)="markAllAsRead()">
+
+            <i class="fas fa-check-double"></i>
+
+            Mark All as Read
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-card">
+
+        <div class="summary-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+
+        <div>
+
+            <h3>{{unreadCount}}</h3>
+
+            <span>Unread Notifications</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="notification-list">
+
+        <div class="notification-card"
+             *ngFor="let notification of notifications"
+             [class.unread]="!notification.read">
+
+            <div class="notification-icon"
+                 [ngClass]="notification.type">
+
+                <i class="fas fa-bell"></i>
+
+            </div>
+
+            <div class="notification-content">
+
+                <div class="notification-top">
+
+                    <h4>{{notification.title}}</h4>
+
+                    <small>{{notification.date}}</small>
+
+                </div>
+
+                <p>{{notification.message}}</p>
+
+            </div>
+
+            <button
+                *ngIf="!notification.read"
+                class="read-btn"
+                (click)="markAsRead(notification)">
+
+                Mark as Read
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

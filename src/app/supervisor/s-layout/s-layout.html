@@ -1,0 +1,126 @@
+<div class="layout-container">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar"
+         [class.open]="sidebarOpen">
+
+    <div class="sidebar-header">
+
+      <div class="brand">
+
+        <img src="img/logo.png">
+
+        <div>
+          <h2>IRIFAMS</h2>
+          <span>Supervisor Panel</span>
+        </div>
+
+      </div>
+
+      <button class="close-btn"
+              (click)="sidebarOpen=false">
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+    <nav>
+
+      <a *ngFor="let item of menuItems"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         (click)="sidebarOpen=false">
+
+        <i [class]="item.icon"></i>
+
+        <span>{{item.label}}</span>
+
+      </a>
+
+    </nav>
+
+    <div class="logout-box">
+
+      <a routerLink="/login">
+
+        <i class="fas fa-sign-out-alt"></i>
+
+        Logout
+
+      </a>
+
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN -->
+
+  <main class="main-content">
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+      <div class="header-left">
+
+        <button class="menu-btn"
+                (click)="sidebarOpen=!sidebarOpen">
+
+          <i class="fas fa-bars"></i>
+
+        </button>
+
+        <div class="search-box">
+
+          <i class="fas fa-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search...">
+
+        </div>
+
+      </div>
+
+
+      <div class="header-right">
+
+        <button class="icon-btn">
+
+          <i class="fas fa-bell"></i>
+
+          <span class="badge">3</span>
+
+        </button>
+
+        <div class="profile-box">
+
+          <img src="img/s-user.png">
+
+          <div>
+            <h4>Ali Hassan</h4>
+            <span>Supervisor</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- PAGE CONTENT -->
+
+    <section class="page-content">
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+  </main>
+
+</div>

@@ -1,0 +1,124 @@
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar"
+        [class.collapsed]="sidebarCollapsed"
+        [class.mobile-open]="mobileMenuOpen">
+
+    <div class="logo-section">
+
+      <img src="img/logo.png">
+
+      <span *ngIf="!sidebarCollapsed">
+        IRIFAMS
+      </span>
+
+    </div>
+
+    <nav>
+
+      <a *ngFor="let item of menuItems"
+         [routerLink]="item.route"
+         routerLinkActive="active">
+
+        <i [class]="item.icon"></i>
+
+        <span *ngIf="!sidebarCollapsed">
+          {{item.label}}
+        </span>
+
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <div class="sidebar-overlay"
+     *ngIf="mobileMenuOpen"
+     (click)="mobileMenuOpen=false">
+
+</div>
+
+
+  <!-- MAIN -->
+
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+      <div class="top-left">
+
+        <button class="menu-btn"
+                (click)="toggleSidebar()">
+
+          <i class="fas fa-bars"></i>
+
+        </button>
+
+        <div class="search-box">
+
+          <i class="fas fa-search"></i>
+
+          <input
+            type="text"
+            placeholder="Search anything...">
+
+        </div>
+
+      </div>
+
+
+      <div class="top-right">
+
+        <button class="icon-btn">
+
+          <i class="fas fa-bell"></i>
+
+          <span class="badge">5</span>
+
+        </button>
+
+        <button class="icon-btn">
+
+          <i class="fas fa-moon"></i>
+
+        </button>
+
+        <div class="date-box">
+
+          <i class="fas fa-calendar"></i>
+
+          {{today | date:'dd MMM yyyy'}}
+
+        </div>
+
+        <div class="profile">
+
+          <img src="img/admin.jfif">
+          <div class="profile-info">
+
+            <h4>System Admin</h4>
+            <span>Administrator</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+    <!-- CHILD PAGES -->
+
+    <div class="page-content">
+
+      <router-outlet></router-outlet>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,242 +1,373 @@
 <div class="landing-page">
-  <!-- Navbar -->
+
+  <!-- NAVBAR -->
+
   <header class="topbar">
+
     <div class="brand">
-      <div class="brand-icon">
-        <img src="img/logo-tr.png" alt="logo">
-      </div>
+      <img src="img/logo-tr.png" alt="logo">
       <span>IRIFAMS</span>
     </div>
 
-      <!-- MOBILE TOGGLE -->
-      <button class="menu-toggle" (click)="mobileMenuOpen = !mobileMenuOpen">
-        <i
-          [attr.data-lucide]="mobileMenuOpen ? 'x' : 'menu'"
-        ></i>
-      </button>
+    <button class="menu-toggle"
+            (click)="mobileMenuOpen=!mobileMenuOpen">
 
-      <!-- NAV LINKS -->
-      <nav class="nav-links" [class.active]="mobileMenuOpen">
-        <a (click)="scrollToSection('hero')">
-          Home
-        </a>
-        <a (click)="scrollToSection('about')">
-          About
-        </a>
-        <a (click)="scrollToSection('services')">
-          Services
-        </a>
-        <a (click)="scrollToSection('contact')">
-          Contact
-        </a>
-        <a
-          routerLink="/login"
-          class="btn btn-primary mobile-login"
-          (click)="mobileMenuOpen = false" style="color: #fff;"
-        >
-          Login
-        </a>
-      </nav>
+      <i class="fas"
+         [ngClass]="mobileMenuOpen ? 'fa-times':'fa-bars'">
+      </i>
+
+    </button>
+
+    <nav class="nav-links"
+         [class.active]="mobileMenuOpen">
+
+      <a (click)="scrollToSection('hero')">Home</a>
+      <a (click)="scrollToSection('about')">About</a>
+      <a (click)="scrollToSection('services')">Services</a>
+      <a (click)="scrollToSection('users')">Users</a>
+      <a (click)="scrollToSection('contact')">Contact</a>
+
+      <a routerLink="/login"
+         class="btn btn-primary mobile-login"
+         style="color: #fff;">
+        Login
+      </a>
+
+    </nav>
+
   </header>
 
-  <!-- Hero -->
+
+  <!-- HERO -->
+
   <section class="hero-section" id="hero">
+
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
+
       <div class="hero-left">
+
         <h1>
-          Empowering Farmers, <br />
+          Empowering Farmers <br>
           <span>Building a Better Future</span>
         </h1>
 
         <p class="hero-text">
-          IRIFAMS is a digital platform that simplifies access to farm services,
-          agricultural inputs, irrigation support, and management tools for
-          irrigated rice farmers.
+
+          IRIFAMS is a digital platform developed to improve
+          irrigated rice farming management through digital
+          service requests, input distribution, payment tracking
+          and irrigation scheduling.
+
         </p>
 
         <div class="hero-buttons">
-          <a routerLink="/login" class="btn btn-primary">
+
+          <a routerLink="/login"
+             class="btn btn-primary">
             Get Started
           </a>
 
-          <a
-            (click)="scrollToSection('about')"
-            class="btn btn-light"
-          >
-          Learn More
-        </a>
+          <a class="btn btn-light"
+             (click)="scrollToSection('about')">
+            Learn More
+          </a>
+
         </div>
+
       </div>
+
     </div>
+
   </section>
 
-  <!-- Stats -->
+
+  <!-- STATS -->
+
   <section class="stats-section">
-    <div class="stat-card" *ngFor="let stat of stats">
+
+    <div class="stat-card"
+         *ngFor="let stat of stats">
+
       <div class="stat-icon">
-        <i [attr.data-lucide]="stat.icon"></i>
+        <i [class]="stat.icon"></i>
       </div>
 
       <div class="stat-content">
-        <h3>{{ stat.value }}</h3>
-        <p>{{ stat.label }}</p>
+        <h3>{{stat.value}}</h3>
+        <p>{{stat.label}}</p>
       </div>
+
     </div>
+
   </section>
 
-  <!-- About -->
-  <section class="about-section" id="about">
+
+  <!-- ABOUT -->
+
+  <section class="about-section"
+           id="about">
+
     <div class="about-image">
-      <img src="img/about us.png" alt="Rice farming" />
+      <img src="img/about us.png" alt="">
     </div>
 
     <div class="about-content">
-      <p class="section-tag">ABOUT IRIFAMS</p>
+
+      <p class="section-tag">
+        ABOUT IRIFAMS
+      </p>
 
       <h2>
         Smart Digital Management for Irrigated Rice Farming
       </h2>
 
       <p>
-        The IRIFAMS (Irrigated Rice Farm Management System) is a web-based
-        platform developed to modernize and simplify rice farming activities.
-        The system replaces manual records and phone communication with a fast,
-        organized, and transparent digital solution.
+
+        IRIFAMS is a web-based platform designed to
+        modernize and simplify irrigated rice farming
+        activities by replacing manual records and phone
+        communication.
+
       </p>
 
       <p>
-        Farmers, supervisors, and administrators can manage farm plots,
-        irrigation activities, service requests, input distribution, and payment
-        tracking in one centralized platform.
+
+        The system enables farmers, supervisors,
+        administrators and stakeholders to access
+        centralized farming information anytime.
+
       </p>
 
       <div class="about-features">
+
         <div class="about-item">
-          <i data-lucide="check-circle"></i>
-          <span>Farm Plot Registration</span>
+          <i class="fas fa-check-circle"></i>
+          <span>Farmer Registration</span>
         </div>
 
         <div class="about-item">
-          <i data-lucide="check-circle"></i>
-          <span>Input Distribution Tracking</span>
+          <i class="fas fa-check-circle"></i>
+          <span>Farm Plot Management</span>
         </div>
 
         <div class="about-item">
-          <i data-lucide="check-circle"></i>
-          <span>Transparent Payment Management</span>
+          <i class="fas fa-check-circle"></i>
+          <span>Input Distribution</span>
         </div>
 
         <div class="about-item">
-          <i data-lucide="check-circle"></i>
-          <span>Service Request Coordination</span>
+          <i class="fas fa-check-circle"></i>
+          <span>Water Scheduling</span>
         </div>
+
+        <div class="about-item">
+          <i class="fas fa-check-circle"></i>
+          <span>Payment Tracking</span>
+        </div>
+
+        <div class="about-item">
+          <i class="fas fa-check-circle"></i>
+          <span>Reports & Analytics</span>
+        </div>
+
       </div>
+
     </div>
+
   </section>
 
-  <!-- Services -->
-  <section class="services-section" id="services">
+
+  <!-- SERVICES -->
+
+  <section class="services-section"
+           id="services">
+
     <div class="section-header">
-      <p class="section-tag">OUR SERVICES</p>
 
-      <h2>Digital Services for Better Rice Farming Operations</h2>
-
-      <p>
-        IRIFAMS provides integrated farm management services that improve
-        productivity, transparency, and coordination between farmers and
-        supervisors.
+      <p class="section-tag">
+        SYSTEM SERVICES
       </p>
+
+      <h2>
+        Digital Services for Better Farm Operations
+      </h2>
+
     </div>
 
     <div class="services-grid">
-      <div class="service-card" *ngFor="let feature of features">
+
+      <div class="service-card"
+           *ngFor="let feature of features">
+
         <div class="service-icon">
-          <i [attr.data-lucide]="feature.icon"></i>
+          <i [class]="feature.icon"></i>
         </div>
 
-        <h3>{{ feature.title }}</h3>
+        <h3>{{feature.title}}</h3>
 
-        <p>{{ feature.text }}</p>
+        <p>{{feature.text}}</p>
 
-        <a routerLink="/login" class="service-link">
-          Learn More
-          <i data-lucide="arrow-right"></i>
-        </a>
       </div>
+
     </div>
+
   </section>
 
+
+  <!-- USERS -->
+
+  <section class="users-section"
+           id="users">
+
+    <div class="section-header">
+
+      <p class="section-tag">
+        SYSTEM USERS
+      </p>
+
+      <h2>Who Uses IRIFAMS?</h2>
+
+    </div>
+
+    <div class="users-grid">
+
+      <div class="user-card">
+
+        <i class="fas fa-user"></i>
+
+        <h3>Farmers</h3>
+
+        <p>
+          Request services, view payments and
+          water schedules.
+        </p>
+
+      </div>
+
+      <div class="user-card">
+
+        <i class="fas fa-user-tie"></i>
+
+        <h3>Block Supervisors</h3>
+
+        <p>
+          Register farmers, manage inputs and
+          approve requests.
+        </p>
+
+      </div>
+
+      <div class="user-card">
+
+        <i class="fas fa-user-shield"></i>
+
+        <h3>Administrators</h3>
+
+        <p>
+          Manage users, reports and
+          system configurations.
+        </p>
+
+      </div>
+
+      <div class="user-card">
+
+        <i class="fas fa-chart-pie"></i>
+
+        <h3>Stakeholders</h3>
+
+        <p>
+          View reports and monitor
+          farming activities.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
   <!-- CTA -->
+
   <section class="cta-section">
+
     <div class="cta-content">
+
       <h2>
-        Ready to simplify irrigated rice farming management?
+        Ready to Transform Rice Farming?
       </h2>
 
       <p>
-        Access digital tools for service requests, input distribution, payment
-        tracking, and farm management.
+
+        Access digital services for efficient
+        irrigated rice farm management.
+
       </p>
 
-      <a routerLink="/login" class="btn btn-primary">
-        Go to Login
+      <a routerLink="/login"
+         class="btn btn-primary">
+        Go To Login
       </a>
+
     </div>
+
   </section>
 
-  <!-- Footer -->
-  <footer class="footer" id="contact">
-    <div class="footer-grid">
-      <div class="footer-col">
-        <div class="brand footer-brand">
-          <div class="brand-icon">
-            <img src="img/logo.png" alt="logo" 
-            style="
-            border-radius: 12px;
-            width: 40px;
-            height: 40px;
-            ">
-          </div>
 
+  <!-- FOOTER -->
+
+  <footer class="footer"
+          id="contact">
+
+    <div class="footer-grid">
+
+      <div>
+
+        <div class="brand footer-brand">
+          <img src="img/logo-tr.png" alt="">
           <span>IRIFAMS</span>
         </div>
 
         <p>
-          Irrigated Rice Farm Management System designed to improve coordination,
-          transparency, and productivity in modern rice farming.
+
+          Irrigated Rice Farm Management System
+          designed to improve transparency and
+          efficiency in modern rice farming.
+
         </p>
+
       </div>
 
-      <div class="footer-col">
+      <div>
+
         <h4>Quick Links</h4>
 
-        <a  (click)="scrollToSection('hero')">Home</a>
-        <a  (click)="scrollToSection('about')">About</a>
-        <a  (click)="scrollToSection('services')">Services</a>
+        <a (click)="scrollToSection('hero')">Home</a>
+        <a (click)="scrollToSection('about')">About</a>
+        <a (click)="scrollToSection('services')">Services</a>
         <a routerLink="/login">Login</a>
+
       </div>
 
-      <div class="footer-col">
+      <div>
+
         <h4>Contact</h4>
 
         <p>+255 777 617 786</p>
         <p>info@irifams.com</p>
         <p>Zanzibar, Tanzania</p>
+
       </div>
 
-      <div class="footer-col">
-        <h4>System Users</h4>
-
-        <p>Farmers</p>
-        <p>Block Supervisors</p>
-        <p>Administrators</p>
-      </div>
     </div>
 
     <div class="footer-bottom">
-      <p>© 2026 IRIFAMS. All rights reserved.</p>
+      © 2026 IRIFAMS. All Rights Reserved.
     </div>
+
   </footer>
+
 </div>

@@ -1,0 +1,78 @@
+
+<div class="notifications-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>Notifications</h2>
+
+            <p>
+                System alerts and recent activities.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+        <h3>{{unreadCount}}</h3>
+
+        <span>Unread Notifications</span>
+
+    </div>
+
+
+    <div class="notifications-list">
+
+        <div class="notification-card"
+
+             *ngFor="let notification of notifications"
+
+             [class.unread]="!notification.read">
+
+            <div class="icon-box"
+                 [ngClass]="notification.type">
+
+                <i class="fas fa-bell"></i>
+
+            </div>
+
+            <div class="notification-content">
+
+                <h4>{{notification.title}}</h4>
+
+                <p>{{notification.message}}</p>
+
+                <small>{{notification.date}}</small>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    *ngIf="!notification.read"
+                    class="read-btn"
+                    (click)="markAsRead(notification)">
+
+                    <i class="fas fa-check"></i>
+
+                </button>
+
+                <button
+                    class="delete-btn"
+                    (click)="deleteNotification(notification)">
+
+                    <i class="fas fa-trash"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
