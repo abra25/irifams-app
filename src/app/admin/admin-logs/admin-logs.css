@@ -56,3 +56,129 @@ tbody tr:hover{
 
     color:#dc2626;
 }
+
+.status-badge{
+    padding:6px 12px;
+    border-radius:20px;
+    background:#dcfce7;
+    color:#15803d;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+.status-badge.failed{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.tabs{
+    display:flex;
+    gap:10px;
+}
+
+.tabs button{
+    border:none;
+    padding:8px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.tabs button.active{
+    background:#15803d;
+    color:#fff;
+}
+
+/* ================= TOOLBAR ================= */
+
+.toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    margin:1.5rem 0;
+    flex-wrap:wrap;
+}
+
+/* ================= SEARCH INPUT ================= */
+
+.toolbar input{
+    flex:1;
+    min-width:280px;
+    max-width:420px;
+
+    padding:0.9rem 1rem;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+
+    background:#fff;
+
+    font-size:0.95rem;
+    color:#374151;
+
+    outline:none;
+    transition:all .3s ease;
+}
+
+.toolbar input:focus{
+    border-color:#15803d;
+    box-shadow:0 0 0 4px rgba(21,128,61,0.12);
+}
+
+.toolbar input::placeholder{
+    color:#9ca3af;
+}
+
+/* ================= FILTER TABS ================= */
+
+.tabs{
+    display:flex;
+    gap:0.7rem;
+    flex-wrap:wrap;
+}
+
+.tabs button{
+    border:none;
+    background:#f3f4f6;
+
+    color:#374151;
+
+    padding:0.8rem 1.2rem;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:0.9rem;
+    font-weight:600;
+
+    transition:all .3s ease;
+}
+
+.tabs button:hover{
+    background:#e5e7eb;
+}
+
+.tabs button.active{
+    background:#15803d;
+    color:#fff;
+    box-shadow:0 4px 12px rgba(21,128,61,0.2);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+    .toolbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .toolbar input{
+        max-width:100%;
+    }
+
+    .tabs{
+        justify-content:center;
+    }
+
+}

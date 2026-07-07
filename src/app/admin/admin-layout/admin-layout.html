@@ -18,19 +18,37 @@
 
     <nav>
 
-      <a *ngFor="let item of menuItems"
-         [routerLink]="item.route"
-         routerLinkActive="active">
+ <a
 
-        <i [class]="item.icon"></i>
+ *ngFor="let item of menuItems"
 
-        <span *ngIf="!sidebarCollapsed">
-          {{item.label}}
-        </span>
+ [routerLink]="
+    item.route !== 'logout'
+    ? item.route
+    : null
+ "
 
-      </a>
+ (click)="
 
-    </nav>
+    item.route==='logout'
+    ? logout()
+    : closeMobileMenu()
+
+ "
+
+ routerLinkActive="active">
+
+  <i [class]="item.icon"></i>
+
+  <span *ngIf="!sidebarCollapsed">
+
+    {{item.label}}
+
+  </span>
+
+</a>
+
+</nav>
 
   </aside>
 
@@ -77,13 +95,27 @@
 
           <i class="fas fa-bell"></i>
 
-          <span class="badge">5</span>
+          <span class="badge">
+
+           {{notificationCount}}
+
+           </span>
 
         </button>
 
-        <button class="icon-btn">
+        <button
+            class="icon-btn"
+            (click)="toggleTheme()">
 
-          <i class="fas fa-moon"></i>
+            <i
+                class="fas"
+                [ngClass]="
+                darkMode
+                ? 'fa-sun'
+                : 'fa-moon'
+            ">
+
+            </i>
 
         </button>
 
@@ -97,15 +129,33 @@
 
         <div class="profile">
 
-          <img src="img/admin.jfif">
-          <div class="profile-info">
+        <img
 
-            <h4>System Admin</h4>
-            <span>Administrator</span>
+        [src]="
+        currentUser?.image ||
+        'img/default-user.png'
+        ">
 
-          </div>
+        <div class="profile-info">
+
+          <h4>
+
+           {{
+           currentUser?.fullName
+           || 'Administrator'
+           }}
+
+           </h4>
+
+           <span>
+
+            {{currentUser?.role}}
+
+            </span>
 
         </div>
+
+     </div>
 
       </div>
 

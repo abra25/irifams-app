@@ -10,7 +10,7 @@
             <p>
                 System alerts and recent activities.
             </p>
-
+    
         </div>
 
     </div>
@@ -34,7 +34,9 @@
              [class.unread]="!notification.read">
 
             <div class="icon-box"
-                 [ngClass]="notification.type">
+                 [ngClass]="notification.read
+ ? 'success'
+ : 'warning'">
 
                 <i class="fas fa-bell"></i>
 
@@ -42,11 +44,14 @@
 
             <div class="notification-content">
 
-                <h4>{{notification.title}}</h4>
+                <h4>System Notification</h4>
 
                 <p>{{notification.message}}</p>
 
-                <small>{{notification.date}}</small>
+                <small>
+  {{notification.createdAt
+    | date:'dd MMM yyyy HH:mm'}}
+</small>
 
             </div>
 

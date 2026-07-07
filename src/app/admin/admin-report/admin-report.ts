@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import {
+  AfterViewInit,
+  Component
+} from '@angular/core';
+
 import {
   Chart,
   BarController,
@@ -12,6 +18,11 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+
+import Swal from 'sweetalert2';
+
+import { ReportService }
+from '../../services/report.service';
 
 Chart.register(
   BarController,
@@ -31,221 +42,236 @@ Chart.register(
   templateUrl: './admin-report.html',
   styleUrl: './admin-report.css'
 })
-export class AdminReports implements AfterViewInit {
+export class AdminReports
+implements AfterViewInit {
 
-  summary = [
-    {
-      title:'Total Farmers',
-      value:'1,245',
-      icon:'fas fa-users'
-    },
+  constructor(
+    private reportService: ReportService
+  ){}
 
-    {
-      title:'Farm Plots',
-      value:'865',
-      icon:'fas fa-map'
-    },
+  summary:any[] = [];
 
-    {
-      title:'Revenue',
-      value:'TZS 56M',
-      icon:'fas fa-coins'
-    },
-
-    {
-      title:'Requests',
-      value:'458',
-      icon:'fas fa-clipboard-list'
-    }
-  ];
+  reportData:any;
 
   ngAfterViewInit(): void {
 
-    this.loadCharts();
+    this.loadSummary();
+
+  }
+
+  loadSummary(){
+
+    this.reportService
+        .getSummary()
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.reportData = res;
+
+            this.summary = [
+
+              {
+                title:'Total Farmers',
+                value:res.totalFarmers,
+                icon:'fas fa-users'
+              },
+
+              {
+                title:'Farm Plots',
+                value:res.totalPlots,
+                icon:'fas fa-map'
+              },
+
+              {
+                title:'Revenue',
+                value:
+                  'TZS ' +
+                  (res.totalRevenue || 0)
+                    .toLocaleString(),
+
+                icon:'fas fa-coins'
+              },
+
+              {
+                title:'Requests',
+                value:res.totalRequests,
+                icon:'fas fa-clipboard-list'
+              }
+
+            ];
+
+            this.loadCharts();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load reports',
+              'error'
+            );
+
+          }
+
+        });
 
   }
 
   loadCharts() {
 
-  // SERVICE PIE CHART
+    // REQUEST CHART
 
-  new Chart('serviceChart', {
+    new Chart('serviceChart', {
 
-    type: 'pie',
+      type:'pie',
 
-    data: {
+      data:{
 
-      labels: [
-        'Tractor',
-        'Harvesting'
-      ],
-
-      datasets: [{
-        data: [65, 35],
-
-        backgroundColor: [
-          '#16a34a',
-          '#2563eb'
+        labels:[
+          'Approved',
+          'Completed'
         ],
 
-        borderColor: [
-          '#ffffff',
-          '#ffffff'
-        ],
+        datasets:[{
 
-        borderWidth: 3
-      }]
-    },
+          data:[
+            this.reportData.approvedRequests || 0,
+            this.reportData.completedRequests || 0
+          ],
 
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
+          backgroundColor:[
+            '#16a34a',
+            '#2563eb'
+          ]
 
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-
-  });
-
-
-
-  // PAYMENT DOUGHNUT
-
-  new Chart('paymentChart', {
-
-    type: 'doughnut',
-
-    data: {
-
-      labels: [
-        'Paid',
-        'Pending',
-        'Rejected'
-      ],
-
-      datasets: [{
-        data: [70, 20, 10],
-
-        backgroundColor: [
-          '#22c55e',
-          '#f59e0b',
-          '#ef4444'
-        ],
-
-        borderColor: [
-          '#ffffff',
-          '#ffffff',
-          '#ffffff'
-        ],
-
-        borderWidth: 3
-      }]
-    },
-
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-
-  });
-
-
-
-  // REVENUE BAR CHART
-
-  new Chart('revenueChart', {
-
-    type: 'bar',
-
-    data: {
-
-      labels: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun'
-      ],
-
-      datasets: [{
-
-        label: 'Revenue (TZS)',
-
-        data: [
-          3000000,
-          5000000,
-          6000000,
-          8000000,
-          9000000,
-          11000000
-        ],
-
-        backgroundColor: [
-          '#16a34a',
-          '#2563eb',
-          '#f59e0b',
-          '#7c3aed',
-          '#ec4899',
-          '#06b6d4'
-        ],
-
-        borderRadius: 10
-
-      }]
-
-    },
-
-    options: {
-
-      responsive: true,
-      maintainAspectRatio: false,
-
-      plugins: {
-
-        legend: {
-          display: false
-        }
+        }]
 
       },
 
-      scales: {
+      options:{
+        responsive:true
+      }
 
-        y: {
+    });
 
-          beginAtZero: true,
 
-          ticks: {
 
-            callback: function(value: any) {
-              return (value / 1000000) + 'M';
-            }
+    // PAYMENT CHART
 
+    new Chart('paymentChart', {
+
+      type:'doughnut',
+
+      data:{
+
+        labels:[
+          'Payments'
+        ],
+
+        datasets:[{
+
+          data:[
+            this.reportData.totalPayments || 0
+          ],
+
+          backgroundColor:[
+            '#22c55e'
+          ]
+
+        }]
+
+      },
+
+      options:{
+        responsive:true
+      }
+
+    });
+
+
+
+    // REVENUE CHART
+
+    new Chart('revenueChart', {
+
+      type:'bar',
+
+      data:{
+
+        labels:[
+          'Revenue'
+        ],
+
+        datasets:[{
+
+          label:'TZS',
+
+          data:[
+            this.reportData.totalRevenue || 0
+          ],
+
+          backgroundColor:[
+            '#2563eb'
+          ],
+
+          borderRadius:10
+
+        }]
+
+      },
+
+      options:{
+
+        responsive:true,
+
+        scales:{
+
+          y:{
+            beginAtZero:true
           }
 
         }
 
       }
 
-    }
-
-  });
-
-}
-
-  generateReport(type:string){
-
-    alert(type + ' report generated successfully');
+    });
 
   }
+
+generateReport(type:string){
+
+  this.reportService
+
+      .exportPdf()
+
+      .subscribe(blob=>{
+
+        const url =
+          window.URL.createObjectURL(blob);
+
+        const a =
+          document.createElement('a');
+
+        a.href = url;
+
+        a.download =
+          'IRIFAMS-Report.pdf';
+
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+
+        Swal.fire(
+          'Success',
+          'Report downloaded successfully',
+          'success'
+        );
+
+      });
+
+}
 
 }

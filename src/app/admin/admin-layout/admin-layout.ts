@@ -1,6 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -12,13 +13,34 @@ import { RouterModule } from '@angular/router';
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.css'
 })
-export class AdminLayout {
+export class AdminLayout implements OnInit{
+  currentUser:any;
+
+notificationCount = 0;
+
+darkMode = false;
 
   sidebarCollapsed = false;
 
   mobileMenuOpen = false;
 
+
   today = new Date();
+
+
+  
+constructor(
+  private authService: AuthService, private router:Router
+){}
+
+ngOnInit(){
+
+  this.authService.startAutoLogout();
+
+  this.currentUser =
+    this.authService.getUser();
+
+}
 
   menuItems = [
 
@@ -79,11 +101,13 @@ export class AdminLayout {
     {
       label:'Logout',
       icon:'fas fa-sign-out-alt',
-      route:'/login'
+      route:'logout'
     }
 
   ];
 
+
+  
   toggleSidebar(){
 
   if(window.innerWidth <= 992){
@@ -95,6 +119,32 @@ export class AdminLayout {
 
     this.sidebarCollapsed =
       !this.sidebarCollapsed;
+
+  }
+
+}
+
+toggleTheme(){
+
+  this.darkMode = !this.darkMode;
+
+  document.body.classList.toggle(
+    'dark-theme'
+  );
+
+}
+
+  logout() {
+
+  this.authService.logout();
+
+}
+
+closeMobileMenu(){
+
+  if(window.innerWidth <= 992){
+
+    this.mobileMenuOpen = false;
 
   }
 

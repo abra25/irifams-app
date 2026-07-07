@@ -1,119 +1,291 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import Swal from 'sweetalert2';
 
+interface Farmer {
+
+  id?: number;
+
+  employeeNo?: string;
+
+  fullName: string;
+
+  phone: string;
+
+  gender?: string;
+
+  blockName?: string;
+
+  role: string;
+
+  enabled?: boolean;
+
+  email?: string;
+
+}
 @Component({
   selector: 'app-s-farmers',
-  imports: [CommonModule,FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './s-farmers.html',
-  styleUrl: './s-farmers.css',
+  styleUrl: './s-farmers.css'
 })
-export class SFarmers {
 
-  searchTerm = '';
+export class SFarmers implements OnInit {
 
-  showAddModal = false;
-  showViewModal = false;
-  showEditModal = false;
+  constructor(
+    private userService: UserService,
+    
+    private cdr: ChangeDetectorRef
+  ){}
 
-  selectedFarmer: any = null;
+  searchTerm='';
 
-  farmers = [
+  showAddModal=false;
+  showViewModal=false;
+  showEditModal=false;
 
-    {
-      id: 1,
-      farmerNo: 'FRM-001',
-      fullName: 'Ali Hassan',
-      phone: '+255777111222',
-      block: 'Cheju Block A',
-      gender: 'Male',
-      status: 'Active'
-    },
+  selectedFarmer!: Farmer;
 
-    {
-      id: 2,
-      farmerNo: 'FRM-002',
-      fullName: 'Fatma Omar',
-      phone: '+255777333444',
-      block: 'Cheju Block A',
-      gender: 'Female',
-      status: 'Active'
-    },
+  farmers: Farmer[] = [];
 
-    {
-      id: 3,
-      farmerNo: 'FRM-003',
-      fullName: 'Ahmed Suleiman',
-      phone: '+255777555666',
-      block: 'Cheju Block B',
-      gender: 'Male',
-      status: 'Inactive'
-    }
+  newFarmer: Farmer = {
 
-  ];
+    employeeNo:'',
+    fullName:'',
+    phone:'',
+    blockName:'',
+    gender:'',
+    role:'FARMER'
 
-  newFarmer = {
-    farmerNo: '',
-    fullName: '',
-    phone: '',
-    block: '',
-    gender: ''
   };
 
-  addFarmer() {
+  ngOnInit(): void {
+    
 
-    this.farmers.unshift({
-      id: this.farmers.length + 1,
-      ...this.newFarmer,
-      status: 'Active'
-    });
-
-    this.newFarmer = {
-      farmerNo: '',
-      fullName: '',
-      phone: '',
-      block: '',
-      gender: ''
-    };
-
-    this.showAddModal = false;
+    this.loadFarmers();
 
   }
+loadFarmers(){
 
-  viewFarmer(farmer: any) {
-    this.selectedFarmer = farmer;
-    this.showViewModal = true;
-  }
+  this.userService
+      .getMyFarmers()
+      .subscribe({
 
-  editFarmer(farmer: any) {
-    this.selectedFarmer = { ...farmer };
-    this.showEditModal = true;
-  }
+        next:(res)=>{
 
-  saveEdit() {
+          this.farmers = [...res];
+          
+            this.cdr.detectChanges();
+        },
 
-    const index = this.farmers.findIndex(
-      f => f.id === this.selectedFarmer.id
+        error:()=>{
+
+          Swal.fire(
+            'Error',
+            'Failed to load farmers',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+  get filteredFarmers(){
+
+    return this.farmers.filter(farmer =>
+
+      farmer.fullName
+      .toLowerCase()
+      .includes(
+        this.searchTerm.toLowerCase()
+      )
+
+      ||
+
+      farmer.phone
+      .toLowerCase()
+      .includes(
+        this.searchTerm.toLowerCase()
+      )
+
+      ||
+
+      (farmer.blockName || '')
+      .toLowerCase()
+      .includes(
+        this.searchTerm.toLowerCase()
+      )
+
     );
 
-    this.farmers[index] = this.selectedFarmer;
-
-    this.showEditModal = false;
   }
 
-  toggleStatus(farmer: any) {
+  addFarmer(){
 
-    farmer.status =
-      farmer.status === 'Active'
-      ? 'Inactive'
-      : 'Active';
+  const payload = {
 
-  }
+    username:
+    this.newFarmer.employeeNo,
 
-  get activeFarmersCount(): number {
-  return this.farmers.filter(
-    farmer => farmer.status === 'Active'
-  ).length;
+    password: '123456',
+
+    employeeNo:
+    this.newFarmer.employeeNo,
+
+    fullName:
+    this.newFarmer.fullName,
+
+    phone:
+    this.newFarmer.phone,
+
+    gender:
+    this.newFarmer.gender,
+
+    blockName:
+    this.newFarmer.blockName,
+
+    role:'FARMER'
+
+  };
+
+  this.userService
+      .addUser(payload)
+
+      .subscribe({
+
+        next:()=>{
+
+          Swal.fire(
+            'Success',
+            'Farmer registered successfully\nDefault Password: 123456',
+            'success'
+          );
+
+          this.showAddModal=false;
+
+          this.newFarmer={
+
+            employeeNo:'',
+            fullName:'',
+            phone:'',
+            blockName:'',
+            gender:'',
+            role:'FARMER'
+
+          };
+
+          this.loadFarmers();
+
+        },
+
+        error:(err)=>{
+
+          Swal.fire(
+            'Error',
+            err.error ||
+            'Registration failed',
+            'error'
+          );
+
+        }
+
+      });
+
 }
+
+  viewFarmer(farmer: Farmer){
+
+    this.selectedFarmer = farmer;
+
+    this.showViewModal = true;
+
+  }
+
+  editFarmer(farmer: Farmer){
+
+    this.selectedFarmer = {
+
+      ...farmer
+
+    };
+
+    this.showEditModal = true;
+
+  }
+
+  saveEdit(){
+
+  this.userService
+      .updateUser(
+        this.selectedFarmer.id!,
+        this.selectedFarmer
+      )
+
+      .subscribe({
+
+        next:()=>{
+
+          Swal.fire(
+            'Success',
+            'Farmer updated successfully',
+            'success'
+          );
+
+          this.showEditModal = false;
+
+          this.loadFarmers();
+
+        },
+
+        error:(err)=>{
+
+          Swal.fire(
+            'Error',
+            err.error ||
+            'Failed to update farmer',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+  toggleStatus(farmer: Farmer){
+
+    this.userService
+        .toggleStatus(
+          farmer.id!
+        )
+
+        .subscribe({
+
+          next:()=>{
+
+            this.loadFarmers();
+
+          }
+
+        });
+
+  }
+
+  get activeFarmersCount(){
+
+    return this.farmers.filter(
+
+      farmer => farmer.enabled
+
+    ).length;
+
+  }
 
 }

@@ -1,114 +1,260 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+
+import { WaterScheduleService }
+from '../../services/water-schedule.service';
+
+import { PlotService }
+from '../../services/plot.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-wsm',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './wsm.html',
-  styleUrl: './wsm.css',
+  styleUrl: './wsm.css'
 })
-export class Wsm {
+export class Wsm implements OnInit {
+  constructor(
 
+    private scheduleService:
+    WaterScheduleService,
+
+    private plotService:
+    PlotService,
+
+    private cdr:
+    ChangeDetectorRef,
+ 
+    private authService: 
+    AuthService
+
+  ){}
 
   showAddModal = false;
   showViewModal = false;
   showEditModal = false;
 
-  selectedSchedule: any = null;
+  selectedSchedule:any = null;
 
-  schedules = [
+  schedules:any[] = [];
 
-    {
-      id: 1,
-      block: 'Cheju Block A',
-      day: 'Monday',
-      startTime: '06:00',
-      endTime: '10:00',
-      season: 'Season A 2026',
-      status: 'Active'
-    },
+  plots:any[] = [];
 
-    {
-      id: 2,
-      block: 'Cheju Block B',
-      day: 'Thursday',
-      startTime: '14:00',
-      endTime: '18:00',
-      season: 'Season A 2026',
-      status: 'Completed'
-    }
+  selectedPlotId!:number;
 
-  ];
+  supervisorId!:number;
 
   newSchedule = {
-    block: '',
-    day: '',
-    startTime: '',
-    endTime: '',
-    season: ''
+
+    irrigationDate:'',
+
+    startTime:'',
+
+    endTime:'',
+
+    canal:'',
+
+    season:'',
+
+    notes:'',
+
+    status:'ACTIVE'
+
   };
 
-  addSchedule() {
+  ngOnInit(): void {
 
-    this.schedules.unshift({
-      id: this.schedules.length + 1,
-      ...this.newSchedule,
-      status: 'Active'
-    });
+    const user = this.authService.getUser();
 
-    this.newSchedule = {
-      block: '',
-      day: '',
-      startTime: '',
-      endTime: '',
-      season: ''
-    };
+    this.supervisorId = user.id;
 
-    this.showAddModal = false;
+    this.loadSchedules();
+
+    this.loadPlots();
+
+  
+
+console.log(user);
+
+this.supervisorId = user.id;
+
   }
 
-  viewSchedule(schedule: any) {
+  loadSchedules(){
+
+  this.scheduleService
+
+      .getMySchedules()
+
+      .subscribe({
+
+        next:(res)=>{
+
+          this.schedules = [...res];
+
+          this.cdr.detectChanges();
+
+        },
+
+        error:()=>{
+
+          Swal.fire(
+            'Error',
+            'Failed to load schedules',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+  loadPlots(){
+
+  this.plotService
+
+      .getMyPlots()
+
+      .subscribe({
+
+        next:(res)=>{
+
+          console.log(res);
+
+          this.plots = [...res];
+
+          this.cdr.detectChanges();
+
+        },
+
+        error:(err)=>{
+
+          console.log(err);
+
+          Swal.fire(
+            'Error',
+            'Failed to load plots',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+  addSchedule(){
+
+    this.scheduleService.addSchedule(
+    this.selectedPlotId,
+    this.newSchedule
+)
+
+        .subscribe({
+
+          next:()=>{
+
+            Swal.fire(
+              'Success',
+              'Schedule created successfully',
+              'success'
+            );
+
+            this.showAddModal = false;
+
+            this.loadSchedules();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to create schedule',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  viewSchedule(schedule:any){
 
     this.selectedSchedule = schedule;
+
     this.showViewModal = true;
 
   }
 
-  editSchedule(schedule: any) {
+  editSchedule(schedule:any){
 
-    this.selectedSchedule = { ...schedule };
+    this.selectedSchedule = {
+      ...schedule
+    };
+
     this.showEditModal = true;
 
   }
 
-  saveEdit() {
+  saveEdit(){
 
-    const index = this.schedules.findIndex(
-      s => s.id === this.selectedSchedule.id
-    );
+    this.scheduleService
 
-    this.schedules[index] = this.selectedSchedule;
+        .updateSchedule(
 
-    this.showEditModal = false;
+          this.selectedSchedule.id,
+
+          this.selectedSchedule
+
+        )
+
+        .subscribe({
+
+          next:()=>{
+
+            Swal.fire(
+              'Success',
+              'Schedule updated',
+              'success'
+            );
+
+            this.showEditModal = false;
+
+            this.loadSchedules();
+
+          }
+
+        });
 
   }
 
-  toggleStatus(schedule: any) {
-
-    schedule.status =
-      schedule.status === 'Active'
-      ? 'Completed'
-      : 'Active';
-
-  }
-
-  get activeSchedulesCount(): number {
+  get activeSchedulesCount(){
 
     return this.schedules.filter(
-      s => s.status === 'Active'
+
+      s => s.status === 'ACTIVE'
+
     ).length;
 
   }
+
+  toggleStatus(schedule:any){
+
+  schedule.status =
+
+    schedule.status === 'ACTIVE'
+    ? 'COMPLETED'
+    : 'ACTIVE';
+
+}
 
 }

@@ -386,3 +386,153 @@ tbody tr:hover{
     background:#fee2e2;
     color:#dc2626;
 }
+
+
+.modal-overlay{
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.modal-card{
+
+    width: 500px;
+    max-width: 95%;
+
+    background: #fff;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    animation: modal .3s ease;
+}
+
+@keyframes modal{
+
+    from{
+
+        transform: translateY(-20px);
+        opacity:0;
+
+    }
+
+    to{
+
+        transform: translateY(0);
+        opacity:1;
+
+    }
+}
+
+.modal-header{
+
+    padding:20px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border-bottom:1px solid #eee;
+}
+
+.modal-header h3{
+
+    margin:0;
+}
+
+.modal-header button{
+
+    border:none;
+    background:none;
+
+    font-size:20px;
+    cursor:pointer;
+}
+
+.modal-body{
+
+    padding:20px;
+}
+
+.detail-row{
+
+    display:flex;
+    justify-content:space-between;
+
+    margin-bottom:18px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid #f1f1f1;
+}
+
+.detail-row span{
+
+    color:#666;
+}
+
+.modal-footer{
+
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+
+    padding:20px;
+
+    border-top:1px solid #eee;
+}
+
+.save-btn{
+
+    background:#0ea5e9;
+    color:#fff;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.reject-btn{
+
+    background:#dc2626;
+    color:#fff;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.status-text.paid{
+
+    color:green;
+    font-weight:600;
+}
+
+.status-text.waiting_verification{
+
+    color:orange;
+    font-weight:600;
+}
+
+.status-text.rejected{
+
+    color:red;
+    font-weight:600;
+}

@@ -1,5 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
+import Swal from 'sweetalert2';
+
+import { PlotService }
+from '../../services/plot.service';
+
+import { AuthService }
+from '../../services/auth.service';
 
 @Component({
   selector: 'app-my-plots',
@@ -7,50 +19,93 @@ import { Component } from '@angular/core';
   templateUrl: './my-plots.html',
   styleUrl: './my-plots.css',
 })
-export class MyPlots {
+
+export class MyPlots implements OnInit {
+
+  constructor(
+
+    private plotService: PlotService,
+
+    private authService: AuthService,
+
+    private cdr: ChangeDetectorRef
+
+  ){}
 
   showModal = false;
 
-  selectedPlot: any = null;
+  selectedPlot:any = null;
 
-  plots = [
+  plots:any[] = [];
 
-    {
-      plotNo: 'PLT-001',
-      block: 'Cheju Block A',
-      size: 2.5,
-      soilType: 'Clay Loam',
-      ownership: 'Owned',
-      status: 'Active',
-      season: '2026 Season A'
-    },
+  farmerId!:number;
 
-    {
-      plotNo: 'PLT-002',
-      block: 'Cheju Block A',
-      size: 1.8,
-      soilType: 'Silty Clay',
-      ownership: 'Owned',
-      status: 'Active',
-      season: '2026 Season A'
-    },
+  ngOnInit(): void {
 
-    {
-      plotNo: 'PLT-003',
-      block: 'Cheju Block B',
-      size: 3.2,
-      soilType: 'Clay',
-      ownership: 'Leased',
-      status: 'Inactive',
-      season: '2026 Season A'
+    const user =
+      this.authService.getUser();
+
+    if(user){
+
+      this.farmerId = user.id;
+
+      this.loadPlots();
+
     }
 
-  ];
+  }
 
-  viewPlot(plot: any) {
+  loadPlots(){
+
+    this.plotService
+
+        .getFarmerPlots(
+          this.farmerId
+        )
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.plots = [...res];
+
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load plots',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  viewPlot(plot:any){
 
     this.selectedPlot = plot;
+
     this.showModal = true;
+
+  }
+
+  get totalLandSize():number{
+
+    return this.plots.reduce(
+
+      (sum,plot)=>
+
+        sum + (plot.size || 0),
+
+      0
+
+    );
 
   }
 

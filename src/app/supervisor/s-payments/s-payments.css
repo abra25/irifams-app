@@ -453,3 +453,17 @@ th,td{
     background:#dc3545;
     color:#fff;
 }
+
+.reject-btn{
+    width:36px;
+    height:36px;
+    border:none;
+    border-radius:8px;
+    background:#fee2e2;
+    color:#dc2626;
+    cursor:pointer;
+}
+
+.reject-btn:hover{
+    background:#fecaca;
+}

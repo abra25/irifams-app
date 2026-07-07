@@ -1,70 +1,196 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
+import Swal from 'sweetalert2';
+
+import { NotificationService }
+from '../../services/notification.service';
 
 @Component({
-  selector: 'app-notifications',
-  imports: [CommonModule],
-  templateUrl: './notifications.html',
-  styleUrl: './notifications.css',
+  selector:'app-notifications',
+  imports:[CommonModule],
+  templateUrl:'./notifications.html',
+  styleUrl:'./notifications.css'
 })
-export class Notifications {
-  
+export class Notifications implements OnInit{
 
-  notifications = [
+  notifications:any[]=[];
 
-    {
-      id: 1,
-      title: 'Request Approved',
-      message:
-        'Your tractor service request REQ-002 has been approved.',
-      date: '22 Jun 2026',
-      type: 'success',
-      read: false
-    },
+  unreadCount=0;
 
-    {
-      id: 2,
-      title: 'Control Number Generated',
-      message:
-        'Control Number CN-2026-002 has been generated for payment.',
-      date: '21 Jun 2026',
-      type: 'info',
-      read: false
-    },
+  constructor(
 
-    {
-      id: 3,
-      title: 'Water Schedule Updated',
-      message:
-        'Water schedule for Cheju Block A has been updated.',
-      date: '20 Jun 2026',
-      type: 'warning',
-      read: true
-    },
+    private notificationService:NotificationService,
 
-    {
-      id: 4,
-      title: 'Payment Verified',
-      message:
-        'Your payment has been verified successfully.',
-      date: '18 Jun 2026',
-      type: 'success',
-      read: true
-    }
+    private cdr:ChangeDetectorRef
 
-  ];
+  ){}
 
-  markAsRead(notification: any) {
-    notification.read = true;
+  ngOnInit(){
+
+    this.loadNotifications();
+
+    this.loadUnreadCount();
+
   }
 
-  markAllAsRead() {
-    this.notifications.forEach(n => n.read = true);
+  loadNotifications(){
+
+  this.notificationService
+
+      .getMyNotifications()
+
+      .subscribe({
+
+        next:(res)=>{
+
+          this.notifications = res.map((n:any)=>({
+
+            ...n,
+
+            title: this.getTitle(n.message),
+
+            type: this.getType(n.message)
+
+          }));
+
+          this.cdr.detectChanges();
+
+        },
+
+        error:()=>{
+
+          Swal.fire(
+            'Error',
+            'Failed to load notifications',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+  loadUnreadCount(){
+
+    this.notificationService
+
+        .getUnreadCount()
+
+        .subscribe({
+
+          next:(count)=>{
+
+            this.unreadCount=count;
+
+          }
+
+        });
+
   }
 
-  get unreadCount(): number {
-    return this.notifications.filter(n => !n.read).length;
+  markAsRead(notification:any){
+
+    this.notificationService
+
+        .markAsRead(notification.id)
+
+        .subscribe({
+
+          next:()=>{
+
+            notification.read = true;
+
+            this.loadUnreadCount();
+
+          }
+
+        });
+
   }
 
+  markAllAsRead(){
+
+    const unread = this.notifications.filter(
+  n => !n.read
+    );
+
+    unread.forEach(n=>{
+
+      this.notificationService
+
+          .markAsRead(n.id)
+
+          .subscribe();
+
+      n.read = true;
+
+    });
+
+    this.loadUnreadCount();
+
+  }
+
+  getTitle(message:string):string{
+
+  const msg = message.toLowerCase();
+
+  if(msg.includes('approved'))
+    return 'Request Approved';
+
+  if(msg.includes('submitted'))
+    return 'Request Submitted';
+
+  if(msg.includes('control number'))
+    return 'Control Number';
+
+  if(msg.includes('payment'))
+    return 'Payment';
+
+  if(msg.includes('irrigation'))
+    return 'Water Schedule';
+
+  if(msg.includes('schedule'))
+    return 'Water Schedule';
+
+  if(msg.includes('started'))
+    return 'Irrigation Started';
+
+  if(msg.includes('completed'))
+    return 'Irrigation Completed';
+
+  if(msg.includes('reminder'))
+    return 'Reminder';
+
+  return 'System Notification';
+
+}
+
+getType(message:string):string{
+
+  const msg = message.toLowerCase();
+
+  if(msg.includes('approved'))
+    return 'success';
+
+  if(msg.includes('payment'))
+    return 'success';
+
+  if(msg.includes('control'))
+    return 'info';
+
+  if(msg.includes('schedule'))
+    return 'warning';
+
+  if(msg.includes('reminder'))
+    return 'warning';
+
+  return 'info';
+
+}
 
 }

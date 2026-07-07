@@ -123,6 +123,13 @@
 
                 </button>
 
+                <button class="delete-btn"
+                  (click)="deleteInput(input)">
+
+                  <i class="fas fa-trash"></i>
+
+</button>
+
             </div>
 
         </div>
@@ -159,8 +166,8 @@
 
         <select [(ngModel)]="newInput.category">
           <option value="">Select Category</option>
-          <option value="Seed">Seed</option>
-          <option value="Fertilizer">Fertilizer</option>
+          <option value="SEED">SEED</option>
+          <option value="FERTILIZER">FERTILIZER</option>
         </select>
       </div>
 
@@ -240,16 +247,16 @@
     <div class="modal-body">
 
       <img class="preview-img"
-           [src]="selectedInput?.image">
+           [src]="selectedInput.image">
 
       <div class="detail-row">
         <span>Name</span>
-        <strong>{{selectedInput?.name}}</strong>
+        <strong>{{selectedInput.name}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Category</span>
-        <strong>{{selectedInput?.category}}</strong>
+        <strong>{{selectedInput.category}}</strong>
       </div>
 
       <div class="detail-row">
@@ -257,8 +264,8 @@
 
         <strong>
 
-          {{selectedInput?.quantity}}
-          {{selectedInput?.unit}}
+          {{selectedInput.quantity}}
+          {{selectedInput.unit}}
 
         </strong>
 
@@ -266,12 +273,12 @@
 
       <div class="detail-row">
         <span>Season</span>
-        <strong>{{selectedInput?.season}}</strong>
+        <strong>{{selectedInput.season}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Status</span>
-        <strong>{{selectedInput?.status}}</strong>
+        <strong>{{selectedInput.status}}</strong>
       </div>
 
     </div>
@@ -310,8 +317,8 @@
         <label>Category</label>
 
         <select [(ngModel)]="selectedInput.category">
-          <option value="Seed">Seed</option>
-          <option value="Fertilizer">Fertilizer</option>
+          <option value="SEED">SEED</option>
+          <option value="FERTILIZER">FERTILIZER</option>
         </select>
       </div>
 
@@ -345,7 +352,7 @@
 
       <div class="image-preview">
 
-        <img *ngIf="selectedInput?.image"
+        <img *ngIf="selectedInput.image"
              [src]="selectedInput.image">
 
       </div>

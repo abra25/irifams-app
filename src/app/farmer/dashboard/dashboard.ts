@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,87 +8,134 @@ import { Component } from '@angular/core';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {
-  stats = [
-    {
-      title: 'My Plots',
-      value: 4,
-      icon: 'fas fa-map-marked-alt'
-    },
+export class Dashboard implements OnInit{
+  stats:any[]=[];
 
-    {
-      title: 'Pending Requests',
-      value: 3,
-      icon: 'fas fa-clock'
-    },
+requests:any[]=[];
 
-    {
-      title: 'Completed Services',
-      value: 12,
-      icon: 'fas fa-check-circle'
-    },
+schedules:any[]=[];
 
-    {
-      title: 'Outstanding Payments',
-      value: 'TZS 80,000',
-      icon: 'fas fa-money-bill-wave'
-    }
-  ];
+notifications:any[]=[];
 
-  requests = [
+   constructor(
 
-    {
-      id: 'REQ-001',
-      service: 'Tractor Service',
-      plot: 'PLT-001',
-      date: '12 Jun 2026',
-      status: 'Pending'
-    },
+private dashboardService:DashboardService,
 
-    {
-      id: 'REQ-002',
-      service: 'Harvesting',
-      plot: 'PLT-003',
-      date: '08 Jun 2026',
-      status: 'Approved'
-    },
+private cdr:ChangeDetectorRef
 
-    {
-      id: 'REQ-003',
-      service: 'Tractor Service',
-      plot: 'PLT-002',
-      date: '03 Jun 2026',
-      status: 'Completed'
-    }
+){}
 
-  ];
+ngOnInit(){
 
-  schedules = [
+this.loadStats();
 
-    {
-      block: 'Cheju Block A',
-      day: 'Monday',
-      start: '06:00 AM',
-      end: '10:00 AM'
-    },
+this.loadRequests();
 
-    {
-      block: 'Cheju Block A',
-      day: 'Thursday',
-      start: '02:00 PM',
-      end: '06:00 PM'
-    }
+this.loadSchedules();
 
-  ];
+this.loadNotifications();
 
-  notifications = [
+}
 
-    'Your tractor request REQ-002 has been approved.',
+loadStats(){
 
-    'Water schedule for Block A has been updated.',
+this.dashboardService
 
-    'Control Number CN-2026-001 has been generated.'
+.getFarmerStats()
 
-  ];
+.subscribe(res=>{
 
+this.stats=[
+
+{
+
+title:'My Plots',
+
+value:res.myPlots,
+
+icon:'fas fa-map'
+
+},
+
+{
+
+title:'Pending Requests',
+
+value:res.pendingRequests,
+
+icon:'fas fa-clock'
+
+},
+
+{
+
+title:'Completed Services',
+
+value:res.completedRequests,
+
+icon:'fas fa-check-circle'
+
+},
+
+{
+
+title:'Outstanding Payments',
+
+value:'TZS '+(res.outstandingPayments ?? 0),
+
+icon:'fas fa-money-bill-wave'
+
+}
+
+];
+
+this.cdr.detectChanges();
+
+});
+
+}
+
+loadRequests(){
+
+this.dashboardService
+
+.getFarmerRequests()
+
+.subscribe(res=>{
+
+this.requests=res;
+
+
+});
+
+}
+
+loadSchedules(){
+
+this.dashboardService
+
+.getFarmerSchedules()
+
+.subscribe(res=>{
+
+this.schedules=[...res];
+this.cdr.detectChanges();
+
+});
+
+}
+
+loadNotifications(){
+
+this.dashboardService
+
+.getFarmerNotifications()
+
+.subscribe(res=>{
+
+this.notifications=res;
+
+});
+
+}
 }

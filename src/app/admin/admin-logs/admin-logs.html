@@ -18,7 +18,42 @@
     <div class="table-card">
 
         <div class="table-wrapper">
+            <div class="toolbar">
 
+    <input
+        type="text"
+        placeholder="Search logs..."
+        [(ngModel)]="searchTerm">
+
+    <div class="tabs">
+
+        <button
+            [class.active]="selectedTab==='All'"
+            (click)="selectedTab='All'">
+
+            All
+
+        </button>
+
+        <button
+            [class.active]="selectedTab==='SUCCESS'"
+            (click)="selectedTab='SUCCESS'">
+
+            Success
+
+        </button>
+
+        <button
+            [class.active]="selectedTab==='FAILED'"
+            (click)="selectedTab='FAILED'">
+
+            Failed
+
+        </button>
+
+    </div>
+
+</div>
             <table>
 
                 <thead>
@@ -28,6 +63,7 @@
                         <th>Action</th>
                         <th>User</th>
                         <th>Role</th>
+                        <th>Description</th>
                         <th>Date & Time</th>
                         <th>Status</th>
 
@@ -37,31 +73,39 @@
 
                 <tbody>
 
-                    <tr *ngFor="let log of logs">
+<tr *ngFor="let log of filteredLogs">
 
-                        <td>{{log.action}}</td>
+    <td>{{log.action}}</td>
 
-                        <td>{{log.user}}</td>
+    <td>{{log.username}}</td>
 
-                        <td>{{log.role}}</td>
+    <td>{{log.module}}</td>
+    <td>{{log.description}}</td>
 
-                        <td>{{log.date}}</td>
+    <td>
 
-                        <td>
+      {{log.createdAt
+      | date:'dd MMM yyyy HH:mm'}}
 
-                            <span class="status-badge"
-                                  [class.failed]="log.status==='Failed'">
+    </td>
 
-                                {{log.status}}
+    <td>
 
-                            </span>
+  <span
 
-                        </td>
+      class="status-badge"
 
-                    </tr>
+      [class.failed]="log.status==='FAILED'">
 
-                </tbody>
+      {{log.status}}
 
+  </span>
+
+</td>
+
+</tr>
+
+</tbody>
             </table>
 
         </div>

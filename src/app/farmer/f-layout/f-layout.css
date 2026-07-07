@@ -4,12 +4,13 @@
 
 .layout-container{
   display:flex;
-  min-height:100vh;
+  height:100vh;
+  overflow: hidden;
   background:#f4f6f9;
 }
 
 .sidebar{
-
+  height: 100V;
   width:280px;
   background:#145528;
 
@@ -100,6 +101,8 @@
 
 .main-content{
   flex:1;
+  height: 100%;
+  overflow: scroll;
 }
 
 .top-header{
@@ -107,7 +110,7 @@
   height:90px;
   background:#fff;
 
-  padding:0 30px;
+  padding:30px;
 
   display:flex;
   align-items:center;
@@ -146,6 +149,7 @@
   align-items:center;
   gap:12px;
 }
+
 
 .profile-box img{
   width:48px;
@@ -213,5 +217,88 @@
   .close-sidebar{
     display:block;
   }
+
+}
+
+.sidebar.collapsed{
+
+width:85px;
+
+}
+
+.sidebar.collapsed nav a{
+
+justify-content:center;
+
+}
+
+.sidebar.collapsed .logout-section a{
+
+justify-content:center;
+
+}
+
+.sidebar.collapsed .logo-section{
+
+justify-content:center;
+
+}
+
+.sidebar.collapsed .brand-info{
+
+justify-content:center;
+
+}
+
+.sidebar.collapsed .close-sidebar{
+
+display:none;
+
+}
+
+.welcome-top{
+
+display:flex;
+
+align-items:center;
+
+gap:16px;
+
+}
+
+.collapse-btn{
+
+width:42px;
+
+height:42px;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+background:#fff;
+
+box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+font-size:18px;
+
+}
+
+.profile-box{
+
+cursor:pointer;
+
+transition:.3s;
+padding: 0 7px;
+
+}
+
+.profile-box:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 10px 20px rgba(0,0,0,.1);
 
 }

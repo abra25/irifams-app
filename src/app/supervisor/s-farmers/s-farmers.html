@@ -27,7 +27,7 @@
         <div class="summary-card">
 
             <h3>{{farmers.length}}</h3>
-            <span>Total Farmers</span>
+            <span>Total Farmers in My Block</span>
 
         </div>
 
@@ -83,19 +83,21 @@
 
                 <tbody>
 
-                    <tr *ngFor="let farmer of farmers">
+                    <tr *ngFor="let farmer of filteredFarmers">
 
-                        <td>{{farmer.farmerNo}}</td>
+                        <td>{{farmer.employeeNo}}</td>
                         <td>{{farmer.fullName}}</td>
                         <td>{{farmer.phone}}</td>
-                        <td>{{farmer.block}}</td>
+                        <td>{{farmer.blockName}}</td>
 
                         <td>
 
                             <span class="status"
-                                  [class.inactive]="farmer.status==='Inactive'">
+                              [class.inactive]="!farmer.enabled">
 
-                                {{farmer.status}}
+                              {{ farmer.enabled
+                               ? 'Active'
+                               : 'Inactive' }}
 
                             </span>
 
@@ -169,7 +171,7 @@
         <label>Farmer Number</label>
 
         <input
-          [(ngModel)]="newFarmer.farmerNo">
+          [(ngModel)]="newFarmer.employeeNo">
 
       </div>
 
@@ -196,7 +198,7 @@
         <label>Block</label>
 
         <input
-          [(ngModel)]="newFarmer.block">
+          [(ngModel)]="newFarmer.blockName">
 
       </div>
 
@@ -259,33 +261,137 @@
 
       <div class="detail-row">
         <span>Farmer No</span>
-        <strong>{{selectedFarmer?.farmerNo}}</strong>
+        <strong>{{selectedFarmer.employeeNo}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Name</span>
-        <strong>{{selectedFarmer?.fullName}}</strong>
+        <strong>{{selectedFarmer.fullName}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Phone</span>
-        <strong>{{selectedFarmer?.phone}}</strong>
+        <strong>{{selectedFarmer.phone}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Block</span>
-        <strong>{{selectedFarmer?.block}}</strong>
+        <strong>{{selectedFarmer.blockName}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Gender</span>
-        <strong>{{selectedFarmer?.gender}}</strong>
+        <strong>{{selectedFarmer.gender}}</strong>
       </div>
 
       <div class="detail-row">
         <span>Status</span>
-        <strong>{{selectedFarmer?.status}}</strong>
+        <strong>{{selectedFarmer.enabled? 'Active': 'Inactive'}}</strong>
       </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+
+<div class="modal-overlay"
+     *ngIf="showEditModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Edit Farmer</h3>
+
+      <button (click)="showEditModal=false">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Farmer Number</label>
+
+        <input
+          [(ngModel)]="selectedFarmer.employeeNo">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Full Name</label>
+
+        <input
+          [(ngModel)]="selectedFarmer.fullName">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Phone Number</label>
+
+        <input
+          [(ngModel)]="selectedFarmer.phone">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Block</label>
+
+        <input
+          [(ngModel)]="selectedFarmer.blockName">
+      </div>
+
+      <div class="form-group">
+
+        <label>Gender</label>
+
+        <select
+          [(ngModel)]="selectedFarmer.gender">
+
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+
+        </select>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Email</label>
+
+        <input
+          type="email"
+          [(ngModel)]="selectedFarmer.email">
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="showEditModal=false">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="save-btn"
+        (click)="saveEdit()">
+
+        Update Farmer
+
+      </button>
 
     </div>
 

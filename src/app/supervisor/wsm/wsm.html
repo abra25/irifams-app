@@ -68,9 +68,9 @@
 
                     <tr *ngFor="let schedule of schedules">
 
-                        <td>{{schedule.block}}</td>
+                        <td>{{schedule.plot?.block}}</td>
 
-                        <td>{{schedule.day}}</td>
+                        <td>{{schedule.irrigationDate |date:'dd MMM yyyy'}}</td>
 
                         <td>
                             {{schedule.startTime}}
@@ -150,62 +150,101 @@
 
         <div class="modal-body">
 
-            <div class="form-group">
+    <div class="form-group">
 
-                <label>Block</label>
+        <label>Plot</label>
 
-                <input
-                    [(ngModel)]="newSchedule.block">
+        <select
+          [(ngModel)]="selectedPlotId">
 
-            </div>
+            <option [ngValue]="null">
 
-            <div class="form-group">
+                Select Plot
 
-                <label>Day</label>
+            </option>
 
-                <select
-                    [(ngModel)]="newSchedule.day">
+            <option
 
-                    <option>Monday</option>
-                    <option>Tuesday</option>
-                    <option>Wednesday</option>
-                    <option>Thursday</option>
-                    <option>Friday</option>
-                    <option>Saturday</option>
-                    <option>Sunday</option>
+              *ngFor="let plot of plots"
 
-                </select>
+              [ngValue]="plot.id">
 
-            </div>
+              {{plot.plotNo}}
 
-            <div class="form-group">
+              -
 
-                <label>Start Time</label>
+              {{plot.farmer?.fullName}}
 
-                <input type="time"
-                       [(ngModel)]="newSchedule.startTime">
+            </option>
 
-            </div>
+        </select>
 
-            <div class="form-group">
+    </div>
 
-                <label>End Time</label>
+    <div class="form-group">
 
-                <input type="time"
-                       [(ngModel)]="newSchedule.endTime">
+        <label>Irrigation Date</label>
 
-            </div>
+        <input
 
-            <div class="form-group">
+          type="date"
 
-                <label>Season</label>
+          [(ngModel)]="newSchedule.irrigationDate">
 
-                <input
-                    [(ngModel)]="newSchedule.season">
+    </div>
 
-            </div>
+    <div class="form-group">
 
-        </div>
+        <label>Start Time</label>
+
+        <input
+          type="time"
+
+          [(ngModel)]="newSchedule.startTime">
+
+    </div>
+
+    <div class="form-group">
+
+        <label>End Time</label>
+
+        <input
+          type="time"
+
+          [(ngModel)]="newSchedule.endTime">
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Canal</label>
+
+        <input
+          [(ngModel)]="newSchedule.canal">
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Season</label>
+
+        <input
+          [(ngModel)]="newSchedule.season">
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Notes</label>
+
+        <textarea
+          [(ngModel)]="newSchedule.notes">
+
+        </textarea>
+
+    </div>
+
+</div>
 
         <div class="modal-footer">
 
@@ -247,36 +286,201 @@
         <div class="modal-body">
 
             <div class="detail-row">
-                <span>Block</span>
-                <strong>{{selectedSchedule?.block}}</strong>
-            </div>
+  <span>Plot</span>
 
-            <div class="detail-row">
-                <span>Day</span>
-                <strong>{{selectedSchedule?.day}}</strong>
-            </div>
+  <strong>
 
-            <div class="detail-row">
-                <span>Time</span>
-                <strong>
-                    {{selectedSchedule?.startTime}}
-                    -
-                    {{selectedSchedule?.endTime}}
-                </strong>
-            </div>
+    {{selectedSchedule?.plot?.plotNo}}
 
-            <div class="detail-row">
-                <span>Season</span>
-                <strong>{{selectedSchedule?.season}}</strong>
-            </div>
+  </strong>
+</div>
 
-            <div class="detail-row">
-                <span>Status</span>
-                <strong>{{selectedSchedule?.status}}</strong>
-            </div>
+<div class="detail-row">
+  <span>Farmer</span>
+
+  <strong>
+
+    {{selectedSchedule?.plot?.farmer?.fullName}}
+
+  </strong>
+</div>
+
+<div class="detail-row">
+  <span>Block</span>
+
+  <strong>
+
+    {{selectedSchedule?.plot?.block}}
+
+  </strong>
+</div>
+
+<div class="detail-row">
+  <span>Date</span>
+
+  <strong>
+
+{{selectedSchedule?.irrigationDate
+| date:'dd MMM yyyy'}}
+
+  </strong>
+</div>
+
+<div class="detail-row">
+  <span>Canal</span>
+
+  <strong>
+
+    {{selectedSchedule?.canal}}
+
+  </strong>
+</div>
+
+<div class="detail-row">
+  <span>Season</span>
+
+  <strong>
+
+    {{selectedSchedule?.season}}
+
+  </strong>
+</div>
+
+<div class="detail-row">
+  <span>Notes</span>
+
+  <strong>
+
+    {{selectedSchedule?.notes}}
+
+  </strong>
+</div>
 
         </div>
 
     </div>
+
+</div>
+
+<div class="modal-overlay"
+     *ngIf="showEditModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Edit Schedule</h3>
+
+      <button
+        (click)="showEditModal=false">
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Irrigation Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="selectedSchedule.irrigationDate">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Start Time</label>
+
+        <input
+          type="time"
+          [(ngModel)]="selectedSchedule.startTime">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>End Time</label>
+
+        <input
+          type="time"
+          [(ngModel)]="selectedSchedule.endTime">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Canal</label>
+
+        <input
+          [(ngModel)]="selectedSchedule.canal">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Season</label>
+
+        <input
+          [(ngModel)]="selectedSchedule.season">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Status</label>
+
+        <select
+          [(ngModel)]="selectedSchedule.status">
+
+          <option value="ACTIVE">
+            ACTIVE
+          </option>
+
+          <option value="COMPLETED">
+            COMPLETED
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Notes</label>
+
+        <textarea
+          [(ngModel)]="selectedSchedule.notes">
+        </textarea>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="showEditModal=false">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="save-btn"
+        (click)="saveEdit()">
+
+        Update Schedule
+
+      </button>
+
+    </div>
+
+  </div>
 
 </div>

@@ -242,3 +242,253 @@ tbody tr:hover{
     }
 
 }
+
+/* MODAL */
+
+.modal-overlay{
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+
+    padding: 20px;
+}
+
+.modal-card{
+
+    width: 100%;
+    max-width: 600px;
+
+    background: #fff;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    animation: pop .3s ease;
+}
+
+@keyframes pop{
+
+    from{
+        transform: scale(.9);
+        opacity:0;
+    }
+
+    to{
+        transform: scale(1);
+        opacity:1;
+    }
+
+}
+
+.modal-header{
+
+    padding:20px 25px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border-bottom:1px solid #eee;
+}
+
+.modal-header h3{
+
+    margin:0;
+    color:#1e293b;
+}
+
+.modal-header button{
+
+    border:none;
+    background:none;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.modal-body{
+
+    padding:25px;
+}
+
+.detail-row{
+
+    display:flex;
+    justify-content:space-between;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #f1f5f9;
+}
+
+.detail-row span{
+
+    color:#64748b;
+}
+
+.detail-row strong{
+
+    color:#0f172a;
+}
+
+.modal-footer{
+
+    padding:20px 25px;
+
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+
+    border-top:1px solid #eee;
+}
+
+.approve-btn,
+.reject-btn,
+.control-btn{
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    color:#fff;
+
+    font-weight:600;
+}
+
+.approve-btn{
+
+    background:#16a34a;
+}
+
+.reject-btn{
+
+    background:#dc2626;
+}
+
+.control-btn{
+
+    background:#2563eb;
+}
+
+.approve-btn:hover,
+.reject-btn:hover,
+.control-btn:hover{
+
+    opacity:.9;
+}
+
+.status-text.pending{
+
+    color:#f59e0b;
+}
+
+.status-text.approved{
+
+    color:#16a34a;
+}
+
+.status-text.rejected{
+
+    color:#dc2626;
+}
+
+.status-text.completed{
+
+    color:#2563eb;
+}
+
+
+@media(max-width:768px){
+
+    .detail-row{
+
+        flex-direction:column;
+        gap:6px;
+    }
+
+    .modal-footer{
+
+        flex-direction:column;
+    }
+
+}
+
+.payment-badge{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+.payment-badge.paid{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.payment-badge.pending{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.view-btn,
+.approve-btn,
+.reject-btn,
+.control-btn{
+
+    width:40px;
+    height:40px;
+
+    border:none;
+    border-radius:10px;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.view-btn{
+    background:#2563eb;
+}
+
+.approve-btn{
+    background:#16a34a;
+}
+
+.reject-btn{
+    background:#dc2626;
+}
+
+.control-btn{
+    background:#f59e0b;
+}
+
+.view-btn:hover,
+.approve-btn:hover,
+.reject-btn:hover,
+.control-btn:hover{
+
+    transform:translateY(-2px);
+}

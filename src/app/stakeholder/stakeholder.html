@@ -1,3 +1,125 @@
+<!-- NAVBAR -->
+
+<header class="top-navbar">
+
+    <div class="nav-left">
+
+        <button class="mobile-toggle"
+                (click)="mobileMenuOpen=!mobileMenuOpen">
+
+            <i class="fas fa-bars"></i>
+
+        </button>
+
+        <div class="brand">
+
+            <img src="img/logo.png" alt="logo">
+
+            <div>
+                <h2>IRIFAMS</h2>
+                <span>Government Portal</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="nav-center">
+
+        <h3>
+            Government Stakeholder Dashboard
+        </h3>
+
+    </div>
+
+    <div class="nav-right">
+
+        <button class="icon-btn">
+
+            <i class="fas fa-bell"></i>
+
+            <span class="badge">
+                {{notifications.length}}
+            </span>
+
+        </button>
+
+        <div class="profile-wrapper">
+
+            <div class="profile-trigger"
+
+                 (click)="showProfileMenu=!showProfileMenu">
+
+                <img
+                  [src]="currentUser?.image || 'img/user.png'">
+
+                <div class="user-info">
+
+                    <strong>
+
+                        {{currentUser?.fullName}}
+
+                    </strong>
+
+                </div>
+
+                <i class="fas fa-chevron-down"></i>
+
+            </div>
+
+
+            <!-- PROFILE DROPDOWN -->
+
+            <div class="profile-dropdown"
+
+                 *ngIf="showProfileMenu">
+
+                <div class="dropdown-header">
+
+                    <img
+                    [src]="currentUser?.image || 'img/user.png'">
+
+                    <h4>
+
+                        {{currentUser?.fullName}}
+
+                    </h4>
+
+                    <p>
+
+                        {{currentUser?.username}}
+
+                    </p>
+
+                </div>
+
+                <button
+                    (click)="showEditModal=true">
+
+                    <i class="fas fa-user-edit"></i>
+
+                    Edit Profile
+
+                </button>
+
+                <button
+                    class="logout-btn"
+
+                    (click)="logout()">
+
+                    <i class="fas fa-sign-out-alt"></i>
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
 <div class="stakeholder-page">
 
     <!-- HEADER -->
@@ -92,9 +214,14 @@
 
                 <div>
 
-                    <p>{{activity.text}}</p>
+                    <p>{{activity.description}}</p>
 
-                    <small>{{activity.time}}</small>
+<small>
+
+  {{activity.createdAt |
+  date:'dd MMM yyyy HH:mm'}}
+
+</small>
 
                 </div>
 
@@ -111,15 +238,134 @@
 
         <h3>Notifications</h3>
 
-        <div class="note"
-             *ngFor="let note of notifications">
+        <div class="note" *ngFor="let note of notifications">
 
-            <i class="fas fa-bell"></i>
+    <i class="fas fa-bell"></i>
 
-            {{note}}
+    {{note.message}}
+
+</div>
+
+    </div>
+
+</div>
+
+<div class="modal-overlay"
+     *ngIf="showEditModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>Edit Profile</h3>
+
+            <button
+                (click)="showEditModal=false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="form-group">
+
+                <label>Full Name</label>
+
+                <input
+                [(ngModel)]="currentUser.fullName">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                [(ngModel)]="currentUser.email">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Usernaame</label>
+
+                <input
+                [(ngModel)]="currentUser.username">
+
+            </div>
+          
+
+            <div class="form-group">
+
+                <label>Institution</label>
+
+                <input
+                    [(ngModel)]="currentUser.institution">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Gender</label>
+
+                <select [(ngModel)]="currentUser.gender">
+
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+
+                <label>Phone</label>
+
+                <input
+                [(ngModel)]="currentUser.phone">
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="cancel-btn"
+
+                (click)="showEditModal=false">
+
+                Cancel
+
+            </button>
+
+            <button class="save-btn"
+
+                (click)="updateProfile()">
+
+                Save Changes
+
+            </button>
 
         </div>
 
     </div>
 
 </div>
+
+<footer class="footer">
+
+    <div>
+
+        © 2026 IRIFAMS -
+        Irrigation Rice Farming Management System
+
+    </div>
+
+    <div>
+
+        Ministry of Agriculture Zanzibar
+
+    </div>
+
+</footer>

@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InputService } from '../../services/input.service';
+import { UserService } from '../../services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-s-inputs',
@@ -9,51 +12,37 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './s-inputs.html',
   styleUrl: './s-inputs.css',
 })
-export class SInputs {
+export class SInputs implements OnInit {
 
+constructor(
 
-  showAddModal = false;
-  showViewModal = false;
-  showDistributionModal = false;
+  private inputService: InputService,
+  private userService: UserService,
+  private cdr: ChangeDetectorRef
 
-  selectedInput: any = null;
+){}
 
-  inputs = [
+  ngOnInit(): void {
 
-    {
-      id: 1,
-      name: 'SARO 5 Rice Seed',
-      category: 'Seed',
-      image: 'img/saro5.jfif',
-      quantity: 500,
-      unit: 'Kg',
-      season: 'Season A 2026',
-      status: 'Available'
-    },
+  this.loadInputs();
 
-    {
-      id: 2,
-      name: 'Urea Fertilizer',
-      category: 'Fertilizer',
-      image: 'img/urea.jfif',
-      quantity: 250,
-      unit: 'Bags',
-      season: 'Season A 2026',
-      status: 'Available'
-    },
+  this.loadFarmers();
 
-    {
-      id: 3,
-      name: 'DAP Fertilizer',
-      category: 'Fertilizer',
-      image: 'img/dap.jfif',
-      quantity: 0,
-      unit: 'Bags',
-      season: 'Season A 2026',
-      status: 'Out of Stock'
-    }
+}
 
-  ];
+inputs:any[]=[];
+
+farmers:any[]=[];
+
+selectedInput:any;
+
+showViewModal=false;
+showDistributionModal=false;
+
+selectedFarmerId!:number;
+
+distributionQuantity=0;
+
 
   newInput = {
     name: '',
@@ -64,40 +53,124 @@ export class SInputs {
     season: ''
   };
 
-  addInput() {
 
-    this.inputs.unshift({
-      id: this.inputs.length + 1,
-      ...this.newInput,
-      status: 'Available'
-    });
+  loadInputs(){
 
-    this.showAddModal = false;
+  this.inputService
 
-    this.newInput = {
-      name: '',
-      category: '',
-      image: '',
-      quantity: 0,
-      unit: '',
-      season: ''
-    };
+      .getAllInputs()
 
-  }
+      .subscribe({
 
-  viewInput(input: any) {
+        next:(res)=>{
 
-    this.selectedInput = input;
-    this.showViewModal = true;
+          this.inputs = [...res];
 
-  }
+          this.cdr.detectChanges();
 
-  distributeInput(input: any) {
+        }
 
-    this.selectedInput = input;
-    this.showDistributionModal = true;
+      });
 
-  }
+}
+
+
+loadFarmers(){
+
+  this.userService
+
+      .getMyFarmers()
+
+      .subscribe({
+
+        next:(res)=>{
+
+          this.farmers=[...res];
+
+        }
+
+      });
+
+}
+  
+
+  saveDistribution(){
+
+  this.inputService
+
+      .distributeInput(
+
+        this.selectedInput.id,
+
+        this.selectedFarmerId,
+
+        this.distributionQuantity
+
+      )
+
+      .subscribe({
+
+        next:()=>{
+
+          Swal.fire(
+            'Success',
+            'Input distributed successfully',
+            'success'
+          );
+
+          this.showDistributionModal = false;
+
+          this.loadInputs();
+
+        },
+
+        error:(err)=>{
+
+  console.log(err);
+
+  Swal.fire({
+
+    icon:'error',
+
+    title:'Error',
+
+    text:
+
+      typeof err.error === 'string'
+
+      ? err.error
+
+      : err.error?.message ||
+
+        'Failed to distribute input'
+
+  });
+
+}
+
+      });
+
+}
+
+ viewInput(input:any){
+
+  this.selectedInput = input;
+
+  this.showViewModal = true;
+
+}
+
+  distributeInput(input:any){
+
+  this.selectedInput = input;
+
+  this.distributionQuantity = 0;
+
+  this.selectedFarmerId = 0;
+
+  this.showDistributionModal = true;
+
+}
 
   get availableCount(): number {
 

@@ -1,95 +1,187 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
+
+import Swal from 'sweetalert2';
+
+import { RequestService }
+from '../../services/request.service';
 
 @Component({
   selector: 'app-s-requests',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './s-requests.html',
-  styleUrl: './s-requests.css',
+  styleUrl: './s-requests.css'
 })
-export class SRequests {
+export class SRequests
+implements OnInit {
 
-  showViewModal = false;
-  showApproveModal = false;
+  constructor(
 
-  selectedRequest: any = null;
+    private requestService: RequestService,
 
-  serviceCost = 0;
+    private cdr: ChangeDetectorRef
 
-  requests = [
+  ){}
 
-    {
-      id: 'REQ-001',
-      farmer: 'Ali Hassan',
-      plot: 'PLT-001',
-      service: 'Tractor Service',
-      requestDate: '2026-06-20',
-      preferredDate: '2026-06-25',
-      status: 'Pending',
-      notes: 'Need land preparation.'
-    },
+  requests:any[]=[];
 
-    {
-      id: 'REQ-002',
-      farmer: 'Fatma Omar',
-      plot: 'PLT-002',
-      service: 'Harvesting Service',
-      requestDate: '2026-06-18',
-      preferredDate: '2026-06-24',
-      status: 'Approved',
-      amount: 70000,
-      notes: 'Ready for harvesting.'
-    },
+  selectedRequest:any;
 
-    {
-      id: 'REQ-003',
-      farmer: 'Ahmed Suleiman',
-      plot: 'PLT-003',
-      service: 'Tractor Service',
-      requestDate: '2026-06-16',
-      preferredDate: '2026-06-23',
-      status: 'Rejected',
-      notes: 'No available tractor.'
-    }
+  showViewModal=false;
 
-  ];
+  showApproveModal=false;
 
-  viewRequest(request: any) {
+  serviceCost=0;
+
+  ngOnInit(): void {
+
+    this.loadRequests();
+
+  }
+
+  loadRequests(){
+
+    this.requestService
+
+        .getMyRequests()
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.requests = [...res];
+
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load requests',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  viewRequest(request:any){
 
     this.selectedRequest = request;
+
     this.showViewModal = true;
 
   }
 
-  openApproveModal(request: any) {
+  openApproveModal(request:any){
 
     this.selectedRequest = request;
-    this.serviceCost = 0;
+
+    this.serviceCost =
+      request.amount || 0;
 
     this.showApproveModal = true;
 
   }
 
-  approveRequest() {
+  approveRequest(){
 
-    this.selectedRequest.status = 'Approved';
-    this.selectedRequest.amount = this.serviceCost;
+   this.requestService
 
-    this.showApproveModal = false;
+.approveRequest(
+
+this.selectedRequest.id,
+
+this.serviceCost
+
+)
+
+        .subscribe({
+
+          next:()=>{
+
+            Swal.fire(
+              'Success',
+              'Request approved successfully',
+              'success'
+            );
+
+            this.showApproveModal = false;
+
+            this.loadRequests();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to approve request',
+              'error'
+            );
+
+          }
+
+        });
 
   }
 
-  rejectRequest(request: any) {
+  rejectRequest(request:any){
 
-    request.status = 'Rejected';
+    Swal.fire({
+
+      title:'Reject Request?',
+
+      icon:'warning',
+
+      showCancelButton:true
+
+    }).then(result=>{
+
+      if(result.isConfirmed){
+
+        this.requestService
+
+            .rejectRequest(request.id)
+
+            .subscribe({
+
+              next:()=>{
+
+                Swal.fire(
+                  'Success',
+                  'Request rejected',
+                  'success'
+                );
+
+                this.loadRequests();
+
+              }
+
+            });
+
+      }
+
+    });
 
   }
 
   get pendingCount(): number {
 
     return this.requests.filter(
-      r => r.status === 'Pending'
+
+      r => r.status === 'PENDING'
+
     ).length;
 
   }

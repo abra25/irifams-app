@@ -1,6 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PlotService } from '../../services/plot.service';
+import Swal from 'sweetalert2';
+import { UserService } from '../../services/user.service';
+
+interface Plot {
+
+  id?: number;
+
+  plotNo: string;
+
+  farmer?: any;
+
+  block: string;
+
+  size: number;
+
+  soilType: string;
+
+  locationDescription?: string;
+
+  irrigationMethod?: string;
+
+  season?: string;
+
+  status?: string;
+
+}
 
 @Component({
   selector: 'app-s-plots',
@@ -9,104 +36,217 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './s-plots.html',
   styleUrl: './s-plots.css',
 })
-export class SPlots {
+export class SPlots implements OnInit {
+  constructor(
+    private plotService: PlotService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+
+  ){}
 
   searchTerm = '';
 
   showAddModal = false;
   showViewModal = false;
   showEditModal = false;
-
   selectedPlot: any = null;
+  plots: Plot[] = [];
+  selectedFarmerId!: number;
+  farmers: any[] = [];
 
-  farmers = [
-    'Ali Hassan',
-    'Fatma Omar',
-    'Ahmed Suleiman'
-  ];
-
-  plots = [
-
-    {
-      id: 1,
-      plotNo: 'PLT-001',
-      farmer: 'Ali Hassan',
-      block: 'Cheju Block A',
-      size: 2.5,
-      soilType: 'Clay Loam',
-      status: 'Active'
-    },
-
-    {
-      id: 2,
-      plotNo: 'PLT-002',
-      farmer: 'Fatma Omar',
-      block: 'Cheju Block A',
-      size: 1.8,
-      soilType: 'Clay',
-      status: 'Active'
-    },
-
-    {
-      id: 3,
-      plotNo: 'PLT-003',
-      farmer: 'Ahmed Suleiman',
-      block: 'Cheju Block B',
-      size: 3.2,
-      soilType: 'Sandy Clay',
-      status: 'Inactive'
-    }
-
-  ];
-
- newPlot = {
+  newPlot: Plot = {
   plotNo: '',
-  farmer: '',
   block: '',
   size: 0,
-  soilType: ''
+  soilType: '',
+  locationDescription: '',
+  irrigationMethod: '',
+  season: '',
+  status: 'Active'
+
 };
 
-  addPlot() {
+ngOnInit(): void {
 
-    this.plots.unshift({
-      id: this.plots.length + 1,
-      ...this.newPlot,
-      status: 'Active'
-    });
+  this.loadPlots();
 
-    this.showAddModal = false;
+  this.loadFarmers();
 
-    this.newPlot = {
-      plotNo: '',
-      farmer: '',
-      block: '',
-      size: 0,
-      soilType: ''
-    };
+}
 
-  }
+loadFarmers(){
 
-  viewPlot(plot: any) {
-    this.selectedPlot = plot;
-    this.showViewModal = true;
-  }
+  this.userService
 
-  editPlot(plot: any) {
-    this.selectedPlot = { ...plot };
-    this.showEditModal = true;
-  }
+      .getMyFarmers()
 
-  saveEdit() {
+      .subscribe({
 
-    const index = this.plots.findIndex(
-      p => p.id === this.selectedPlot.id
-    );
+        next:(res)=>{
 
-    this.plots[index] = this.selectedPlot;
+          this.farmers = [...res];
 
-    this.showEditModal = false;
-  }
+          this.cdr.detectChanges();
+
+        },
+
+        error:()=>{
+
+          Swal.fire(
+            'Error',
+            'Failed to load farmers',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+loadPlots(){
+
+  this.plotService
+
+      .getMyPlots()
+
+      .subscribe({
+
+        next:(res)=>{
+
+          this.plots = [...res];
+
+          this.cdr.detectChanges();
+
+        },
+
+        error:()=>{
+
+          Swal.fire(
+            'Error',
+            'Failed to load plots',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+  addPlot(){
+
+  this.plotService
+
+      .addPlot(
+
+        this.selectedFarmerId,
+
+        this.newPlot
+
+      )
+
+      .subscribe({
+
+        next:()=>{
+
+          Swal.fire(
+            'Success',
+            'Plot registered successfully',
+            'success'
+          );
+
+          this.showAddModal = false;
+
+          this.loadPlots();
+
+          this.newPlot = {
+
+            plotNo:'',
+            block:'',
+            size:0,
+            soilType:'',
+            locationDescription:'',
+            irrigationMethod:'',
+            season:'',
+            status:'Active'
+
+          };
+
+        },
+
+        error:(err)=>{
+
+          Swal.fire(
+            'Error',
+            err.error ||
+            'Failed to register plot',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+viewPlot(plot:any){
+
+  this.selectedPlot = plot;
+
+  this.showViewModal = true;
+
+}
+
+  editPlot(plot:any){
+
+  this.selectedPlot = {...plot};
+
+  this.showEditModal = true;
+
+}
+
+  saveEdit(){
+
+  this.plotService
+
+      .updatePlot(
+
+        this.selectedPlot.id,
+
+        this.selectedPlot
+
+      )
+
+      .subscribe({
+
+        next:()=>{
+
+          Swal.fire(
+            'Success',
+            'Plot updated successfully',
+            'success'
+          );
+
+          this.showEditModal = false;
+
+          this.loadPlots();
+
+        },
+
+        error:()=>{
+
+          Swal.fire(
+            'Error',
+            'Failed to update plot',
+            'error'
+          );
+
+        }
+
+      });
+
+}
 
   toggleStatus(plot: any) {
 
@@ -119,10 +259,12 @@ export class SPlots {
 
   get activePlotsCount(): number {
 
-    return this.plots.filter(
-      p => p.status === 'Active'
-    ).length;
+  return this.plots.filter(
 
-  }
+    (p: Plot) => p.status === 'Active'
+
+  ).length;
+
+}
 
 }

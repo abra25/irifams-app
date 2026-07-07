@@ -3,20 +3,26 @@
   <!-- SIDEBAR -->
 
   <aside class="sidebar"
-         [class.open]="sidebarOpen">
+
+    [class.open]="sidebarOpen"
+
+    [class.collapsed]="collapsed">
 
     <div class="logo-section">
 
-      <div class="brand-info">
+     <div class="brand-info">
 
-    <img src="img/logo.png">
+<img src="img/logo.png">
 
-    <div>
-      <h2>IRIFAMS</h2>
-      <span>Farmer Panel</span>
-    </div>
+<div *ngIf="!collapsed">
 
-  </div>
+<h2>IRIFAMS</h2>
+
+<span>Farmer Panel</span>
+
+</div>
+
+</div>
 
   <button
     class="close-sidebar"
@@ -31,13 +37,20 @@
     <nav>
 
       <a *ngFor="let item of menuItems"
-        [routerLink]="item.route"
+        [routerLink]="item.route !== 'logout' ? item.route : null"
+
+        (click)="item.route === 'logout' ? logout() : null"
+        
         routerLinkActive="active"
         (click)="sidebarOpen = false">
 
         <i [class]="item.icon"></i>
 
-        <span>{{item.label}}</span>
+        <span *ngIf="!collapsed">
+
+       {{item.label}}
+
+</span>
 
       </a>
 
@@ -45,13 +58,17 @@
 
     <div class="logout-section">
 
-      <a routerLink="/login">
+      <a (click)="logout()">
 
-        <i class="fas fa-sign-out-alt"></i>
+<i class="fas fa-sign-out-alt"></i>
 
-        Logout
+<span *ngIf="!collapsed">
 
-      </a>
+Logout
+
+</span>
+
+</a>
 
     </div>
 
@@ -75,23 +92,45 @@
 
       <div class="welcome">
 
-        <h2>Welcome Back</h2>
+<div class="welcome-top">
 
-        <p>Manage your farming activities efficiently.</p>
+<button
 
-      </div>
+class="collapse-btn"
 
-      <div class="profile-box">
+(click)="toggleSidebar()">
+
+<i class="fas fa-bars"></i>
+
+</button>
+
+<div>
+
+<h2>Welcome Back</h2>
+
+<p>
+
+Manage your farming activities efficiently.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+      <div class="profile-box" (click)="goProfile()">
 
         <img src="img/user.png">
 
-        <div>
+<div>
 
-          <h4>Abrah'man Makame</h4>
+<h4>{{user.fullName}}</h4>
 
-          <span>Farmer</span>
+<span>{{user.role}}</span>
 
-        </div>
+</div>
 
       </div>
 

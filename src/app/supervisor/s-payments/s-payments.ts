@@ -1,78 +1,225 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
+import Swal from 'sweetalert2';
+
+import { PaymentService }
+from '../../services/payment.service';
 
 @Component({
   selector: 'app-s-payments',
   imports: [CommonModule],
   templateUrl: './s-payments.html',
-  styleUrl: './s-payments.css',
+  styleUrl: './s-payments.css'
 })
-export class SPayments {
 
+export class SPayments
+implements OnInit {
 
-  showModal = false;
-  selectedPayment: any = null;
+  constructor(
 
-  payments = [
+    private paymentService:PaymentService,
 
-    {
-      id: 1,
-      farmer: 'Ali Hassan',
-      controlNumber: 'CN-2026-001',
-      service: 'Tractor Service',
-      amount: 50000,
-      paymentDate: '2026-06-20',
-      status: 'Waiting Verification',
-      receiptNo: '-'
-    },
+    private cdr:ChangeDetectorRef
 
-    {
-      id: 2,
-      farmer: 'Fatma Omar',
-      controlNumber: 'CN-2026-002',
-      service: 'Harvesting Service',
-      amount: 70000,
-      paymentDate: '2026-06-18',
-      status: 'Paid',
-      receiptNo: 'RCT-002'
-    }
+  ){}
 
-  ];
+  payments:any[]=[];
 
-  openDetails(payment: any) {
+  selectedPayment:any;
+
+  showModal=false;
+
+  ngOnInit(): void {
+
+    this.loadPayments();
+
+  }
+
+  loadPayments(){
+
+    this.paymentService
+
+        .getMyPayments()
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.payments = [...res];
+
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load payments',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  openDetails(payment:any){
 
     this.selectedPayment = payment;
+
     this.showModal = true;
 
   }
 
-  verifyPayment(payment: any) {
+  verifyPayment(payment:any){
 
-    payment.status = 'Paid';
-    payment.receiptNo =
-      'RCT-' + Math.floor(Math.random() * 1000);
+    Swal.fire({
+
+      title:'Verify Payment?',
+
+      text:'Confirm this payment.',
+
+      icon:'question',
+
+      showCancelButton:true,
+
+      confirmButtonText:'Verify'
+
+    })
+
+    .then(result=>{
+
+      if(result.isConfirmed){
+
+        this.paymentService
+
+            .verifyPayment(payment.id)
+
+            .subscribe({
+
+              next:()=>{
+
+                Swal.fire(
+                  'Success',
+                  'Payment verified successfully',
+                  'success'
+                );
+
+                this.loadPayments();
+
+              },
+
+              error:()=>{
+
+                Swal.fire(
+                  'Error',
+                  'Verification failed',
+                  'error'
+                );
+
+              }
+
+            });
+
+      }
+
+    });
 
   }
 
-  rejectPayment(payment: any) {
-
-    payment.status = 'Rejected';
-
-  }
-
-  get waitingCount(): number {
+  get waitingCount():number{
 
     return this.payments.filter(
-      p => p.status === 'Waiting Verification'
+
+      p=>
+
+      p.status==='WAITING_VERIFICATION'
+
     ).length;
 
   }
 
-  get totalPaid(): number {
+  rejectPayment(payment:any){
+
+  Swal.fire({
+
+    title:'Reject Payment?',
+
+    text:'This payment will be rejected.',
+
+    icon:'warning',
+
+    showCancelButton:true,
+
+    confirmButtonText:'Reject'
+
+  })
+
+  .then(result=>{
+
+    if(result.isConfirmed){
+
+      this.paymentService
+
+          .rejectPayment(payment.id)
+
+          .subscribe({
+
+            next:()=>{
+
+              Swal.fire(
+                'Success',
+                'Payment rejected successfully',
+                'success'
+              );
+
+              this.loadPayments();
+
+            },
+
+            error:()=>{
+
+              Swal.fire(
+                'Error',
+                'Failed to reject payment',
+                'error'
+              );
+
+            }
+
+          });
+
+    }
+
+  });
+
+}
+
+  get totalPaid():number{
 
     return this.payments
-      .filter(p => p.status === 'Paid')
-      .reduce((sum, p) => sum + p.amount, 0);
+
+      .filter(
+        p=>p.status==='PAID'
+      )
+
+      .reduce(
+
+        (sum,p)=>
+
+        sum + (p.amount || 0),
+
+        0
+
+      );
 
   }
 

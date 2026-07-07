@@ -1,75 +1,102 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { InputService } from '../../services/input.service';
+
+interface FarmInput{
+
+  id?:number;
+
+  name:string;
+
+  category:string;
+
+  quantity:number;
+
+  unit:string;
+
+  season:string;
+
+  image:string;
+
+  status:string;
+
+}
 
 @Component({
   selector: 'app-admin-inputs',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './admin-inputs.html',
   styleUrl: './admin-inputs.css'
 })
-export class AdminInputs {
+export class AdminInputs implements OnInit{
 
-  searchTerm = '';
+  constructor(
+    private inputService:InputService,
+    private cdr: ChangeDetectorRef
+  ){}
 
-  showAddModal = false;
-  showViewModal = false;
-  showEditModal = false;
+  ngOnInit(): void {
 
-  selectedInput: any = null;
+    this.loadInputs();
 
-  inputs = [
+  }
 
-    {
-      id: 1,
-      name: 'SARO 5 Rice Seed',
-      category: 'Seed',
-      quantity: 500,
-      unit: 'Kg',
-      season: 'Season A',
-      image: 'img/saro5.jfif',
-      status: 'Available'
-    },
+  searchTerm='';
 
-    {
-      id: 2,
-      name: 'Urea Fertilizer',
-      category: 'Fertilizer',
-      quantity: 120,
-      unit: 'Bags',
-      season: 'Season A',
-      image: 'img/urea.jfif',
-      status: 'Available'
-    },
+  showAddModal=false;
+  showViewModal=false;
+  showEditModal=false;
 
-    {
-      id: 3,
-      name: 'DAP Fertilizer',
-      category: 'Fertilizer',
-      quantity: 0,
-      unit: 'Bags',
-      season: 'Season B',
-      image: 'img/dap.jfif',
-      status: 'Out of Stock'
-    }
+  selectedInput!:FarmInput;
 
-  ];
+  inputs:FarmInput[]=[];
 
-  newInput = {
+  newInput:FarmInput={
 
-    name: '',
-    category: '',
-    quantity: 0,
-    unit: '',
-    season: '',
-    image: '',
-    status: 'Available'
+    name:'',
+    category:'',
+    quantity:0,
+    unit:'',
+    season:'',
+    image:'',
+    status:'Available'
 
   };
 
-  get filteredInputs() {
+  loadInputs(){
 
-    return this.inputs.filter(input =>
+    this.inputService
+        .getAllInputs()
+
+        .subscribe({
+
+          next:(res)=>{
+
+           
+            this.inputs = [...res];
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load inputs',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  get filteredInputs(){
+
+    return this.inputs.filter(input=>
 
       input.name.toLowerCase()
       .includes(this.searchTerm.toLowerCase())
@@ -83,72 +110,171 @@ export class AdminInputs {
 
   }
 
-  get availableCount(): number {
+  get availableCount(){
 
     return this.inputs.filter(
-      i => i.status === 'Available'
+      i=>i.status==='Available'
     ).length;
 
   }
 
-  addInput() {
+  addInput(){
 
-    this.inputs.unshift({
+    this.inputService
+        .addInput(this.newInput)
 
-      id: this.inputs.length + 1,
+        .subscribe({
 
-      ...this.newInput
+          next:()=>{
+
+            Swal.fire(
+              'Success',
+              'Input added successfully',
+              'success'
+            );
+
+            this.showAddModal=false;
+
+            this.newInput={
+
+              name:'',
+              category:'',
+              quantity:0,
+              unit:'',
+              season:'',
+              image:'',
+              status:'Available'
+
+            };
+
+            this.loadInputs();
+
+          },
+
+          error:(err)=>{
+
+            Swal.fire(
+              'Error',
+              err.error || 'Failed to save input',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  viewInput(input:FarmInput){
+
+    this.selectedInput=input;
+
+    this.showViewModal=true;
+
+  }
+
+  editInput(input:FarmInput){
+
+    this.selectedInput={...input};
+
+    this.showEditModal=true;
+
+  }
+
+  saveInput(){
+
+    this.inputService
+        .updateInput(
+          this.selectedInput.id!,
+          this.selectedInput
+        )
+
+        .subscribe({
+
+          next:()=>{
+
+            Swal.fire(
+              'Success',
+              'Input updated successfully',
+              'success'
+            );
+
+            this.showEditModal=false;
+
+            this.loadInputs();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Update failed',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  deleteInput(input:FarmInput){
+
+    Swal.fire({
+
+      title:'Delete input?',
+
+      text:'This action cannot be undone',
+
+      icon:'warning',
+
+      showCancelButton:true
+
+    }).then(result=>{
+
+      if(result.isConfirmed){
+
+        this.inputService
+            .deleteInput(input.id!)
+
+            .subscribe({
+
+              next:()=>{
+
+                Swal.fire(
+                  'Deleted',
+                  'Input deleted successfully',
+                  'success'
+                );
+
+                this.loadInputs();
+
+              }
+
+            });
+
+      }
 
     });
 
-    this.showAddModal = false;
+  }
 
-    this.newInput = {
+  toggleStatus(input:FarmInput){
 
-      name: '',
-      category: '',
-      quantity: 0,
-      unit: '',
-      season: '',
-      image: '',
-      status: 'Available'
+    this.selectedInput={
+
+      ...input,
+
+      status:
+
+      input.status==='Available'
+      ? 'Out of Stock'
+      : 'Available'
 
     };
 
-  }
-
-  viewInput(input: any) {
-
-    this.selectedInput = input;
-    this.showViewModal = true;
-
-  }
-
-  editInput(input: any) {
-
-    this.selectedInput = { ...input };
-    this.showEditModal = true;
-
-  }
-
-  saveInput() {
-
-    const index = this.inputs.findIndex(
-      i => i.id === this.selectedInput.id
-    );
-
-    this.inputs[index] = this.selectedInput;
-
-    this.showEditModal = false;
-
-  }
-
-  toggleStatus(input: any) {
-
-    input.status =
-      input.status === 'Available'
-      ? 'Out of Stock'
-      : 'Available';
+    this.saveInput();
 
   }
 

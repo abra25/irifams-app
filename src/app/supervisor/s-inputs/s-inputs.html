@@ -9,13 +9,6 @@
             </p>
         </div>
 
-        <button class="add-btn"
-                (click)="showAddModal=true">
-
-            <i class="fas fa-plus"></i>
-            Add Input
-
-        </button>
 
     </div>
 
@@ -107,145 +100,156 @@
 
 </div>
 
-<!-- ADD INPUT MODAL -->
-
 <div class="modal-overlay"
-     *ngIf="showAddModal">
+     *ngIf="showViewModal">
 
   <div class="modal-card">
 
-    <!-- HEADER -->
     <div class="modal-header">
 
-      <h3>Add New Input</h3>
+      <h3>Input Details</h3>
 
-      <button (click)="showAddModal=false">
+      <button
+        (click)="showViewModal=false">
+
         <i class="fas fa-times"></i>
+
       </button>
 
     </div>
 
-    <!-- BODY -->
     <div class="modal-body">
 
-      <!-- IMAGE PREVIEW -->
-      <div class="image-preview">
+      <div class="detail-row">
+        <span>Name</span>
+        <strong>{{selectedInput?.name}}</strong>
+      </div>
 
-        <img
-          *ngIf="newInput.image"
-          [src]="newInput.image"
-          alt="Preview">
+      <div class="detail-row">
+        <span>Category</span>
+        <strong>{{selectedInput?.category}}</strong>
+      </div>
 
-        <div
-          *ngIf="!newInput.image"
-          class="image-placeholder">
+      <div class="detail-row">
+        <span>Quantity</span>
 
-          <i class="fas fa-image"></i>
-          <p>No Image Selected</p>
+        <strong>
 
-        </div>
+          {{selectedInput?.quantity}}
+          {{selectedInput?.unit}}
+
+        </strong>
 
       </div>
 
-
-      <div class="form-group full-width">
-
-        <label>Image Path</label>
-
-        <input
-          type="text"
-          placeholder="img/inputs/saro5.jpg"
-          [(ngModel)]="newInput.image">
-
+      <div class="detail-row">
+        <span>Season</span>
+        <strong>{{selectedInput?.season}}</strong>
       </div>
 
+      <div class="detail-row">
+        <span>Status</span>
+        <strong>{{selectedInput?.status}}</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-overlay"
+     *ngIf="showDistributionModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3>Distribute Input</h3>
+
+      <button
+        (click)="showDistributionModal=false">
+
+        <i class="fas fa-times"></i>
+
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="detail-row">
+
+        <span>Input</span>
+
+        <strong>
+
+          {{selectedInput?.name}}
+
+        </strong>
+
+      </div>
 
       <div class="form-group">
 
-        <label>Input Name</label>
+        <label>Select Farmer</label>
 
-        <input
-          type="text"
-          [(ngModel)]="newInput.name">
+        <select
+          [(ngModel)]="selectedFarmerId">
 
-      </div>
+          <option [ngValue]="0">
 
+            Select Farmer
 
-      <div class="form-group">
-
-        <label>Category</label>
-
-        <select [(ngModel)]="newInput.category">
-
-          <option value="">
-            Select Category
           </option>
 
-          <option value="Seed">
-            Seed
-          </option>
+          <option
 
-          <option value="Fertilizer">
-            Fertilizer
+            *ngFor="let farmer of farmers"
+
+            [ngValue]="farmer.id">
+
+            {{farmer.fullName}}
+
           </option>
 
         </select>
 
       </div>
 
-
       <div class="form-group">
 
         <label>Quantity</label>
 
         <input
+
           type="number"
-          [(ngModel)]="newInput.quantity">
 
-      </div>
-
-
-      <div class="form-group">
-
-        <label>Unit</label>
-
-        <input
-          type="text"
-          [(ngModel)]="newInput.unit">
-
-      </div>
-
-
-      <div class="form-group full-width">
-
-        <label>Season</label>
-
-        <input
-          type="text"
-          [(ngModel)]="newInput.season">
+          [(ngModel)]="distributionQuantity">
 
       </div>
 
     </div>
 
-
-    <!-- FOOTER -->
-
     <div class="modal-footer">
 
       <button
+
         class="cancel-btn"
-        (click)="showAddModal=false">
+
+        (click)="showDistributionModal=false">
 
         Cancel
 
       </button>
 
       <button
-        class="save-btn"
-        (click)="addInput()">
 
-        Save Input
+        class="save-btn"
+
+        (click)="saveDistribution()">
+
+        Distribute
 
       </button>
 

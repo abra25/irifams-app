@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-my-profile',
@@ -8,63 +9,169 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './my-profile.html',
   styleUrl: './my-profile.css',
 })
-export class MyProfile {
-  showEditModal = false;
-showPasswordModal = false;
+export class MyProfile  implements OnInit {
+  showEditModal=false;
+  showPasswordModal=false;
+  editData={
 
-editData = {
-  fullName: 'Abrah\'man Makame',
-  phone: '+255 777 617 786',
-  address: 'Cheju, Zanzibar'
+  fullName:'',
+
+  phone:'',
+
+  institution:''
+
 };
 
-passwordData = {
-  currentPassword: '',
-  newPassword: '',
-  confirmPassword: ''
+passwordData={
+
+  currentPassword:'',
+
+  newPassword:'',
+
+  confirmPassword:''
+
 };
+  
+  farmer:any={};
 
-saveProfile() {
+ngOnInit(){
 
-  console.log(this.editData);
+  this.loadProfile();
 
-  this.showEditModal = false;
-
-  alert('Profile updated successfully');
 }
 
-changePassword() {
+constructor(
 
-  console.log(this.passwordData);
+private userService:UserService,
 
-  this.showPasswordModal = false;
+private cdr:ChangeDetectorRef
 
-  alert('Password changed successfully');
+){}
+
+loadProfile(){
+
+this.userService
+
+.getMyProfile()
+
+.subscribe({
+
+next:(res:any)=>{
+
+this.farmer=res;
+
+this.editData.fullName=res.fullName;
+
+this.editData.phone=res.phone;
+this.editData.institution =
+res.institution;
+
+this.cdr.detectChanges();
+
+},
+
+error:(err:any)=>{
+
+console.log(err);
+
 }
 
-  farmer = {
+});
 
-    fullName: 'Abrah\'man Makame',
+}
 
-    zanId: '0701020202020001',
+saveProfile(){
 
-    gender: 'Male',
+this.userService
 
-    age: 24,
+.updateUser(
 
-    phone: '+255 777 617 786',
+this.farmer.id,
 
-    address: 'Cheju, Zanzibar',
+{
 
-    registrationDate: '12 January 2026',
+...this.farmer,
 
-    username: 'abrahman',
+fullName:this.editData.fullName,
 
-    role: 'Farmer',
+phone:this.editData.phone,
 
-    status: 'Active',
+institution:this.editData.institution
 
-    block: 'Cheju Block A'
-  };
+}
+
+)
+
+.subscribe({
+
+next:(res:any)=>{
+
+this.showEditModal=false;
+
+this.loadProfile();
+
+},
+
+error:(err:any)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+changePassword(){
+
+if(
+
+this.passwordData.newPassword
+
+!==
+
+this.passwordData.confirmPassword
+
+){
+
+alert("Passwords do not match");
+
+return;
+
+}
+
+this.userService
+
+.changePassword({
+
+currentPassword:
+
+this.passwordData.currentPassword,
+
+newPassword:
+
+this.passwordData.newPassword
+
+})
+
+.subscribe({
+
+next:(res:any)=>{
+
+alert("Password changed successfully");
+
+this.showPasswordModal=false;
+
+},
+
+error:(err:any)=>{
+
+alert(err.error);
+
+}
+
+});
+
+}
 
 }

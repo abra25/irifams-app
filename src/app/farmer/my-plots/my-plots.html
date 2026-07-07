@@ -30,7 +30,7 @@
             <i class="fas fa-ruler-combined"></i>
 
             <div>
-                <h3>7.5 Acres</h3>
+                <h3>{{totalLandSize}} Acres</h3>
                 <span>Total Land Size</span>
             </div>
 
@@ -77,8 +77,11 @@
                 </p>
 
                 <p>
-                    <i class="fas fa-user-check"></i>
-                    {{plot.ownership}}
+
+                   <i class="fas fa-tint"></i>
+
+                    {{plot.irrigationMethod}}
+
                 </p>
 
             </div>
@@ -149,10 +152,15 @@
 
             <div class="detail-row">
 
-                <span>Ownership</span>
-                <strong>{{selectedPlot?.ownership}}</strong>
+    <span>Irrigation Method</span>
 
-            </div>
+    <strong>
+
+        {{selectedPlot?.irrigationMethod}}
+
+    </strong>
+
+</div>
 
             <div class="detail-row">
 

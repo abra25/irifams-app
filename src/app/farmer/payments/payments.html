@@ -79,15 +79,15 @@
 
                     <tr *ngFor="let payment of payments">
 
-                        <td>{{payment.controlNumber}}</td>
+                        <td>{{payment.serviceRequest?.controlNumber}}</td>
 
-                        <td>{{payment.service}}</td>
+                        <td>{{payment.serviceRequest?.serviceType}}</td>
 
                         <td>
                             TZS {{payment.amount | number}}
                         </td>
 
-                        <td>{{payment.paymentDate}}</td>
+                        <td>{{payment.paymentDate | date:'medium'}}</td>
 
                         <td>
 
@@ -96,10 +96,10 @@
     <span class="status-badge"
 
           [ngClass]="{
-            'paid': payment.status === 'Paid',
-            'pending': payment.status === 'Pending',
-            'waiting': payment.status === 'Waiting Verification',
-            'rejected': payment.status === 'Rejected'
+            'paid': payment.status === 'PAID',
+            'pending': payment.status === 'PENDING',
+            'waiting': payment.status === 'WAITING_VERIFICATION',
+            'rejected': payment.status === 'REJECTED'
           }">
 
         {{payment.status}}
@@ -124,7 +124,7 @@
         </button>
 
         <button
-            *ngIf="payment.status === 'Pending'"
+            *ngIf="payment.status === 'PENDING'"
             class="pay-btn"
             (click)="markAsPaid(payment)">
 
@@ -200,7 +200,7 @@
                 <span>Service</span>
 
                 <strong>
-                    {{selectedPayment?.service}}
+                    {{selectedPayment?.serviceRequest?.serviceType}}
                 </strong>
 
             </div>

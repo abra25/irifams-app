@@ -109,21 +109,29 @@
                     <tr *ngFor="let request of recentRequests">
 
                         <td>{{request.id}}</td>
-                        <td>{{request.farmer}}</td>
-                        <td>{{request.service}}</td>
-                        <td>{{request.plot}}</td>
-                        <td>{{request.date}}</td>
 
-                        <td>
+<td>
+  {{request.farmer?.fullName}}
+</td>
 
-                            <span class="status-badge"
-                            [ngClass]="request.status.toLowerCase()">
+<td>
+  {{request.serviceType}}
+</td>
 
-                                {{request.status}}
+<td>
+  {{request.plot?.plotNo}}
+</td>
 
-                            </span>
+<td>
+{{request.createdAt | date:'dd MMM yyyy'}}
+</td>
 
-                        </td>
+<td>
+<span class="status-badge">
+  {{request.status}}
+</span>
+</td>
+                        
 
                     </tr>
 
@@ -151,25 +159,31 @@
             </div>
 
             <div class="payment-item"
-                 *ngFor="let payment of payments">
+     *ngFor="let payment of payments">
 
-                <div>
+    <div>
 
-                    <strong>{{payment.controlNo}}</strong>
+        <strong>
+          {{payment.serviceRequest?.controlNumber}}
+        </strong>
 
-                    <p>{{payment.farmer}}</p>
+        <p>
+          {{payment.farmer?.fullName}}
+        </p>
 
-                </div>
+    </div>
 
-                <div>
+    <div>
 
-                    <strong>
-                        TZS {{payment.amount | number}}
-                    </strong>
+        <strong>
 
-                </div>
+          TZS {{payment.amount | number}}
 
-            </div>
+        </strong>
+
+    </div>
+
+</div>
 
         </div>
 
@@ -188,11 +202,11 @@
 
                 <li *ngFor="let note of notifications">
 
-                    <i class="fas fa-bell"></i>
+    <i class="fas fa-bell"></i>
 
-                    {{note}}
+    {{note.message}}
 
-                </li>
+</li>
 
             </ul>
 

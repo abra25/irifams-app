@@ -70,13 +70,15 @@
 
                 <tr *ngFor="let payment of payments">
 
-                    <td>{{payment.farmer}}</td>
+                    <td>{{payment.farmer?.fullName}}</td>
 
                     <td>
-                        {{payment.controlNumber}}
+                       {{payment.serviceRequest?.controlNumber}}
                     </td>
 
-                    <td>{{payment.service}}</td>
+                    <td>
+                       {{payment.serviceRequest?.serviceType}}
+                    </td>
 
                     <td>
                         TZS {{payment.amount | number}}
@@ -85,21 +87,19 @@
                     <td>
 
                         <span class="status-badge"
+                           [ngClass]="{
 
-                              [ngClass]="{
-                              'waiting':
-                              payment.status === 'Waiting Verification',
+                            'waiting':
+                            payment.status==='WAITING_VERIFICATION',
 
-                              'paid':
-                              payment.status === 'Paid',
+                             'paid':
+                              payment.status==='PAID'
 
-                              'rejected':
-                              payment.status === 'Rejected'
-                              }">
+                             }">
 
-                            {{payment.status}}
+                                 {{payment.status}}
 
-                        </span>
+                         </span>
 
                     </td>
 
@@ -115,15 +115,18 @@
                             </button>
 
                             <button
-                              *ngIf="
-                              payment.status ===
-                              'Waiting Verification'"
-                              class="approve-btn"
-                              (click)="verifyPayment(payment)">
 
-                                <i class="fas fa-check"></i>
+                                *ngIf="
+                                 payment.status==='WAITING_VERIFICATION'
+                                  "
 
-                            </button>
+                                 class="approve-btn"
+
+                                (click)="verifyPayment(payment)">
+
+                                 <i class="fas fa-check"></i>
+
+                             </button>
 
                             <button
                               *ngIf="
@@ -214,6 +217,98 @@
             </div>
 
         </div>
+
+    </div>
+
+</div>
+
+<div class="modal-body">
+
+    <div class="detail-row">
+
+        <span>Farmer</span>
+
+        <strong>
+
+            {{selectedPayment?.farmer?.fullName}}
+
+        </strong>
+
+    </div>
+
+    <div class="detail-row">
+
+        <span>Block</span>
+
+        <strong>
+
+            {{selectedPayment?.farmer?.blockName}}
+
+        </strong>
+
+    </div>
+
+    <div class="detail-row">
+
+        <span>Control Number</span>
+
+        <strong>
+
+            {{selectedPayment?.serviceRequest?.controlNumber}}
+
+        </strong>
+
+    </div>
+
+    <div class="detail-row">
+
+        <span>Service</span>
+
+        <strong>
+
+            {{selectedPayment?.serviceRequest?.serviceType}}
+
+        </strong>
+
+    </div>
+
+    <div class="detail-row">
+
+        <span>Amount</span>
+
+        <strong>
+
+            TZS
+
+            {{selectedPayment?.amount | number}}
+
+        </strong>
+
+    </div>
+
+    <div class="detail-row">
+
+        <span>Payment Date</span>
+
+        <strong>
+
+            {{selectedPayment?.paymentDate
+
+            | date:'dd MMM yyyy'}}
+
+        </strong>
+
+    </div>
+
+    <div class="detail-row">
+
+        <span>Status</span>
+
+        <strong>
+
+            {{selectedPayment?.status}}
+
+        </strong>
 
     </div>
 

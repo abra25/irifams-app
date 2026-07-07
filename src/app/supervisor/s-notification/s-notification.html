@@ -35,38 +35,46 @@
 
         <div class="notification-card"
 
-             *ngFor="let notification of notifications"
+     *ngFor="let notification of notifications"
 
-             [class.read]="notification.read">
+     [class.read]="notification.isRead">
 
-            <div class="icon-box"
-                 [ngClass]="notification.color">
+    <div class="icon-box"
 
-                <i [class]="notification.icon"></i>
+         [ngClass]="notification.color">
 
-            </div>
+        <i [class]="notification.icon"></i>
 
-            <div class="notification-content">
+    </div>
 
-                <h4>{{notification.title}}</h4>
+    <div class="notification-content">
 
-                <p>{{notification.message}}</p>
+        <h4>{{notification.title}}</h4>
 
-                <small>{{notification.time}}</small>
+        <p>{{notification.message}}</p>
 
-            </div>
+        <small>
 
-            <button class="read-btn"
+          {{notification.createdAt
+          | date:'dd MMM yyyy HH:mm'}}
 
-                    *ngIf="!notification.read"
+        </small>
 
-                    (click)="markAsRead(notification)">
+    </div>
 
-                Mark Read
+    <button
 
-            </button>
+      class="read-btn"
 
-        </div>
+      *ngIf="!notification.isRead"
+
+      (click)="markAsRead(notification)">
+
+        Mark Read
+
+    </button>
+
+</div>
 
     </div>
 

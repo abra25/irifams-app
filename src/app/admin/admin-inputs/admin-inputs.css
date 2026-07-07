@@ -707,3 +707,17 @@
   }
 
 }
+
+
+.delete-btn{
+
+    background:#dc2626;
+    color:#fff;
+
+}
+
+.delete-btn:hover{
+
+    opacity:.9;
+
+}

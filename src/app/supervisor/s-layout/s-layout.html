@@ -30,29 +30,28 @@
     <nav>
 
       <a *ngFor="let item of menuItems"
-         [routerLink]="item.route"
-         routerLinkActive="active"
-         (click)="sidebarOpen=false">
 
-        <i [class]="item.icon"></i>
+   [routerLink]="
+   item.route !== 'logout'
+   ? item.route
+   : null"
 
-        <span>{{item.label}}</span>
+   routerLinkActive="active"
 
-      </a>
+   (click)="
+   item.route === 'logout'
+   ? logout()
+   : sidebarOpen=false">
+
+    <i [class]="item.icon"></i>
+
+    <span>{{item.label}}</span>
+
+</a>
 
     </nav>
 
-    <div class="logout-box">
-
-      <a routerLink="/login">
-
-        <i class="fas fa-sign-out-alt"></i>
-
-        Logout
-
-      </a>
-
-    </div>
+    
 
   </aside>
 
@@ -89,24 +88,45 @@
 
       <div class="header-right">
 
-        <button class="icon-btn">
+        <button class="icon-btn"
+        routerLink="/supervisor/notifications">
 
-          <i class="fas fa-bell"></i>
+  <i class="fas fa-bell"></i>
 
-          <span class="badge">3</span>
+  <span class="badge"
+        *ngIf="unreadCount > 0">
 
-        </button>
+    {{unreadCount}}
 
-        <div class="profile-box">
+  </span>
 
-          <img src="img/s-user.png">
+</button>
 
-          <div>
-            <h4>Ali Hassan</h4>
-            <span>Supervisor</span>
-          </div>
+  <div class="profile-box">
 
-        </div>
+  <img
+    routerLink="/supervisor/profile"
+    style="cursor: pointer;"
+    [src]="user?.image"
+    alt="Profile">
+
+  <div>
+
+    <h4>
+
+      {{user?.fullName}}
+
+    </h4>
+
+    <span>
+
+      {{user?.role}}
+
+    </span>
+
+  </div>
+
+</div>
 
       </div>
 

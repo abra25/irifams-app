@@ -1,48 +1,108 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
+import Swal from 'sweetalert2';
+
+import { AuditLogService }
+from '../../services/audit-log.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-logs',
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './admin-logs.html',
   styleUrl: './admin-logs.css'
 })
-export class AdminLogs {
+export class AdminLogs
+implements OnInit {
+  
 
-  logs = [
+  constructor(
 
-    {
-      action:'Farmer Registration',
-      user:'Ali Hassan',
-      role:'Farmer',
-      date:'2026-06-23 09:00 AM',
-      status:'Success'
-    },
+    private logService:AuditLogService,
+    private cdr: ChangeDetectorRef
 
-    {
-      action:'Payment Verification',
-      user:'Admin',
-      role:'Admin',
-      date:'2026-06-23 10:20 AM',
-      status:'Success'
-    },
+  ){}
 
-    {
-      action:'Service Request Approval',
-      user:'Supervisor A',
-      role:'Supervisor',
-      date:'2026-06-23 11:00 AM',
-      status:'Success'
-    },
+  logs:any[] = [];
 
-    {
-      action:'Login Attempt',
-      user:'Unknown User',
-      role:'Guest',
-      date:'2026-06-23 11:30 AM',
-      status:'Failed'
-    }
+  ngOnInit(): void {
 
-  ];
+    this.loadLogs();
+
+  }
+  
+  searchTerm='';
+
+selectedTab='All';
+
+get filteredLogs(){
+
+  return this.logs.filter(log=>{
+
+    const statusMatch=
+
+      this.selectedTab==='All'
+
+      ||
+
+      log.status===this.selectedTab;
+
+    const searchMatch=
+
+      log.username?.toLowerCase()
+      .includes(this.searchTerm.toLowerCase())
+
+      ||
+
+      log.action?.toLowerCase()
+      .includes(this.searchTerm.toLowerCase())
+
+      ||
+
+      log.module?.toLowerCase()
+      .includes(this.searchTerm.toLowerCase());
+
+    return statusMatch && searchMatch;
+
+  });
+
+}
+  
+
+  loadLogs(){
+
+    this.logService
+
+        .getLogs()
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.logs = [...res];
+            
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load activity logs',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
 
 }

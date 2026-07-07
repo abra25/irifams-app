@@ -1,6 +1,38 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import Swal from 'sweetalert2';
+
+interface User {
+
+  id?: number;
+
+  employeeNo?: string;
+
+  username?: string;
+
+  fullName: string;
+
+  email?: string;
+
+  phone: string;
+
+  gender?: string;
+
+  role: string;
+
+  blockName?: string;
+
+  institution?: string;
+
+  image?: string;
+
+  enabled?: boolean;
+
+  password?: string;
+
+}
 
 @Component({
   selector: 'app-admin-users',
@@ -8,8 +40,46 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css',
 })
-export class AdminUsers {
+export class AdminUsers implements OnInit{
 
+  constructor(
+  private userService: UserService,
+  private cdr: ChangeDetectorRef
+  ){}
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+  
+  loadUsers(){
+
+   this.userService
+      .getAllUsers()
+      .subscribe({
+
+        next:(res)=>{
+
+          this.users = [...res];
+
+          this.cdr.detectChanges();
+
+        },
+
+        error:(err)=>{
+
+          console.log(err);
+
+          Swal.fire(
+            'Error',
+            'Failed to load users',
+            'error'
+          );
+
+        }
+
+      });
+
+}
 
   selectedTab = 'All';
 
@@ -19,69 +89,19 @@ export class AdminUsers {
   showViewModal = false;
   showEditModal = false;
 
-  selectedUser: any = null;
+  selectedUser!: User;
 
-  users = [
+  users: User[] = [];
 
-    {
-      id:1,
-      fullName:'Ali Hassan',
-      phone:'+255777111111',
-      role:'Farmer',
-      block:'Cheju A',
-      status:'Active'
-    },
-
-    {
-      id:2,
-      fullName:'Fatma Omar',
-      phone:'+255777222222',
-      role:'Supervisor',
-      block:'Cheju B',
-      status:'Active'
-    },
-
-    {
-      id:3,
-      fullName:'Admin User',
-      phone:'+255777333333',
-      role:'Admin',
-      block:'-',
-      status:'Active'
-    },
-
-    {
-      id:4,
-      fullName:'Ahmed Suleiman',
-      phone:'+255777444444',
-      role:'Farmer',
-      block:'Cheju A',
-      status:'Inactive'
-    },
-    {
-  id:5,
-  employeeNo:'EMP005',
-  fullName:'Ministry Officer',
-  phone:'+255777888888',
-  email:'officer@kilimo.go.tz',
-  role:'Stakeholder',
-  institution:'Ministry of Agriculture',
-  block:'-',
-  status:'Active'
-}
-
-  ];
-
-  newUser = {
+  newUser: User = {
   employeeNo:'',
   fullName:'',
   email:'',
   phone:'',
   role:'',
   institution:'',
-  block:'',
+  blockName:'',
   gender:'',
-  password:'123456'
 };
 
   setTab(tab: string) {
@@ -106,19 +126,43 @@ export class AdminUsers {
 
   }
 
-  addUser() {
+  addUser(){
 
-  this.users.unshift({
+  const payload = {
 
-    id: this.users.length + 1,
+    username: this.newUser.employeeNo,
 
-    ...this.newUser,
+    password: this.newUser.password,
 
-    status:'Active'
+    fullName: this.newUser.fullName,
 
-  });
+    email: this.newUser.email,
 
-  this.showAddModal = false;
+    phone: this.newUser.phone,
+
+    gender: this.newUser.gender,
+
+    role: this.newUser.role,
+
+    blockName: this.newUser.blockName,
+
+    institution: this.newUser.institution
+
+  };
+
+  this.userService
+      .addUser(payload)
+      .subscribe({
+
+        next:()=>{
+
+  Swal.fire(
+    'Success',
+    'User added successfully',
+    'success'
+  );
+
+  // reset form
 
   this.newUser = {
 
@@ -128,18 +172,30 @@ export class AdminUsers {
     phone:'',
     role:'',
     institution:'',
-    block:'',
+    blockName:'',
     gender:'',
-    password:'123456'
+    password:''
 
   };
+
+  // close modal
+
+  this.showAddModal = false;
+
+  // reload users
+
+  this.loadUsers();
+
+},
+
+      });
 
 }
 
 get stakeholdersCount() {
 
   return this.users.filter(
-    u => u.role === 'Stakeholder'
+    u => u.role === 'STAKEHOLDER'
   ).length;
 
 }
@@ -158,31 +214,66 @@ get stakeholdersCount() {
 
   }
 
-  saveUser() {
+  saveUser(){
 
-    const index = this.users.findIndex(
-      u => u.id === this.selectedUser.id
-    );
+  this.userService
+      .updateUser(
+        this.selectedUser.id!,
+        this.selectedUser
+      )
 
-    this.users[index] = this.selectedUser;
+      .subscribe({
 
-    this.showEditModal = false;
+        next:()=>{
 
-  }
+          Swal.fire(
+            'Success',
+            'User updated successfully',
+            'success'
+          );
 
-  toggleStatus(user:any) {
+          this.showEditModal = false;
 
-    user.status =
-      user.status === 'Active'
-      ? 'Inactive'
-      : 'Active';
+          this.loadUsers();
 
-  }
+        },
+
+        error:(err)=>{
+
+          Swal.fire(
+            'Error',
+            err.error || 'Update failed',
+            'error'
+          );
+
+        }
+
+      });
+
+}
+
+  toggleStatus(user:any){
+
+  this.userService
+
+      .toggleStatus(user.id)
+
+      .subscribe({
+
+        next:()=>{
+
+          this.loadUsers();
+
+        }
+
+      });
+
+}
 
   get farmersCount() {
 
     return this.users.filter(
-      u => u.role === 'Farmer'
+      u => u.role === 'FARMER'
     ).length;
 
   }
@@ -190,7 +281,7 @@ get stakeholdersCount() {
   get supervisorsCount() {
 
     return this.users.filter(
-      u => u.role === 'Supervisor'
+      u => u.role === 'SUPERVISOR'
     ).length;
 
   }
@@ -198,7 +289,7 @@ get stakeholdersCount() {
   get adminsCount() {
 
     return this.users.filter(
-      u => u.role === 'Admin'
+      u => u.role === 'ADMIN'
     ).length;
 
   }

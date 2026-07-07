@@ -1,11 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
+import { DashboardService }
+from '../../services/dashboard.service';
+
 import {
   Chart,
   DoughnutController,
   ArcElement,
-  BarController,
-  BarElement,
   CategoryScale,
   LinearScale,
   LineController,
@@ -19,8 +26,6 @@ import {
 Chart.register(
   DoughnutController,
   ArcElement,
-  BarController,
-  BarElement,
   CategoryScale,
   LinearScale,
   LineController,
@@ -37,112 +42,147 @@ Chart.register(
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })
-export class AdminDashboard implements AfterViewInit {
+export class AdminDashboard
+implements OnInit, AfterViewInit {
 
-  stats = [
-    {
-      title: 'Farmers',
-      value: '1,250',
-      icon: 'fas fa-users',
-      growth: '+12%'
-    },
+  constructor(
+    private dashboardService:DashboardService,
+    private cdr: ChangeDetectorRef
+  ){}
 
-    {
-      title: 'Farm Plots',
-      value: '842',
-      icon: 'fas fa-map-marked-alt',
-      growth: '+8%'
-    },
+  dashboardStats:any;
 
-    {
-      title: 'Requests',
-      value: '356',
-      icon: 'fas fa-clipboard-list',
-      growth: '+15%'
-    },
+  chartData:any;
 
-    {
-      title: 'Revenue',
-      value: 'TZS 12.4M',
-      icon: 'fas fa-money-bill-wave',
-      growth: '+18%'
-    }
-  ];
+  stats:any[]=[];
 
-  activities = [
+  activities:any[]=[];
 
-    {
-      icon:'fas fa-user-plus',
-      text:'New farmer registered',
-      time:'5 min ago'
-    },
+  notifications:string[]=[];
 
-    {
-      icon:'fas fa-check-circle',
-      text:'Payment verified',
-      time:'25 min ago'
-    },
+  recentUsers:any[]=[];
 
-    {
-      icon:'fas fa-tractor',
-      text:'Service approved',
-      time:'1 hour ago'
-    }
+  ngOnInit(): void {
 
-  ];
+    this.loadStats();
 
-  notifications = [
+    this.loadChartData();
 
-    '12 payments waiting verification',
-    '5 new service requests',
-    'Water schedule updated'
+  }
 
-  ];
+  ngAfterViewInit(){}
 
-  recentUsers = [
+  loadStats(){
 
-    {
-      name:'Ali Hassan',
-      role:'Farmer',
-      status:'Active'
-    },
+    this.dashboardService
+        .getStats()
 
-    {
-      name:'Fatma Omar',
-      role:'Supervisor',
-      status:'Active'
-    },
+        .subscribe({
 
-    {
-      name:'Ahmed Suleiman',
-      role:'Farmer',
-      status:'Inactive'
-    }
+          next:(res)=>{
 
-  ];
+            this.dashboardStats = res;
+            
 
-  ngAfterViewInit(): void {
+            this.stats = [
+
+              {
+                title:'Farmers',
+                value:res.totalFarmers,
+                icon:'fas fa-users',
+                growth:'+12%'
+              },
+
+              {
+                title:'Farm Plots',
+                value:res.totalPlots,
+                icon:'fas fa-map-marked-alt',
+                growth:'+8%'
+              },
+
+              {
+                title:'Requests',
+                value:res.totalRequests,
+                icon:'fas fa-clipboard-list',
+                growth:'+15%'
+              },
+
+              {
+                title:'Revenue',
+
+                value:
+                'TZS ' +
+                Number(
+                  res.totalRevenue || 0
+                ).toLocaleString(),
+
+                icon:
+                'fas fa-money-bill-wave',
+
+                growth:'+18%'
+              }
+
+            ];
+
+          
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+  }
+
+  loadChartData(){
+
+    this.dashboardService
+        .getCharts()
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.chartData = res;
+
+            this.renderCharts();
+
+          }
+
+        });
+
+  }
+
+  renderCharts(){
 
     new Chart('requestChart', {
 
       type:'line',
 
-      data: {
+      data:{
 
         labels:[
-          'Jan','Feb','Mar',
-          'Apr','May','Jun'
+          'Tractor Service',
+          'Harvesting Service'
         ],
 
         datasets:[{
 
           label:'Requests',
 
-          data:[45,60,75,55,82,96],
+          data:[
+
+            this.chartData
+            .tractorRequests,
+
+            this.chartData
+            .harvestingRequests
+
+          ],
 
           borderColor:'#16a34a',
 
-          backgroundColor:'rgba(22,163,74,.15)',
+          backgroundColor:
+          'rgba(22,163,74,.15)',
 
           fill:true,
 
@@ -150,34 +190,54 @@ export class AdminDashboard implements AfterViewInit {
 
         }]
 
+      },
+
+      options:{
+        responsive:true,
+        maintainAspectRatio:false
       }
 
     });
+
 
     new Chart('paymentChart', {
 
       type:'doughnut',
 
-      data: {
+      data:{
 
         labels:[
           'Paid',
-          'Pending',
-          'Rejected'
+          'Pending'
         ],
 
         datasets:[{
 
-          data:[65,25,10],
+          data:[
+
+            this.chartData
+            .paidPayments,
+
+            this.chartData
+            .pendingPayments
+
+          ],
 
           backgroundColor:[
+
             '#16a34a',
-            '#f59e0b',
-            '#ef4444'
+
+            '#f59e0b'
+
           ]
 
         }]
 
+      },
+
+      options:{
+        responsive:true,
+        maintainAspectRatio:false
       }
 
     });

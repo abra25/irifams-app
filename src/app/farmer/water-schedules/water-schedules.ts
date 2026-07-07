@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { WaterScheduleService } from '../../services/water-schedule.service';
 
 @Component({
   selector: 'app-water-schedules',
@@ -7,56 +9,65 @@ import { Component } from '@angular/core';
   templateUrl: './water-schedules.html',
   styleUrl: './water-schedules.css',
 })
-export class WaterSchedules {
-  showModal = false;
+export class WaterSchedules implements OnInit{
 
-  selectedSchedule: any = null;
+showModal=false;
 
-  schedules = [
+selectedSchedule:any;
 
-    {
-      id: 1,
-      block: 'Cheju Block A',
-      day: 'Monday',
-      startTime: '06:00 AM',
-      endTime: '10:00 AM',
-      season: 'Season A - 2026',
-      status: 'Upcoming',
-      description:
-        'Water supply for rice plots in Cheju Block A.'
-    },
+schedules:any[]=[];
 
-    {
-      id: 2,
-      block: 'Cheju Block A',
-      day: 'Thursday',
-      startTime: '02:00 PM',
-      endTime: '06:00 PM',
-      season: 'Season A - 2026',
-      status: 'Active',
-      description:
-        'Afternoon irrigation schedule.'
-    },
+constructor(
 
-    {
-      id: 3,
-      block: 'Cheju Block B',
-      day: 'Saturday',
-      startTime: '07:00 AM',
-      endTime: '11:00 AM',
-      season: 'Season A - 2026',
-      status: 'Completed',
-      description:
-        'Weekend irrigation schedule.'
-    }
+private waterService:WaterScheduleService,
 
-  ];
+private cdr:ChangeDetectorRef
 
-  openDetails(schedule: any) {
+){}
 
-    this.selectedSchedule = schedule;
-    this.showModal = true;
+ngOnInit(){
 
-  }
+this.loadSchedules();
+
+}
+  // showModal = false;
+
+  // selectedSchedule: any = null;
+
+  // schedules:any[] = [];
+
+  loadSchedules(){
+
+this.waterService
+
+.getMyFarmSchedules()
+
+.subscribe({
+
+next:(res)=>{
+
+this.schedules=[...res];
+
+this.cdr.detectChanges();
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+  openDetails(schedule:any){
+
+this.selectedSchedule=schedule;
+
+this.showModal=true;
+
+}
 
 }

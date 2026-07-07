@@ -1,55 +1,250 @@
-<div class="request-page">
+<div class="requests-page">
 
     <!-- HEADER -->
 
     <div class="page-header">
 
         <div>
-            <h2>Request Farm Service</h2>
+
+            <h2>Service Requests</h2>
+
             <p>
-                Submit tractor or harvesting service requests.
+
+                Submit new farm service requests and track all submitted requests.
+
             </p>
+
+        </div>
+
+        <button
+            class="add-btn"
+            (click)="showAddModal=true">
+
+            <i class="fas fa-plus"></i>
+
+            New Request
+
+        </button>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <i class="fas fa-clipboard-list"></i>
+
+            <div>
+
+                <h3>{{requests.length}}</h3>
+
+                <span>Total Requests</span>
+
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-clock"></i>
+
+            <div>
+
+                <h3>{{pendingCount}}</h3>
+
+                <span>Pending</span>
+
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-check-circle"></i>
+
+            <div>
+
+                <h3>{{completedCount}}</h3>
+
+                <span>Completed</span>
+
+            </div>
+
         </div>
 
     </div>
 
 
-    <!-- SUCCESS -->
+    <!-- REQUEST TABLE -->
 
-    <div class="success-alert"
-         *ngIf="submitted">
+    <div class="table-card">
 
-        <i class="fas fa-check-circle"></i>
+        <div class="table-responsive">
 
-        Service request submitted successfully.
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Plot</th>
+
+                        <th>Service</th>
+
+                        <th>Date</th>
+
+                        <th>Amount</th>
+
+                        <th>Status</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let request of requests">
+
+                        <td>
+
+                            #{{request.id}}
+
+                        </td>
+
+                        <td>
+
+                            {{request.plot?.plotNo}}
+
+                        </td>
+
+                        <td>
+
+                            {{request.serviceType}}
+
+                        </td>
+
+                        <td>
+
+                            {{request.createdAt | date:'dd MMM yyyy'}}
+
+                        </td>
+
+                        <td>
+
+                            TZS {{request.amount | number}}
+
+                        </td>
+
+                        <td>
+
+                            <span
+
+                                class="status-badge"
+
+                                [ngClass]="request.status.toLowerCase()">
+
+                                {{request.status}}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+
+                                class="view-btn"
+
+                                (click)="openDetails(request)">
+
+                                <i class="fas fa-eye"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
+</div>
 
-    <!-- FORM -->
 
-    <div class="form-card">
+<!-- ================================================= -->
 
-        <form (ngSubmit)="submitRequest()">
+<!-- NEW REQUEST MODAL -->
+
+<!-- ================================================= -->
+
+<div
+
+    class="modal-overlay"
+
+    *ngIf="showAddModal">
+
+    <div class="modal-card large">
+
+        <div class="modal-header">
+
+            <h3>
+
+                Submit New Service Request
+
+            </h3>
+
+            <button
+
+                (click)="showAddModal=false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
 
             <!-- Plot -->
 
             <div class="form-group">
 
-                <label>Farm Plot *</label>
+                <label>
+
+                    Farm Plot
+
+                </label>
 
                 <select
-                    [(ngModel)]="request.plotId"
-                    name="plotId"
-                    (change)="onPlotChange()"
-                    required>
 
-                    <option value="">
+                    [(ngModel)]="request.plotId"
+
+                    (change)="onPlotChange()">
+
+                    <option [ngValue]="null">
+
                         Select Plot
+
                     </option>
 
-                    <option *ngFor="let plot of plots"
-                            [value]="plot.id">
+                    <option
+
+                        *ngFor="let plot of plots"
+
+                        [ngValue]="plot.id">
 
                         {{plot.plotNo}}
 
@@ -60,37 +255,60 @@
             </div>
 
 
-            <!-- AUTO DETAILS -->
+            <!-- DETAILS -->
 
-            <div class="plot-details"
-                 *ngIf="selectedPlot">
+            <div
+
+                class="plot-details"
+
+                *ngIf="selectedPlot">
 
                 <div class="detail-box">
 
-                    <span>Block</span>
+                    <span>
+
+                        Block
+
+                    </span>
 
                     <strong>
+
                         {{selectedPlot.block}}
+
                     </strong>
 
                 </div>
 
                 <div class="detail-box">
 
-                    <span>Land Size</span>
+                    <span>
+
+                        Land Size
+
+                    </span>
 
                     <strong>
-                        {{selectedPlot.size}} Acres
+
+                        {{selectedPlot.size}}
+
+                        Acres
+
                     </strong>
 
                 </div>
 
                 <div class="detail-box">
 
-                    <span>Soil Type</span>
+                    <span>
+
+                        Soil Type
+
+                    </span>
 
                     <strong>
+
                         {{selectedPlot.soilType}}
+
                     </strong>
 
                 </div>
@@ -102,18 +320,27 @@
 
             <div class="form-group">
 
-                <label>Service Type *</label>
+                <label>
+
+                    Service Type
+
+                </label>
 
                 <select
-                    [(ngModel)]="request.serviceType"
-                    name="serviceType"
-                    required>
+
+                    [(ngModel)]="request.serviceType">
 
                     <option value="">
+
                         Select Service
+
                     </option>
 
-                    <option *ngFor="let service of services">
+                    <option
+
+                        *ngFor="let service of services"
+
+                        [value]="service">
 
                         {{service}}
 
@@ -128,57 +355,243 @@
 
             <div class="form-group">
 
-                <label>Preferred Date *</label>
+                <label>
+
+                    Preferred Date
+
+                </label>
 
                 <input
+
                     type="date"
-                    name="date"
-                    [(ngModel)]="request.preferredDate"
-                    required>
+
+                    [(ngModel)]="request.preferredDate">
 
             </div>
 
 
             <!-- NOTES -->
 
-            <div class="form-group">
+            <div class="form-group full-width">
 
-                <label>Additional Notes</label>
+                <label>
+
+                    Notes
+
+                </label>
 
                 <textarea
+
                     rows="5"
-                    name="notes"
+
                     [(ngModel)]="request.notes"
+
                     placeholder="Write additional information here...">
+
                 </textarea>
 
             </div>
 
+        </div>
 
-            <!-- BUTTONS -->
 
-            <div class="button-group">
+        <div class="modal-footer">
 
-                <button
-                    type="button"
-                    class="clear-btn"
-                    (click)="clearForm()">
+            <button
 
-                    Clear
+                class="cancel-btn"
 
-                </button>
+                (click)="clearForm()">
 
-                <button
-                    type="submit"
-                    class="submit-btn">
+                Clear
 
-                    Submit Request
+            </button>
 
-                </button>
+            <button
+
+                class="save-btn"
+
+                (click)="submitRequest()">
+
+                Submit Request
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+
+<!-- VIEW DETAILS MODAL -->
+
+<!-- ================================================= -->
+
+<div
+
+    class="modal-overlay"
+
+    *ngIf="showDetailsModal">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+
+            <h3>
+
+                Request Details
+
+            </h3>
+
+            <button
+
+                (click)="showDetailsModal=false">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-body details-body">
+
+            <div class="detail-row">
+
+                <span>
+
+                    Request ID
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.id}}
+
+                </strong>
 
             </div>
 
-        </form>
+            <div class="detail-row">
+
+                <span>
+
+                    Plot
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.plot?.plotNo}}
+
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>
+
+                    Service
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.serviceType}}
+
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>
+
+                    Preferred Date
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.preferredDate | date:'dd MMM yyyy'}}
+
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>
+
+                    Amount
+
+                </span>
+
+                <strong>
+
+                    TZS {{selectedRequest?.amount | number}}
+
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>
+
+                    Status
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.status}}
+
+                </strong>
+
+            </div>
+
+            <div
+
+                class="detail-row"
+
+                *ngIf="selectedRequest?.controlNumber">
+
+                <span>
+
+                    Control Number
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.controlNumber}}
+
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>
+
+                    Notes
+
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.notes}}
+
+                </strong>
+
+            </div>
+
+        </div>
 
     </div>
 

@@ -1,117 +1,179 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { PaymentService } from '../../services/payment.service';
+
+interface Payment {
+
+  id?:number;
+
+  amount:number;
+
+  controlNumber:string;
+
+  receiptNo?:string;
+
+  paymentDate?:string;
+
+  status:string;
+
+  farmer:any;
+
+  serviceRequest:any;
+
+}
 
 @Component({
-  selector: 'app-admin-payments',standalone: true,
+  selector: 'app-admin-payments',
+  standalone:true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-payments.html',
   styleUrl: './admin-payments.css'
 })
-export class AdminPayments {
+export class AdminPayments implements OnInit {
 
-  searchTerm = '';
+  constructor(
+    private paymentService: PaymentService,
+        private cdr: ChangeDetectorRef
+  ){}
 
-  showModal = false;
-  selectedPayment: any = null;
+  ngOnInit(): void {
 
-  payments = [
+    this.loadPayments();
 
-    {
-      id:'PAY-001',
-      farmer:'Ali Hassan',
-      service:'Tractor Service',
-      controlNumber:'CN-2026-001',
-      amount:50000,
-      paymentDate:'2026-06-20',
-      status:'Waiting Verification',
-      receiptNo:'-'
-    },
+  }
 
-    {
-      id:'PAY-002',
-      farmer:'Fatma Omar',
-      service:'Harvesting Service',
-      controlNumber:'CN-2026-002',
-      amount:70000,
-      paymentDate:'2026-06-18',
-      status:'Paid',
-      receiptNo:'RCT-001'
-    },
+  searchTerm='';
 
-    {
-      id:'PAY-003',
-      farmer:'Ahmed Suleiman',
-      service:'Tractor Service',
-      controlNumber:'CN-2026-003',
-      amount:45000,
-      paymentDate:'2026-06-15',
-      status:'Rejected',
-      receiptNo:'-'
-    }
+  showModal=false;
 
-  ];
+  selectedPayment!:Payment;
 
-  get filteredPayments() {
+  payments:Payment[]=[];
+
+  loadPayments(){
+
+    this.paymentService
+        .getAllPayments()
+
+        .subscribe({
+
+          next:(res)=>{
+
+            this.payments=[...res];
+            
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load payments',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  get filteredPayments(){
 
     return this.payments.filter(payment =>
 
-      payment.farmer.toLowerCase()
+      payment.farmer?.fullName
+      ?.toLowerCase()
       .includes(this.searchTerm.toLowerCase())
 
       ||
 
-      payment.controlNumber.toLowerCase()
+      payment.controlNumber
+      ?.toLowerCase()
       .includes(this.searchTerm.toLowerCase())
 
       ||
 
-      payment.id.toLowerCase()
-      .includes(this.searchTerm.toLowerCase())
+      payment.id
+      ?.toString()
+      .includes(this.searchTerm)
 
     );
 
   }
 
-  get paidCount(): number {
+  get paidCount(){
 
     return this.payments.filter(
-      payment => payment.status === 'Paid'
+      p => p.status === 'PAID'
     ).length;
 
   }
 
-  get waitingCount(): number {
+  get waitingCount(){
 
     return this.payments.filter(
-      payment => payment.status === 'Waiting Verification'
+      p => p.status === 'WAITING_VERIFICATION'
     ).length;
 
   }
 
-  openDetails(payment: any) {
+  openDetails(payment:Payment){
 
     this.selectedPayment = payment;
+
     this.showModal = true;
 
   }
 
-  verifyPayment(payment: any) {
+  verifyPayment(){
 
-    payment.status = 'Paid';
+    this.paymentService
 
-    payment.receiptNo =
-      'RCT-' + Math.floor(Math.random() * 10000);
+        .verifyPayment(
+          this.selectedPayment.id!
+        )
 
-    alert('Payment verified successfully');
+        .subscribe({
+
+          next:()=>{
+
+            Swal.fire(
+              'Success',
+              'Payment verified successfully',
+              'success'
+            );
+
+            this.showModal=false;
+
+            this.loadPayments();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Verification failed',
+              'error'
+            );
+
+          }
+
+        });
 
   }
 
-  rejectPayment(payment: any) {
+  rejectPayment(){
 
-    payment.status = 'Rejected';
-
-    alert('Payment rejected');
+    Swal.fire(
+      'Info',
+      'Reject API not implemented yet.',
+      'info'
+    );
 
   }
 

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -21,32 +22,108 @@ export class Login {
   loading = false;
 
   loginData = {
+
     username: '',
     password: '',
     rememberMe: false
+
   };
 
+  errorMessage = '';
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
   togglePassword(): void {
-    this.showPassword = !this.showPassword;
+
+    this.showPassword =
+      !this.showPassword;
+
   }
 
-  onLogin(): void {
-
-    if (!this.loginData.username ||
-        !this.loginData.password) {
-      return;
-    }
+  onLogin(){
 
     this.loading = true;
 
-    console.log(this.loginData);
+    this.authService
+      .login(this.loginData)
 
-    setTimeout(() => {
+      .subscribe({
 
-      this.loading = false;
+        next:(response)=>{
 
-      alert('Login Success');
+          this.loading = false;
 
-    }, 1500);
+          // save logged in user
+          localStorage.setItem(
+          'user',
+           JSON.stringify(response)
+          );
+
+          Swal.fire({
+            icon:'success',
+            title:'Login Successful',
+            text:`Welcome ${response.fullName}`,
+            timer:1500,
+            showConfirmButton:false
+          });
+
+          if(response.role==='ADMIN'){
+
+            this.router.navigate([
+              '/admin/dashboard'
+            ]);
+
+          }
+
+          else if(
+            response.role==='SUPERVISOR'
+          ){
+
+            this.router.navigate([
+              '/supervisor/dashboard'
+            ]);
+
+          }
+
+          else if(
+            response.role==='FARMER'
+          ){
+
+            this.router.navigate([
+              '/farmer/dashboard'
+            ]);
+
+          }
+
+          else if(
+            response.role==='STAKEHOLDER'
+          ){
+
+            this.router.navigate([
+              '/stakeholder'
+            ]);
+
+          }
+
+        },
+
+        error:()=>{
+
+          this.loading = false;
+
+          Swal.fire({
+            icon:'error',
+            title:'Login Failed',
+            text:'Invalid username or password'
+          });
+
+        }
+
+      });
+
   }
+
 }

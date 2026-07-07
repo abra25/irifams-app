@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { PaymentService } from '../../services/payment.service';
 
 @Component({
   selector: 'app-payments',
@@ -7,42 +8,51 @@ import { Component } from '@angular/core';
   templateUrl: './payments.html',
   styleUrl: './payments.css',
 })
-export class Payments {
+export class Payments implements OnInit{
 
   showModal = false;
 
   selectedPayment: any = null;
 
-   payments = [
+   payments: any[] = [];
 
-  {
-    controlNumber: 'CN-2026-001',
-    service: 'Tractor Service',
-    amount: 50000,
-    paymentDate: '-',
-    status: 'Pending',
-    receiptNo: '-'
-  },
+constructor(
 
-  {
-    controlNumber: 'CN-2026-002',
-    service: 'Harvesting Service',
-    amount: 70000,
-    paymentDate: '-',
-    status: 'Waiting Verification',
-    receiptNo: '-'
-  },
+  private paymentService: PaymentService,
+    private cdr:ChangeDetectorRef
 
-  {
-    controlNumber: 'CN-2026-003',
-    service: 'Tractor Service',
-    amount: 45000,
-    paymentDate: '2026-06-05',
-    status: 'Paid',
-    receiptNo: 'RCT-002'
-  }
+){}
 
-];
+ngOnInit(){
+
+   this.loadPayments();
+
+}
+
+loadPayments(){
+
+  this.paymentService
+
+      .getMyPayments()
+
+      .subscribe({
+
+        next:(res)=>{
+
+          this.payments = [...res];
+          this.cdr.detectChanges();
+
+        },
+
+        error:(err)=>{
+
+          console.log(err);
+
+        }
+
+      });
+
+}
 
 markAsPaid(payment: any) {
 

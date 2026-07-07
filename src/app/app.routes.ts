@@ -1,213 +1,322 @@
+
 import { Routes } from '@angular/router';
-import { AdminDashboard } from './admin/admin-dashboard/admin-dashboard';
 import { FLayout } from './farmer/f-layout/f-layout';
 import { SLayout } from './supervisor/s-layout/s-layout';
 import { AdminLayout } from './admin/admin-layout/admin-layout';
+import { loginGuard } from './guards/login-guard';
+import { authGuard } from './guards/auth-guard';
+import { roleGuard } from './guards/role-guard';
 
 export const routes: Routes = [
-  //PUBLIC & AUTH
+
+  // PUBLIC
+
   {
     path: '',
     loadComponent: () =>
       import('./public/home/home').then(m => m.Home),
   },
+
   {
     path: 'login',
+    canActivate: [loginGuard],
     loadComponent: () =>
       import('./auth/login/login').then(m => m.Login),
   },
+
   {
     path: 'reset-password',
     loadComponent: () =>
-      import('./auth/forgot-password/forgot-password').then(m => m.ForgotPassword),
+      import('./auth/forgot-password/forgot-password')
+        .then(m => m.ForgotPassword),
   },
 
-  // ADMIN PANEL
+  // ================= ADMIN =================
+
   {
     path: 'admin',
+
     component: AdminLayout,
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['ADMIN']
+    },
+
     children: [
-       {
+
+      {
         path: 'dashboard',
         loadComponent: () =>
-        import('./admin/admin-dashboard/admin-dashboard')
-          .then(m => m.AdminDashboard),
-      }
-      ,
+          import('./admin/admin-dashboard/admin-dashboard')
+            .then(m => m.AdminDashboard),
+      },
+
       {
         path: 'users',
         loadComponent: () =>
-        import('./admin/admin-users/admin-users')
-          .then(m => m.AdminUsers),
+          import('./admin/admin-users/admin-users')
+            .then(m => m.AdminUsers),
       },
+
       {
         path: 'requests',
         loadComponent: () =>
-        import('./admin/admin-requests/admin-requests')
-          .then(m => m.AdminRequests),
+          import('./admin/admin-requests/admin-requests')
+            .then(m => m.AdminRequests),
       },
+
       {
         path: 'plots',
         loadComponent: () =>
-        import('./admin/admin-plots/admin-plots')
-          .then(m => m.AdminPlots),
+          import('./admin/admin-plots/admin-plots')
+            .then(m => m.AdminPlots),
       },
+
       {
         path: 'inputs',
         loadComponent: () =>
-        import('./admin/admin-inputs/admin-inputs')
-          .then(m => m.AdminInputs),
+          import('./admin/admin-inputs/admin-inputs')
+            .then(m => m.AdminInputs),
       },
+
       {
         path: 'payments',
         loadComponent: () =>
-        import('./admin/admin-payments/admin-payments')
-          .then(m => m.AdminPayments),
+          import('./admin/admin-payments/admin-payments')
+            .then(m => m.AdminPayments),
       },
+
       {
         path: 'notifications',
         loadComponent: () =>
-        import('./admin/admin-notifications/admin-notifications')
-          .then(m => m.AdminNotifications),
+          import('./admin/admin-notifications/admin-notifications')
+            .then(m => m.AdminNotifications),
       },
+
       {
         path: 'logs',
         loadComponent: () =>
-        import('./admin/admin-logs/admin-logs')
-          .then(m => m.AdminLogs),
+          import('./admin/admin-logs/admin-logs')
+            .then(m => m.AdminLogs),
       },
+
       {
         path: 'reports',
         loadComponent: () =>
-        import('./admin/admin-report/admin-report')
-          .then(m => m.AdminReports),
+          import('./admin/admin-report/admin-report')
+            .then(m => m.AdminReports),
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
     ]
   },
 
-  // FARMER PANEL
+  // ================= FARMER =================
+
   {
     path: 'farmer',
+
     component: FLayout,
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['FARMER']
+    },
+
     children: [
+
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./farmer/dashboard/dashboard')
             .then(m => m.Dashboard),
       },
+
       {
         path: 'profile',
-        loadComponent: () => 
+        loadComponent: () =>
           import('./farmer/my-profile/my-profile')
             .then(m => m.MyProfile),
       },
+
       {
         path: 'plots',
         loadComponent: () =>
           import('./farmer/my-plots/my-plots')
             .then(m => m.MyPlots),
       },
-      {
-        path: 'requests',
-        loadComponent: () =>
-          import('./farmer/my-requests/my-requests')
-            .then(m => m.MyRequests),
-      },
+
       {
         path: 'payments',
         loadComponent: () =>
           import('./farmer/payments/payments')
             .then(m => m.Payments),
       },
+
       {
         path: 'notifications',
         loadComponent: () =>
           import('./farmer/notifications/notifications')
             .then(m => m.Notifications),
       },
-      { 
-        path: 'request-service', 
-        loadComponent: () => 
-          import('./farmer/requests/requests').then(m => m.Requests) 
-      },
+
       {
-        path: 'water-schedules', 
-        loadComponent: () => 
-          import('./farmer/water-schedules/water-schedules').then(m => m.WaterSchedules) 
+        path: 'requests',
+        loadComponent: () =>
+          import('./farmer/requests/requests')
+            .then(m => m.Requests)
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ],
+
+      {
+        path: 'water-schedules',
+        loadComponent: () =>
+          import('./farmer/water-schedules/water-schedules')
+            .then(m => m.WaterSchedules)
+      },
+
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+
+    ]
   },
 
-  // SUPERVISOR PANEL
+  // ================= SUPERVISOR =================
+
   {
     path: 'supervisor',
+
     component: SLayout,
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['SUPERVISOR']
+    },
+
     children: [
+
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./supervisor/s-dshboard/s-dshboard')
             .then(m => m.SDshboard),
       },
+
       {
         path: 'farmers',
         loadComponent: () =>
           import('./supervisor/s-farmers/s-farmers')
             .then(m => m.SFarmers),
       },
+
       {
         path: 'farm-plots',
         loadComponent: () =>
           import('./supervisor/s-plots/s-plots')
             .then(m => m.SPlots),
       },
+
       {
         path: 'requests',
         loadComponent: () =>
           import('./supervisor/s-requests/s-requests')
             .then(m => m.SRequests),
       },
+
       {
         path: 'schedules',
         loadComponent: () =>
           import('./supervisor/wsm/wsm')
             .then(m => m.Wsm),
       },
+
       {
         path: 'inputs',
         loadComponent: () =>
           import('./supervisor/s-inputs/s-inputs')
             .then(m => m.SInputs),
       },
+
       {
         path: 'payments',
         loadComponent: () =>
           import('./supervisor/s-payments/s-payments')
             .then(m => m.SPayments),
       },
+
       {
         path: 'reports',
         loadComponent: () =>
           import('./supervisor/s-report/s-report')
             .then(m => m.SReports),
       },
+
       {
         path: 'notifications',
         loadComponent: () =>
           import('./supervisor/s-notification/s-notification')
             .then(m => m.SNotification),
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./supervisor/sup-profile/sup-profile')
+            .then(m => m.SupProfile),
+      },
+
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+
     ]
   },
-  // STAKEHOLDER
+
+  // ================= STAKEHOLDER =================
+
   {
     path: 'stakeholder',
-      loadComponent: () =>
-        import('./stakeholder/stakeholder')
-          .then(m => m.Stakeholder),
+
+    canActivate: [
+      authGuard,
+      roleGuard
+    ],
+
+    data: {
+      roles: ['STAKEHOLDER']
+    },
+
+    loadComponent: () =>
+      import('./stakeholder/stakeholder')
+        .then(m => m.Stakeholder),
+  },
+
+  // UNKNOWN ROUTES
+
+  {
+    path: '**',
+    redirectTo: ''
   }
+
 ];

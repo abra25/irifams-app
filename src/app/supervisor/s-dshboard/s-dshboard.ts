@@ -1,102 +1,160 @@
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import { DashboardService }
+from '../../services/dashboard.service';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-s-dshboard',
-  imports: [CommonModule],
-  templateUrl: './s-dshboard.html',
-  styleUrl: './s-dshboard.css',
+  standalone:true,
+  imports:[CommonModule],
+  templateUrl:'./s-dshboard.html',
+  styleUrl:'./s-dshboard.css'
 })
-export class SDshboard {
+export class SDshboard implements OnInit{
 
-  stats = [
-    {
-      title: 'Total Farmers',
-      value: 245,
-      icon: 'fas fa-users'
-    },
+  constructor(
 
-    {
-      title: 'Farm Plots',
-      value: 320,
-      icon: 'fas fa-map-marked-alt'
-    },
+    private dashboardService:
+    DashboardService,
 
-    {
-      title: 'Pending Requests',
-      value: 18,
-      icon: 'fas fa-clipboard-list'
-    },
+    private cdr:ChangeDetectorRef
 
-    {
-      title: 'Pending Payments',
-      value: 12,
-      icon: 'fas fa-money-bill-wave'
-    }
-  ];
+  ){}
 
+  stats:any[]=[];
 
-  recentRequests = [
+  recentRequests:any[]=[];
 
-    {
-      id: 'REQ-001',
-      farmer: 'Ahmed Suleiman',
-      service: 'Tractor Service',
-      plot: 'PLT-001',
-      date: '22 Jun 2026',
-      status: 'Pending'
-    },
+  payments:any[]=[];
 
-    {
-      id: 'REQ-002',
-      farmer: 'Ali Hassan',
-      service: 'Harvesting Service',
-      plot: 'PLT-007',
-      date: '21 Jun 2026',
-      status: 'Approved'
-    },
+  notifications:any[]=[];
 
-    {
-      id: 'REQ-003',
-      farmer: 'Fatma Omar',
-      service: 'Tractor Service',
-      plot: 'PLT-010',
-      date: '20 Jun 2026',
-      status: 'Completed'
-    }
+  ngOnInit(): void {
 
-  ];
+    this.loadStats();
 
+    this.loadRequests();
 
-  payments = [
+    this.loadPayments();
 
-    {
-      controlNo: 'CN-2026-001',
-      farmer: 'Ali Hassan',
-      amount: 50000,
-      status: 'Waiting Verification'
-    },
+    this.loadNotifications();
 
-    {
-      controlNo: 'CN-2026-002',
-      farmer: 'Ahmed Suleiman',
-      amount: 70000,
-      status: 'Pending'
-    }
+  }
 
-  ];
+  loadStats(){
 
+    this.dashboardService
+        .getSupervisorStats()
+        .subscribe({
 
-  notifications = [
+          next:(res)=>{
 
-    'New farmer registered successfully.',
+            this.stats=[
 
-    'Water schedule updated for Block A.',
+              {
+                title:'Total Farmers',
+                value:res.totalFarmers,
+                icon:'fas fa-users'
+              },
 
-    '3 payments waiting verification.',
+              {
+                title:'Farm Plots',
+                value:res.totalPlots,
+                icon:'fas fa-map-marked-alt'
+              },
 
-    '5 new service requests submitted.'
+              {
+                title:'Pending Requests',
+                value:res.pendingRequests,
+                icon:'fas fa-clipboard-list'
+              },
 
-  ];
+              {
+                title:'Waiting Payments',
+                value:res.totalPayments,
+                icon:'fas fa-money-bill-wave'
+              }
+
+            ];
+
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+  }
+
+  loadRequests(){
+
+    this.dashboardService
+        .getSupervisorRequests()
+        .subscribe({
+
+          next:(res)=>{
+
+            this.recentRequests = [...res];
+
+            this.cdr.detectChanges();
+
+          },
+
+          error:()=>{
+
+            Swal.fire(
+              'Error',
+              'Failed to load requests',
+              'error'
+            );
+
+          }
+
+        });
+
+  }
+
+  loadPayments(){
+
+    this.dashboardService
+        .getSupervisorPayments()
+        .subscribe({
+
+          next:(res)=>{
+
+            this.payments=[...res];
+
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+  }
+
+  loadNotifications(){
+
+    this.dashboardService
+        .getSupervisorNotifications()
+        .subscribe({
+
+          next:(res)=>{
+
+            this.notifications=[...res];
+
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+  }
 
 }
