@@ -70,6 +70,24 @@ export class Login {
             showConfirmButton:false
           });
 
+          if(response.temporaryPassword){
+
+            Swal.fire({
+              icon:'warning',
+              title:'Temporary Password',
+              text:'You must change your password before continuing.'
+            }).then(()=>{
+
+            this.router.navigate([
+            '/change-password'
+          ]);
+
+        });
+
+  return;
+
+}
+
           if(response.role==='ADMIN'){
 
             this.router.navigate([

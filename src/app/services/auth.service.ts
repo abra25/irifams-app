@@ -200,4 +200,16 @@ logout(showMessage = true) {
 
 }
 
+forgotPassword(data:any){
+
+  return this.http.post<any>(
+
+    `${environment.apiUrl}/auth/forgot-password`,
+
+    data
+
+  );
+
+}
+
 }

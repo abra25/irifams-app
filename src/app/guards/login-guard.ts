@@ -10,9 +10,19 @@ export const loginGuard: CanActivateFn = () => {
   const user = authService.getUser();
 
   // kama hajalogin, ruhusu afungue login page
-  if (!user) {
+  if(!user){
+
     return true;
-  }
+
+}
+
+if(user.temporaryPassword){
+
+    return router.createUrlTree([
+        '/change-password'
+    ]);
+
+}
 
   // kama amelogin, mpeleke dashboard yake
   switch (user.role) {

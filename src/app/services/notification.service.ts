@@ -54,4 +54,14 @@ getUnreadCount(){
 
   }
 
+  deleteNotification(id:number){
+
+  return this.http.delete(
+
+    `${this.api}/${id}`
+
+  );
+
+}
+
 }

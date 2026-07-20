@@ -9,7 +9,7 @@ import { roleGuard } from './guards/role-guard';
 
 export const routes: Routes = [
 
-  // PUBLIC
+  // PUBLIC & AUTH
 
   {
     path: '',
@@ -29,6 +29,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./auth/forgot-password/forgot-password')
         .then(m => m.ForgotPassword),
+  },
+
+  {
+    path:'change-password',
+    loadComponent:()=>import(
+        './auth/change-password/change-password'
+    ).then(m=>m.ChangePassword)
   },
 
   // ================= ADMIN =================
