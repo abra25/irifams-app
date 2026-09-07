@@ -1,41 +1,68 @@
 <div class="requests-page">
 
+    <!-- ================================================= -->
     <!-- HEADER -->
+    <!-- ================================================= -->
 
     <div class="page-header">
 
         <div>
-            <h2>Service Requests</h2>
+
+            <h2>
+                Service Requests
+            </h2>
+
             <p>
                 Review and manage farmers' service requests.
             </p>
+
         </div>
 
     </div>
 
 
+
+    <!-- ================================================= -->
     <!-- SUMMARY -->
+    <!-- ================================================= -->
 
     <div class="summary-grid">
 
-        <div class="summary-card">
-
-            <h3>{{requests.length}}</h3>
-            <span>Total Requests</span>
-
-        </div>
 
         <div class="summary-card">
 
-            <h3>{{pendingCount}}</h3>
-            <span>Pending Requests</span>
+            <h3>
+                {{requests.length}}
+            </h3>
+
+            <span>
+                Total Requests
+            </span>
 
         </div>
+
+
+
+        <div class="summary-card">
+
+            <h3>
+                {{pendingCount}}
+            </h3>
+
+            <span>
+                Pending Requests
+            </span>
+
+        </div>
+
 
     </div>
 
 
+
+    <!-- ================================================= -->
     <!-- TABLE -->
+    <!-- ================================================= -->
 
     <div class="table-card">
 
@@ -45,75 +72,264 @@
 
                 <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>ID</th>
-                    <th>Farmer</th>
-                    <th>Plot</th>
-                    <th>Service</th>
-                    <th>Preferred Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                        <th>ID</th>
 
-                </tr>
+                        <th>Farmer</th>
+
+                        <th>Plot</th>
+
+                        <th>Service</th>
+
+                        <th>Quantity</th>
+
+                        <th>Preferred Date</th>
+
+                        <th>Amount</th>
+
+                        <th>Status</th>
+
+                        <th>Action</th>
+
+                    </tr>
 
                 </thead>
 
+
                 <tbody>
 
-                <tr *ngFor="let request of requests">
 
-                    <td>{{request.id}}</td>
-                    <td>{{request.farmer?.fullName}}</td>
-                    <td>{{request.plot?.plotNo}}</td>
-                    <td>{{request.serviceType}}</td>
-                    <td>{{request.preferredDate}}</td>
+                    <!-- ================================================= -->
+                    <!-- REQUESTS -->
+                    <!-- ================================================= -->
 
-                    <td>
+                    <tr
+                        *ngFor="let request of requests"
+                    >
 
-                        <span class="status-badge"
-                              [ngClass]="request.status.toLowerCase()">
 
-                            {{request.status}}
+                        <!-- ID -->
 
-                        </span>
+                        <td>
+                            #{{request.id}}
+                        </td>
 
-                    </td>
 
-                    <td>
 
-                        <div class="actions">
+                        <!-- FARMER -->
 
-                            <button class="view-btn"
-                                    (click)="viewRequest(request)">
+                        <td>
+                            {{request.farmer?.fullName || 'N/A'}}
+                        </td>
 
-                                <i class="fas fa-eye"></i>
 
-                            </button>
 
-                            <button
-                                *ngIf="request.status==='PENDING'"
-                                class="approve-btn"
-                                (click)="openApproveModal(request)">
+                        <!-- PLOT -->
 
-                                <i class="fas fa-check"></i>
+                        <td>
+                            {{request.plot?.plotNo || 'N/A'}}
+                        </td>
 
-                            </button>
 
-                            <button
-                                *ngIf="request.status==='Pending'"
-                                class="reject-btn"
-                                (click)="rejectRequest(request)">
 
-                                <i class="fas fa-times"></i>
+                        <!-- SERVICE -->
 
-                            </button>
+                        <td>
 
-                        </div>
+                            {{getServiceLabel(request.serviceType)}}
 
-                    </td>
+                        </td>
 
-                </tr>
+
+
+                        <!-- QUANTITY -->
+
+                        <td>
+
+                            <span
+                                *ngIf="requiresQuantity(request.serviceType)"
+                            >
+
+                                {{request.quantity || 1}}
+
+                                {{getQuantityUnit(request.serviceType)}}
+
+                            </span>
+
+
+                            <span
+                                *ngIf="!requiresQuantity(request.serviceType)"
+                            >
+
+                                Plot Based
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- PREFERRED DATE -->
+
+                        <td>
+
+                            <span
+                                *ngIf="request.preferredDate"
+                            >
+
+                                {{
+                                    request.preferredDate
+                                    | date:'dd MMM yyyy'
+                                }}
+
+                            </span>
+
+
+                            <span
+                                *ngIf="!request.preferredDate"
+                            >
+
+                                N/A
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- AMOUNT -->
+
+                        <td>
+
+                            <span
+                                *ngIf="request.amount != null"
+                            >
+
+                                TZS
+                                {{request.amount | number}}
+
+                            </span>
+
+
+                            <span
+                                *ngIf="request.amount == null"
+                            >
+
+                                Pending Approval
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <span
+                                class="status-badge"
+                                [ngClass]="request.status?.toLowerCase()"
+                            >
+
+                                {{getStatusLabel(request.status)}}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- ACTION -->
+
+                        <td>
+
+                            <div class="actions">
+
+
+                                <!-- VIEW -->
+
+                                <button
+                                    class="view-btn"
+                                    title="View Request"
+                                    (click)="viewRequest(request)"
+                                >
+
+                                    <i class="fas fa-eye"></i>
+
+                                </button>
+
+
+
+                                <!-- APPROVE -->
+
+                                <button
+                                    *ngIf="request.status === 'PENDING'"
+                                    class="approve-btn"
+                                    title="Review and Approve Request"
+                                    (click)="approveRequest(request)"
+                                >
+
+                                    <i class="fas fa-check"></i>
+
+                                </button>
+
+
+
+                                <!-- REJECT -->
+
+                                <button
+                                    *ngIf="request.status === 'PENDING'"
+                                    class="reject-btn"
+                                    title="Reject Request"
+                                    (click)="rejectRequest(request)"
+                                >
+
+                                    <i class="fas fa-times"></i>
+
+                                </button>
+
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+
+
+                    <!-- ================================================= -->
+                    <!-- EMPTY STATE -->
+                    <!-- ================================================= -->
+
+                    <tr *ngIf="requests.length === 0">
+
+                        <td
+                            colspan="9"
+                            style="
+                                text-align: center;
+                                padding: 30px;
+                            "
+                        >
+
+                            <i
+                                class="fas fa-clipboard-list"
+                                style="
+                                    display: block;
+                                    font-size: 30px;
+                                    margin-bottom: 10px;
+                                "
+                            >
+                            </i>
+
+                            No service requests found.
+
+                        </td>
+
+                    </tr>
+
 
                 </tbody>
 
@@ -125,235 +341,444 @@
 
 </div>
 
-<div class="modal-overlay"
-     *ngIf="showApproveModal">
 
-  <div class="modal-card">
 
-    <div class="modal-header">
 
-      <h3>Approve Request</h3>
-
-      <button (click)="showApproveModal=false">
-        <i class="fas fa-times"></i>
-      </button>
-
-    </div>
-
-    <div class="modal-body">
-
-      <div class="detail-row">
-
-        <span>Farmer</span>
-
-        <strong>
-          {{selectedRequest?.farmer?.fullName}}
-        </strong>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Service Cost (TZS)</label>
-
-        <input
-          type="number"
-          [(ngModel)]="serviceCost">
-
-      </div>
-
-    </div>
-
-    <div class="modal-footer">
-
-      <button class="cancel-btn"
-              (click)="showApproveModal=false">
-
-        Cancel
-
-      </button>
-
-      <button class="save-btn"
-              (click)="approveRequest()">
-
-        Approve Request
-
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
+<!-- ================================================= -->
 <!-- VIEW REQUEST MODAL -->
+<!-- ================================================= -->
 
-<div class="modal-overlay"
-     *ngIf="showViewModal">
+<div
+    class="modal-overlay"
+    *ngIf="showViewModal"
+>
 
-  <div class="modal-card">
+    <div class="modal-card">
 
-    <div class="modal-header">
 
-      <h3>Request Details</h3>
+        <!-- ================================================= -->
+        <!-- MODAL HEADER -->
+        <!-- ================================================= -->
 
-      <button
-        (click)="showViewModal=false">
+        <div class="modal-header">
 
-        <i class="fas fa-times"></i>
+            <h3>
+                Request Details
+            </h3>
 
-      </button>
+
+            <button
+                type="button"
+                (click)="closeViewModal()"
+            >
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- MODAL BODY -->
+        <!-- ================================================= -->
+
+        <div class="modal-body">
+
+
+            <!-- REQUEST ID -->
+
+            <div class="detail-row">
+
+                <span>
+                    Request ID
+                </span>
+
+                <strong>
+                    #{{selectedRequest?.id}}
+                </strong>
+
+            </div>
+
+
+
+            <!-- FARMER -->
+
+            <div class="detail-row">
+
+                <span>
+                    Farmer Name
+                </span>
+
+                <strong>
+                    {{selectedRequest?.farmer?.fullName || 'N/A'}}
+                </strong>
+
+            </div>
+
+
+
+            <!-- PLOT -->
+
+            <div class="detail-row">
+
+                <span>
+                    Plot Number
+                </span>
+
+                <strong>
+                    {{selectedRequest?.plot?.plotNo || 'N/A'}}
+                </strong>
+
+            </div>
+
+
+
+            <!-- BLOCK -->
+
+            <div class="detail-row">
+
+                <span>
+                    Block
+                </span>
+
+                <strong>
+                    {{selectedRequest?.plot?.block || 'N/A'}}
+                </strong>
+
+            </div>
+
+
+
+            <!-- PLOT SIZE -->
+
+            <div class="detail-row">
+
+                <span>
+                    Plot Size
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.plot?.size || 'N/A'}}
+
+                    <span
+                        *ngIf="selectedRequest?.plot?.size"
+                    >
+                        Acre(s)
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- SERVICE -->
+
+            <div class="detail-row">
+
+                <span>
+                    Service Type
+                </span>
+
+                <strong>
+
+                    {{
+                        getServiceLabel(
+                            selectedRequest?.serviceType
+                        )
+                    }}
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- QUANTITY -->
+            <!-- ================================================= -->
+
+            <div
+                class="detail-row"
+                *ngIf="
+                    requiresQuantity(
+                        selectedRequest?.serviceType
+                    )
+                "
+            >
+
+                <span>
+                    Requested Quantity
+                </span>
+
+                <strong>
+
+                    {{selectedRequest?.quantity || 1}}
+
+                    {{
+                        getQuantityUnit(
+                            selectedRequest?.serviceType
+                        )
+                    }}
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- PRICING -->
+            <!-- ================================================= -->
+
+            <div class="detail-row">
+
+                <span>
+                    Price Per Unit
+                </span>
+
+                <strong>
+
+                    {{
+                        getServicePrice(
+                            selectedRequest?.serviceType
+                        )
+                    }}
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- PREFERRED DATE -->
+
+            <div class="detail-row">
+
+                <span>
+                    Preferred Date
+                </span>
+
+                <strong>
+
+                    <span
+                        *ngIf="selectedRequest?.preferredDate"
+                    >
+
+                        {{
+                            selectedRequest?.preferredDate
+                            | date:'dd MMM yyyy'
+                        }}
+
+                    </span>
+
+                    <span
+                        *ngIf="!selectedRequest?.preferredDate"
+                    >
+                        N/A
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- AMOUNT -->
+
+            <div class="detail-row">
+
+                <span>
+                    Final Amount
+                </span>
+
+                <strong>
+
+                    <span
+                        *ngIf="selectedRequest?.amount != null"
+                    >
+
+                        TZS
+                        {{
+                            selectedRequest?.amount
+                            | number
+                        }}
+
+                    </span>
+
+
+                    <span
+                        *ngIf="selectedRequest?.amount == null"
+                    >
+
+                        Awaiting Supervisor Approval
+
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- CONTROL NUMBER -->
+
+            <div class="detail-row">
+
+                <span>
+                    Control Number
+                </span>
+
+                <strong>
+
+                    {{
+                        selectedRequest?.controlNumber
+                        || 'Not Generated'
+                    }}
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- PAYMENT -->
+
+            <div class="detail-row">
+
+                <span>
+                    Payment
+                </span>
+
+                <strong>
+
+                    {{
+                        selectedRequest?.paymentConfirmed
+                        ? 'Paid'
+                        : (
+                            selectedRequest?.status
+                            === 'WAITING_PAYMENT'
+                            ? 'Waiting for Payment'
+                            : 'Not Confirmed'
+                        )
+                    }}
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- STATUS -->
+
+            <div class="detail-row">
+
+                <span>
+                    Status
+                </span>
+
+                <strong>
+
+                    <span
+                        class="status-badge"
+                        [ngClass]="
+                            selectedRequest?.status?.toLowerCase()
+                        "
+                    >
+
+                        {{
+                            getStatusLabel(
+                                selectedRequest?.status
+                            )
+                        }}
+
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- REQUEST DATE -->
+
+            <div class="detail-row">
+
+                <span>
+                    Request Date
+                </span>
+
+                <strong>
+
+                    <span
+                        *ngIf="selectedRequest?.createdAt"
+                    >
+
+                        {{
+                            selectedRequest?.createdAt
+                            | date:'dd MMM yyyy, HH:mm'
+                        }}
+
+                    </span>
+
+                    <span
+                        *ngIf="!selectedRequest?.createdAt"
+                    >
+                        N/A
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- NOTES -->
+
+            <div class="notes-section">
+
+                <h4>
+                    Farmer Notes
+                </h4>
+
+                <p>
+
+                    {{
+                        selectedRequest?.notes
+                        || 'No notes provided'
+                    }}
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- MODAL FOOTER -->
+        <!-- ================================================= -->
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="cancel-btn"
+                (click)="closeViewModal()"
+            >
+
+                Close
+
+            </button>
+
+        </div>
+
 
     </div>
-
-    <div class="modal-body">
-
-      <div class="detail-row">
-
-        <span>Request ID</span>
-
-        <strong>
-
-          #{{selectedRequest?.id}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Farmer Name</span>
-
-        <strong>
-
-          {{selectedRequest?.farmer?.fullName}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Plot Number</span>
-
-        <strong>
-
-          {{selectedRequest?.plot?.plotNo}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Block</span>
-
-        <strong>
-
-          {{selectedRequest?.plot?.block}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Service Type</span>
-
-        <strong>
-
-          {{selectedRequest?.serviceType}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Preferred Date</span>
-
-        <strong>
-
-          {{selectedRequest?.preferredDate
-          | date:'dd MMM yyyy'}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Amount</span>
-
-        <strong>
-
-          TZS
-
-          {{selectedRequest?.amount
-          || 0 | number}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Control Number</span>
-
-        <strong>
-
-          {{selectedRequest?.controlNumber
-          || 'Not Generated'}}
-
-        </strong>
-
-      </div>
-
-      <div class="detail-row">
-
-        <span>Status</span>
-
-        <strong>
-
-          <span
-            class="status-badge"
-            [ngClass]="selectedRequest?.status?.toLowerCase()">
-
-            {{selectedRequest?.status}}
-
-          </span>
-
-        </strong>
-
-      </div>
-
-      <div class="notes-section">
-
-        <h4>Farmer Notes</h4>
-
-        <p>
-
-          {{selectedRequest?.notes
-          || 'No notes provided'}}
-
-        </p>
-
-      </div>
-
-    </div>
-
-    <div class="modal-footer">
-
-      <button
-        class="cancel-btn"
-        (click)="showViewModal=false">
-
-        Close
-
-      </button>
-
-    </div>
-
-  </div>
 
 </div>

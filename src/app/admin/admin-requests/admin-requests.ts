@@ -16,83 +16,99 @@ export class AdminRequests implements OnInit {
   constructor(
     private requestService: RequestService,
     private cdr: ChangeDetectorRef
-  ){}
+  ) {}
 
-  selectedStatus='All';
-  searchTerm='';
+  selectedStatus = 'All';
+  searchTerm = '';
 
-  serviceCost = 0;
+  showModal = false;
+  selectedRequest: any = null;
 
-  showModal=false;
-  selectedRequest:any;
-
-  requests:any[]=[];
+  requests: any[] = [];
 
   ngOnInit(): void {
-
     this.loadRequests();
-
   }
 
-  loadRequests(){
+  // =========================================================
+  // LOAD ALL REQUESTS
+  // =========================================================
 
-  this.requestService
+  loadRequests(): void {
+
+    this.requestService
       .getAllRequests()
       .subscribe({
 
-        next:(res)=>{
+        next: (res) => {
 
           this.requests = [...res];
+
           this.cdr.detectChanges();
 
         },
 
-        error:(err)=>{
+        error: (err) => {
 
-          console.log("STATUS:", err.status);
-          console.log("BODY:", err.error);
-          console.log("HEADERS:", err.headers);
+          console.log('STATUS:', err.status);
+          console.log('BODY:', err.error);
+          console.log('HEADERS:', err.headers);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to Load Requests',
+            text:
+              err?.error?.message ||
+              err?.error ||
+              'Unable to load service requests.'
+          });
 
         }
 
       });
 
-}
+  }
 
-  get filteredRequests(){
 
-    return this.requests.filter(request=>{
+  // =========================================================
+  // FILTER REQUESTS
+  // =========================================================
+
+  get filteredRequests(): any[] {
+
+    return this.requests.filter(request => {
 
       const statusMatch =
+        this.selectedStatus === 'All' ||
+        request.status === this.selectedStatus.toUpperCase();
 
-        this.selectedStatus === 'All'
-
-        ||
-
-        request.status ===
-        this.selectedStatus.toUpperCase();
+      const searchValue =
+        this.searchTerm.toLowerCase().trim();
 
       const searchMatch =
+        !searchValue ||
 
         request.farmer?.fullName
-        ?.toLowerCase()
-        .includes(
-          this.searchTerm.toLowerCase()
-        )
+          ?.toLowerCase()
+          .includes(searchValue)
 
         ||
 
         request.id
-        ?.toString()
-        .includes(this.searchTerm)
+          ?.toString()
+          .includes(searchValue)
 
         ||
 
         request.plot?.plotNo
-        ?.toLowerCase()
-        .includes(
-          this.searchTerm.toLowerCase()
-        );
+          ?.toLowerCase()
+          .includes(searchValue)
+
+        ||
+
+        request.serviceType
+          ?.toLowerCase()
+          .includes(searchValue);
 
       return statusMatch && searchMatch;
 
@@ -100,7 +116,12 @@ export class AdminRequests implements OnInit {
 
   }
 
-  openDetails(request:any){
+
+  // =========================================================
+  // OPEN REQUEST DETAILS
+  // =========================================================
+
+  openDetails(request: any): void {
 
     this.selectedRequest = request;
 
@@ -108,188 +129,205 @@ export class AdminRequests implements OnInit {
 
   }
 
-  approveRequest(id:number){
 
-  Swal.fire({
+  // =========================================================
+  // APPROVE REQUEST
+  // =========================================================
+  /*
+   * IMPORTANT:
+   * Frontend does NOT send serviceCost.
+   *
+   * Backend automatically:
+   * - Calculates service amount
+   * - Generates control number
+   * - Changes status to WAITING_PAYMENT
+   */
 
-    title:'Approve Request?',
+  approveRequest(id: number): void {
 
-    icon:'question',
+    Swal.fire({
 
-    showCancelButton:true
+      title: 'Approve Request?',
+      text: 'The system will automatically calculate the service amount and generate a control number.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Approve',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
 
-  }).then(result=>{
+    }).then(result => {
 
-    if(result.isConfirmed){
-
-       this.requestService
-
-        .approveRequest(
-
-            this.selectedRequest.id,
-
-            this.serviceCost
-
-        )
-
-          .subscribe({
-
-            next:()=>{
-
-              Swal.fire(
-                'Success',
-                'Request Approved',
-                'success'
-              );
-
-              this.loadRequests();
-
-            }
-
-          });
-
-    }
-
-  });
-
-}
-
-  rejectRequest(id:number){
-
-  Swal.fire({
-
-    title:'Reject Request?',
-
-    icon:'warning',
-
-    showCancelButton:true
-
-  }).then(result=>{
-
-    if(result.isConfirmed){
+      if (!result.isConfirmed) {
+        return;
+      }
 
       this.requestService
-          .rejectRequest(id)
+        .approveRequest(id)
+        .subscribe({
 
-          .subscribe({
+          next: (response) => {
 
-            next:()=>{
+            Swal.fire({
 
-              Swal.fire(
-                'Rejected',
-                'Request Rejected',
-                'success'
-              );
+              icon: 'success',
+              title: 'Request Approved',
+              html: `
+                <p>The request has been approved successfully.</p>
 
-              this.loadRequests();
+                ${
+                  response?.amount != null
+                    ? `<strong>Amount: TZS ${Number(response.amount).toLocaleString()}</strong><br>`
+                    : ''
+                }
 
-            }
+                ${
+                  response?.controlNumber
+                    ? `<strong>Control Number: ${response.controlNumber}</strong>`
+                    : ''
+                }
+              `,
+              confirmButtonText: 'OK'
 
-          });
+            });
 
-    }
+            this.loadRequests();
 
-  });
+          },
 
-}
+          error: (err) => {
 
-  generateControlNumber(id:number){
+            console.log('APPROVE ERROR:', err);
 
-  Swal.fire({
+            Swal.fire({
 
-    title:'Generate Control Number?',
+              icon: 'error',
+              title: 'Approval Failed',
+              text:
+                err?.error?.message ||
+                err?.error ||
+                'Unable to approve this request.'
 
-    icon:'question',
+            });
 
-    showCancelButton:true
+          }
 
-  }).then(result=>{
+        });
 
-    if(result.isConfirmed){
+    });
+
+  }
+
+
+  // =========================================================
+  // REJECT REQUEST
+  // =========================================================
+
+  rejectRequest(id: number): void {
+
+    Swal.fire({
+
+      title: 'Reject Request?',
+      text: 'Are you sure you want to reject this service request?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Reject',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
+
+    }).then(result => {
+
+      if (!result.isConfirmed) {
+        return;
+      }
 
       this.requestService
-          .generateControlNumber(id)
+        .rejectRequest(id)
+        .subscribe({
 
-          .subscribe({
+          next: () => {
 
-            next:()=>{
+            Swal.fire({
 
-              Swal.fire(
-                'Success',
-                'Control Number Generated',
-                'success'
-              );
+              icon: 'success',
+              title: 'Request Rejected',
+              text: 'The service request has been rejected successfully.',
+              timer: 2000,
+              showConfirmButton: false
 
-              this.loadRequests();
+            });
 
-            }
+            this.loadRequests();
 
-          });
+          },
 
-    }
+          error: (err) => {
 
-  });
+            console.log('REJECT ERROR:', err);
 
-}
+            Swal.fire({
 
-  get pendingCount(){
+              icon: 'error',
+              title: 'Rejection Failed',
+              text:
+                err?.error?.message ||
+                err?.error ||
+                'Unable to reject this request.'
+
+            });
+
+          }
+
+        });
+
+    });
+
+  }
+
+
+  // =========================================================
+  // SUMMARY COUNTS
+  // =========================================================
+
+  get pendingCount(): number {
 
     return this.requests.filter(
-
       r => r.status === 'PENDING'
-
     ).length;
 
   }
 
- get waitingPaymentCount(){
+
+  get waitingPaymentCount(): number {
 
     return this.requests.filter(
-
-        r => r.status === 'WAITING_PAYMENT'
-
+      r => r.status === 'WAITING_PAYMENT'
     ).length;
 
-}
+  }
 
-  get completedCount(){
+
+  get completedCount(): number {
 
     return this.requests.filter(
-
       r => r.status === 'COMPLETED'
-
     ).length;
 
   }
 
-  verifyPayment(request:any) {
 
-
-
-    request.paymentStatus = 'Paid';
-
-
-
-    alert('Payment verified successfully');
-
-
-
-  }
-
-
-
-  rejectPayment(request:any) {
-
-
-
-    request.paymentStatus = 'Rejected';
-
-
-
-    alert('Payment rejected');
-
-
-
-  }
+  // =========================================================
+  // PAYMENT METHODS
+  // =========================================================
+  /*
+   * Payment verification is now handled by PaymentController.
+   *
+   * These old local methods are intentionally removed:
+   *
+   * verifyPayment()
+   * rejectPayment()
+   *
+   * The Admin Requests component should not change
+   * payment status locally.
+   */
 
 }

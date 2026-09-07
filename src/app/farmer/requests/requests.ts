@@ -23,241 +23,592 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './requests.css'
 })
 export class Requests implements OnInit {
-showModal: any;
 
   constructor(
-
     private requestService: RequestService,
-
     private plotService: PlotService,
-
-    private authService:AuthService,
-
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
+  ) {}
 
-  ){}
 
-  //=========================
+  // =========================================================
   // DATA
-  //=========================
+  // =========================================================
 
-  requests:any[]=[];
+  requests: any[] = [];
 
-  plots:any[]=[];
+  plots: any[] = [];
 
-  selectedPlot:any=null;
+  selectedPlot: any = null;
 
-  selectedRequest:any=null;
+  selectedRequest: any = null;
 
-  
   showAddModal = false;
 
   showDetailsModal = false;
 
-  loading=false;
+  loading = false;
 
-  currentUser:any;
+  currentUser: any;
 
-  //=========================
+
+  // =========================================================
   // FORM
-  //=========================
+  // =========================================================
 
-  request={
+  request = {
+    plotId: 0,
+    serviceType: '',
+    quantity: null as number | null,
+    preferredDate: '',
+    notes: ''
+  };
 
-    plotId:0,
 
-    serviceType:'',
+  // =========================================================
+  // AVAILABLE SERVICES
+  // =========================================================
 
-    preferredDate:'',
+  services = [
 
-    notes:''
+    // =====================================================
+    // MACHINE / TRACTOR SERVICES
+    // Quantity is calculated automatically from plot size
+    // =====================================================
 
-};
+    {
+      value: 'KUBURUGIWA',
+      label: 'Kuburugiwa',
+      description: 'Land preparation / tractor service',
+      price: 'TZS 15,000 per 1/4 acre',
+      quantityLabel: '',
+      quantityPlaceholder: ''
+    },
 
-  services=[
+    {
+      value: 'KUCHIMBA',
+      label: 'Kuchimba',
+      description: 'Ploughing service',
+      price: 'TZS 20,000 per 1/4 acre',
+      quantityLabel: '',
+      quantityPlaceholder: ''
+    },
 
-    'TRACTOR_SERVICE',
+    {
+      value: 'KUVUNA',
+      label: 'Kuvuna',
+      description: 'Harvesting service',
+      price: 'TZS 30,000 per 1/4 acre',
+      quantityLabel: '',
+      quantityPlaceholder: ''
+    },
 
-    'HARVESTING_SERVICE'
+
+    // =====================================================
+    // NON-MACHINE SERVICES
+    // Farmer enters quantity
+    // =====================================================
+
+    {
+      value: 'DAWA_CHUPA',
+      label: 'Dawa Chupa',
+      description: 'Farm chemical supplied in bottle',
+      price: 'TZS 25,000 per bottle',
+      quantityLabel: 'Number of Bottles',
+      quantityPlaceholder: 'Enter number of bottles'
+    },
+
+    {
+      value: 'DAWA_VIFUKO_KUBWA',
+      label: 'Dawa Vifuko Kubwa',
+      description: 'Large-pack farm chemical',
+      price: 'TZS 30,000 per bag',
+      quantityLabel: 'Number of Large Bags',
+      quantityPlaceholder: 'Enter number of large bags'
+    },
+
+    {
+      value: 'DAWA_VIFUKO_NDOGO',
+      label: 'Dawa Vifuko Ndogo',
+      description: 'Small-pack farm chemical',
+      price: 'TZS 12,000 per bag',
+      quantityLabel: 'Number of Small Bags',
+      quantityPlaceholder: 'Enter number of small bags'
+    },
+
+    {
+      value: 'KUTILIWA_DAWA',
+      label: 'Kutiliwa Dawa Shambani',
+      description: 'Farm spraying/application service',
+      price: 'TZS 10,000 per application',
+      quantityLabel: 'Number of Applications',
+      quantityPlaceholder: 'Enter number of applications'
+    },
+
+    {
+      value: 'MBOLEA',
+      label: 'Mbolea',
+      description: 'Fertilizer',
+      price: 'TZS 1,500 per kg',
+      quantityLabel: 'Quantity in Kilograms (KG)',
+      quantityPlaceholder: 'Enter quantity in KG'
+    },
+
+    {
+      value: 'MBEGU_MPUNGA',
+      label: 'Mbegu ya Mpunga',
+      description: 'Rice seed',
+      price: 'TZS 6,000 per 5kg bag',
+      quantityLabel: 'Number of 5KG Bags',
+      quantityPlaceholder: 'Enter number of 5KG bags'
+    }
 
   ];
 
-  //=========================
+
+  // =========================================================
   // INIT
-  //=========================
+  // =========================================================
 
   ngOnInit(): void {
 
-    this.currentUser =
-
-    this.authService.getUser();
+    this.currentUser = this.authService.getUser();
 
     this.loadPlots();
 
     this.loadRequests();
-
   }
 
-  //=========================
-  // LOAD PLOTS
-  //=========================
 
-  loadPlots(){
+  // =========================================================
+  // LOAD FARMER PLOTS
+  // =========================================================
+
+  loadPlots(): void {
 
     this.plotService
-        .getMyFarmPlots()
+      .getMyFarmPlots()
+      .subscribe({
 
-        .subscribe({
+        next: (res) => {
 
-          next:(res)=>{
+          this.plots = res || [];
 
-            this.plots=res;
+          this.cdr.detectChanges();
+        },
 
-            this.cdr.detectChanges();
+        error: (err) => {
 
-          },
+          console.log(
+            'LOAD PLOTS ERROR:',
+            err
+          );
 
-          error:()=>{
+          Swal.fire(
+            'Error',
+            err?.error?.message ||
+            err?.error ||
+            'Failed to load your farm plots',
+            'error'
+          );
+        }
 
-            Swal.fire(
-              'Error',
-              'Failed to load plots',
-              'error'
-            );
-
-          }
-
-        });
-
+      });
   }
 
-  //=========================
-  // LOAD REQUESTS
-  //=========================
 
-  loadRequests(){
+  // =========================================================
+  // LOAD FARMER REQUESTS
+  // =========================================================
+
+  loadRequests(): void {
 
     this.requestService
+      .getMyFarmRequests()
+      .subscribe({
 
-        .getMyFarmRequests()
+        next: (res) => {
 
-        .subscribe({
+          this.requests = res || [];
 
-          next:(res)=>{
+          this.cdr.detectChanges();
+        },
 
-            this.requests=res;
+        error: (err) => {
 
-            this.cdr.detectChanges();
+          console.log(
+            'LOAD REQUESTS ERROR:',
+            err
+          );
 
-          },
+          Swal.fire(
+            'Error',
+            err?.error?.message ||
+            err?.error ||
+            'Unable to load your service requests',
+            'error'
+          );
+        }
 
-          error:()=>{
-
-            Swal.fire(
-              'Error',
-              'Unable to load requests',
-              'error'
-            );
-
-          }
-
-        });
-
+      });
   }
 
-  //=========================
+
+  // =========================================================
   // SELECT PLOT
-  //=========================
+  // =========================================================
 
-  onPlotChange(){
+  onPlotChange(): void {
 
-    this.selectedPlot=
-
+    this.selectedPlot =
       this.plots.find(
+        p => Number(p.id) === Number(this.request.plotId)
+      ) || null;
 
-        p=>p.id==this.request.plotId
+    this.cdr.detectChanges();
+  }
 
+
+  // =========================================================
+  // SERVICE CHANGE
+  // =========================================================
+
+  onServiceChange(): void {
+
+    /*
+     * Reset quantity whenever service changes
+     */
+
+    this.request.quantity = null;
+
+    this.cdr.detectChanges();
+  }
+
+
+  // =========================================================
+  // GET SELECTED SERVICE
+  // =========================================================
+
+  get selectedService(): any {
+
+    return this.services.find(
+      service =>
+        service.value === this.request.serviceType
+    );
+  }
+
+
+  // =========================================================
+  // CHECK IF SERVICE IS MACHINE SERVICE
+  // =========================================================
+
+  isMachineService(): boolean {
+
+    return [
+
+      'KUBURUGIWA',
+
+      'KUCHIMBA',
+
+      'KUVUNA'
+
+    ].includes(
+      this.request.serviceType
+    );
+  }
+
+
+  // =========================================================
+  // CHECK IF QUANTITY IS REQUIRED
+  // =========================================================
+
+  get requiresQuantity(): boolean {
+
+    if (!this.request.serviceType) {
+      return false;
+    }
+
+    return !this.isMachineService();
+  }
+
+
+  // =========================================================
+  // GET QUANTITY LABEL
+  // =========================================================
+
+  get quantityLabel(): string {
+
+    return this.selectedService?.quantityLabel ||
+      'Quantity';
+  }
+
+
+  // =========================================================
+  // GET QUANTITY PLACEHOLDER
+  // =========================================================
+
+  get quantityPlaceholder(): string {
+
+    return this.selectedService?.quantityPlaceholder ||
+      'Enter quantity';
+  }
+
+
+  // =========================================================
+  // GET SERVICE LABEL
+  // =========================================================
+
+  getServiceLabel(serviceType: string): string {
+
+    if (!serviceType) {
+      return 'N/A';
+    }
+
+    const service =
+      this.services.find(
+        item => item.value === serviceType
       );
 
+    return service
+      ? service.label
+      : serviceType.replaceAll('_', ' ');
   }
 
-  //=========================
-  // OPEN MODAL
-  //=========================
 
-  openCreateModal(){
+  // =========================================================
+  // GET STATUS LABEL
+  // =========================================================
 
-    this.showAddModal=true;
+  getStatusLabel(status: string): string {
 
+    if (!status) {
+      return 'N/A';
+    }
+
+    return status
+      .replaceAll('_', ' ')
+      .replace(
+        /\b\w/g,
+        letter => letter.toUpperCase()
+      );
   }
 
-  //=========================
-  // CLOSE MODAL
-  //=========================
 
-  closeModal(){
+  // =========================================================
+  // OPEN CREATE MODAL
+  // =========================================================
 
-    this.showAddModal=false;
+  openCreateModal(): void {
 
     this.clearForm();
 
+    this.showAddModal = true;
+
+    this.cdr.detectChanges();
   }
 
-  //=========================
+
+  // =========================================================
+  // CLOSE CREATE MODAL
+  // =========================================================
+
+  closeModal(): void {
+
+    this.showAddModal = false;
+
+    this.clearForm();
+
+    this.cdr.detectChanges();
+  }
+
+
+  // =========================================================
   // SUBMIT REQUEST
-  //=========================
+  // =========================================================
 
-  submitRequest(){
+  submitRequest(): void {
 
-  if(
+    // =====================================================
+    // USER CHECK
+    // =====================================================
 
-    !this.request.plotId ||
+    if (!this.currentUser?.id) {
 
-    !this.request.serviceType ||
+      Swal.fire(
+        'Session Error',
+        'Your user session could not be found. Please login again.',
+        'error'
+      );
 
-    !this.request.preferredDate
+      return;
+    }
 
-  ){
 
-    Swal.fire(
+    // =====================================================
+    // PLOT CHECK
+    // =====================================================
 
-      'Validation',
+    if (!this.request.plotId) {
 
-      'Please complete all required fields',
+      Swal.fire(
+        'Validation',
+        'Please select a farm plot.',
+        'warning'
+      );
 
-      'warning'
+      return;
+    }
 
+
+    // =====================================================
+    // SERVICE CHECK
+    // =====================================================
+
+    if (!this.request.serviceType) {
+
+      Swal.fire(
+        'Validation',
+        'Please select a service type.',
+        'warning'
+      );
+
+      return;
+    }
+
+
+    // =====================================================
+    // QUANTITY CHECK
+    // ONLY FOR NON-MACHINE SERVICES
+    // =====================================================
+
+    if (
+      this.requiresQuantity &&
+      (
+        this.request.quantity === null ||
+        this.request.quantity === undefined ||
+        Number(this.request.quantity) <= 0
+      )
+    ) {
+
+      Swal.fire(
+        'Validation',
+        `Please enter a valid ${this.quantityLabel}.`,
+        'warning'
+      );
+
+      return;
+    }
+
+
+    // =====================================================
+    // DATE CHECK
+    // =====================================================
+
+    if (!this.request.preferredDate) {
+
+      Swal.fire(
+        'Validation',
+        'Please select your preferred service date.',
+        'warning'
+      );
+
+      return;
+    }
+
+
+    // =====================================================
+    // PREVENT PAST DATES
+    // =====================================================
+
+    const selectedDate =
+      new Date(this.request.preferredDate);
+
+    selectedDate.setHours(
+      0,
+      0,
+      0,
+      0
     );
 
-    return;
 
-  }
+    const today =
+      new Date();
 
-  this.loading = true;
+    today.setHours(
+      0,
+      0,
+      0,
+      0
+    );
 
-  this.requestService
 
+    if (selectedDate < today) {
+
+      Swal.fire(
+        'Validation',
+        'Preferred service date cannot be in the past.',
+        'warning'
+      );
+
+      return;
+    }
+
+
+    // =====================================================
+    // LOADING
+    // =====================================================
+
+    this.loading = true;
+
+
+    // =====================================================
+    // PAYLOAD
+    // =====================================================
+
+    const payload = {
+
+      serviceType:
+        this.request.serviceType,
+
+      /*
+       * Machine services:
+       * quantity = null
+       *
+       * Other services:
+       * farmer enters quantity
+       */
+
+      quantity:
+        this.requiresQuantity
+          ? Number(this.request.quantity)
+          : null,
+
+      preferredDate:
+        this.request.preferredDate,
+
+      notes:
+        this.request.notes?.trim() || ''
+    };
+
+
+    // =====================================================
+    // SUBMIT
+    // =====================================================
+
+    this.requestService
       .submitRequest(
 
         this.currentUser.id,
 
         this.request.plotId,
 
-        {
-
-          serviceType:this.request.serviceType,
-
-          preferredDate:this.request.preferredDate,
-
-          notes:this.request.notes
-
-        }
+        payload
 
       )
-
       .subscribe({
 
-        next:()=>{
+        next: () => {
 
           this.loading = false;
 
@@ -267,118 +618,190 @@ showModal: any;
 
           this.loadRequests();
 
+
           Swal.fire({
 
-            icon:'success',
+            icon: 'success',
 
-            title:'Success',
+            title: 'Request Submitted',
 
-            text:'Service request submitted successfully',
+            text:
+              'Your service request has been submitted successfully and is awaiting review.',
 
-            timer:1800,
+            confirmButtonText:
+              'OK',
 
-            showConfirmButton:false
+            timer:
+              3000,
 
+            timerProgressBar:
+              true
           });
 
+
+          this.cdr.detectChanges();
         },
 
-        error:(err)=>{
+
+        error: (err) => {
 
           this.loading = false;
 
-          Swal.fire(
-
-            'Error',
-
-            err.error ||
-
-            'Failed to submit request',
-
-            'error'
-
+          console.log(
+            'SUBMIT REQUEST ERROR:',
+            err
           );
 
+
+          Swal.fire({
+
+            icon:
+              'error',
+
+            title:
+              'Request Failed',
+
+            text:
+              err?.error?.message ||
+              err?.error ||
+              'Failed to submit service request.'
+          });
+
+
+          this.cdr.detectChanges();
         }
 
       });
-
-}
-
-  //=========================
-  // DETAILS
-  //=========================
-
-  openDetails(request:any){
-
-    this.selectedRequest=request;
-
-    this.showDetailsModal=true;
-
   }
 
-  //=========================
-  // CLEAR
-  //=========================
 
-  clearForm(){
+  // =========================================================
+  // OPEN REQUEST DETAILS
+  // =========================================================
 
-    this.request={
+  openDetails(request: any): void {
 
-    plotId:0,
+    this.selectedRequest =
+      request;
 
-    serviceType:'',
+    this.showDetailsModal =
+      true;
 
-    preferredDate:'',
-
-    notes:''
-
-};
-
-    this.selectedPlot=null;
-
+    this.cdr.detectChanges();
   }
 
-  //=========================
+
+  // =========================================================
+  // CLOSE DETAILS
+  // =========================================================
+
+  closeDetails(): void {
+
+    this.showDetailsModal =
+      false;
+
+    this.selectedRequest =
+      null;
+
+    this.cdr.detectChanges();
+  }
+
+
+  // =========================================================
+  // CLEAR FORM
+  // =========================================================
+
+  clearForm(): void {
+
+    this.request = {
+
+      plotId:
+        0,
+
+      serviceType:
+        '',
+
+      quantity:
+        null,
+
+      preferredDate:
+        '',
+
+      notes:
+        ''
+    };
+
+
+    this.selectedPlot =
+      null;
+
+    this.loading =
+      false;
+  }
+
+
+  // =========================================================
+  // TRACK BY REQUEST
+  // =========================================================
+
+  trackByRequestId(
+    index: number,
+    request: any
+  ): number {
+
+    return request.id;
+  }
+
+
+  // =========================================================
   // SUMMARY
-  //=========================
+  // =========================================================
 
-  get totalRequests(){
+  get totalRequests(): number {
 
     return this.requests.length;
-
   }
 
-   get pendingCount(){
 
-  return this.requests.filter(
-
-    x => x.status === 'PENDING'
-
-  ).length;
-
-}
-
-get completedCount(){
-
-  return this.requests.filter(
-
-    x => x.status === 'COMPLETED'
-
-  ).length;
-
-}
-
-  get approvedCount(){
+  get pendingCount(): number {
 
     return this.requests.filter(
-
-      x=>x.status==='APPROVED'
-
+      x => x.status === 'PENDING'
     ).length;
-
   }
 
-  
+
+  get completedCount(): number {
+
+    return this.requests.filter(
+      x => x.status === 'COMPLETED'
+    ).length;
+  }
+
+
+  get waitingPaymentCount(): number {
+
+    return this.requests.filter(
+      x => x.status === 'WAITING_PAYMENT'
+    ).length;
+  }
+
+
+  get paidCount(): number {
+
+    return this.requests.filter(
+      x =>
+        x.status === 'PAID' ||
+        x.paymentConfirmed === true
+    ).length;
+  }
+
+
+  get rejectedCount(): number {
+
+    return this.requests.filter(
+      x => x.status === 'REJECTED'
+    ).length;
+  }
 
 }

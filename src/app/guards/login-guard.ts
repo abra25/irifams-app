@@ -7,39 +7,70 @@ export const loginGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const user = authService.getUser();
-
-  // kama hajalogin, ruhusu afungue login page
-  if(!user){
+  /*
+   * User is not logged in
+   */
+  if (!authService.isLoggedIn()) {
 
     return true;
 
-}
+  }
 
-if(user.temporaryPassword){
+
+  const user = authService.getUser();
+
+  if (!user) {
+
+    return true;
+
+  }
+
+
+  /*
+   * Temporary password must be changed
+   */
+  if (user.temporaryPassword) {
 
     return router.createUrlTree([
-        '/change-password'
+      '/change-password'
     ]);
 
-}
+  }
 
-  // kama amelogin, mpeleke dashboard yake
+
+  /*
+   * Already logged in users
+   * should not remain on login page.
+   */
   switch (user.role) {
 
     case 'ADMIN':
-      return router.createUrlTree(['/admin/dashboard']);
+
+      return router.createUrlTree([
+        '/admin/dashboard'
+      ]);
+
 
     case 'SUPERVISOR':
-      return router.createUrlTree(['/supervisor/dashboard']);
+
+      return router.createUrlTree([
+        '/supervisor/dashboard'
+      ]);
+
 
     case 'FARMER':
-      return router.createUrlTree(['/farmer/dashboard']);
 
-    case 'STAKEHOLDER':
-      return router.createUrlTree(['/stakeholder']);
+      return router.createUrlTree([
+        '/farmer/dashboard'
+      ]);
+
 
     default:
+
+      authService.logout(false);
+
       return true;
+
   }
+
 };

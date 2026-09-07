@@ -1,8 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
+
 import { UserService } from '../../services/user.service';
+
+import { AuthService } from '../../services/auth.service';
+
 import Swal from 'sweetalert2';
+
 
 interface Farmer {
 
@@ -10,7 +21,11 @@ interface Farmer {
 
   employeeNo?: string;
 
+  username?: string;
+
   fullName: string;
+
+  email?: string;
 
   phone: string;
 
@@ -22,193 +37,490 @@ interface Farmer {
 
   enabled?: boolean;
 
-  email?: string;
-
 }
+
+
 @Component({
+
   selector: 'app-s-farmers',
+
   imports: [
     CommonModule,
     FormsModule
   ],
+
   templateUrl: './s-farmers.html',
+
   styleUrl: './s-farmers.css'
+
 })
 
-export class SFarmers implements OnInit {
+
+export class SFarmers
+  implements OnInit {
+
+
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
 
   constructor(
+
     private userService: UserService,
-    
+
+    private authService: AuthService,
+
     private cdr: ChangeDetectorRef
-  ){}
 
-  searchTerm='';
+  ) {}
 
-  showAddModal=false;
-  showViewModal=false;
-  showEditModal=false;
+
+  // =========================================================
+  // UI
+  // =========================================================
+
+  searchTerm = '';
+
+  showAddModal = false;
+
+  showViewModal = false;
+
+  showEditModal = false;
+
+
+  // =========================================================
+  // DATA
+  // =========================================================
 
   selectedFarmer!: Farmer;
 
   farmers: Farmer[] = [];
 
+
+  // =========================================================
+  // CURRENT SUPERVISOR BLOCK
+  // =========================================================
+
+  currentSupervisorBlock = '';
+
+
+  // =========================================================
+  // NEW FARMER
+  // =========================================================
+
   newFarmer: Farmer = {
 
-    employeeNo:'',
-    fullName:'',
-    phone:'',
-    blockName:'',
-    gender:'',
-    role:'FARMER'
+    employeeNo: '',
+
+    username: '',
+
+    fullName: '',
+
+    email: '',
+
+    phone: '',
+
+    blockName: '',
+
+    gender: '',
+
+    role: 'FARMER'
 
   };
 
+
+  // =========================================================
+  // INIT
+  // =========================================================
+
   ngOnInit(): void {
-    
+
+    this.loadSupervisorBlock();
 
     this.loadFarmers();
 
   }
-loadFarmers(){
 
-  this.userService
+
+  // =========================================================
+  // GET CURRENT SUPERVISOR BLOCK
+  // =========================================================
+
+  private loadSupervisorBlock(): void {
+
+    const user =
+      this.authService.getUser();
+
+
+    if (user) {
+
+      this.currentSupervisorBlock =
+        user.blockName || '';
+
+    }
+
+
+    /*
+     * Always keep the new farmer's block
+     * equal to the logged-in supervisor's block.
+     */
+
+    this.newFarmer.blockName =
+      this.currentSupervisorBlock;
+
+  }
+
+
+  // =========================================================
+  // OPEN ADD MODAL
+  // =========================================================
+
+  openAddModal(): void {
+
+    /*
+     * Refresh the supervisor block from
+     * the currently logged-in user.
+     */
+
+    this.loadSupervisorBlock();
+
+
+    /*
+     * Reset the form while preserving
+     * the supervisor's block.
+     */
+
+    this.newFarmer = {
+
+      employeeNo: '',
+
+      username: '',
+
+      fullName: '',
+
+      email: '',
+
+      phone: '',
+
+      blockName:
+        this.currentSupervisorBlock,
+
+      gender: '',
+
+      role: 'FARMER'
+
+    };
+
+
+    this.showAddModal = true;
+
+  }
+
+
+  // =========================================================
+  // LOAD FARMERS
+  // =========================================================
+
+  loadFarmers(): void {
+
+    this.userService
       .getMyFarmers()
       .subscribe({
 
-        next:(res)=>{
+        next: (res) => {
 
-          this.farmers = [...res];
-          
-            this.cdr.detectChanges();
+          this.farmers = [
+            ...res
+          ];
+
+
+          this.cdr.detectChanges();
+
         },
 
-        error:()=>{
+
+        error: () => {
 
           Swal.fire(
+
             'Error',
+
             'Failed to load farmers',
+
             'error'
+
           );
 
         }
 
       });
 
-}
+  }
 
-  get filteredFarmers(){
 
-    return this.farmers.filter(farmer =>
+  // =========================================================
+  // SEARCH / FILTER
+  // =========================================================
 
-      farmer.fullName
-      .toLowerCase()
-      .includes(
-        this.searchTerm.toLowerCase()
-      )
+  get filteredFarmers(): Farmer[] {
 
-      ||
+    const search =
+      this.searchTerm
+        .toLowerCase()
+        .trim();
 
-      farmer.phone
-      .toLowerCase()
-      .includes(
-        this.searchTerm.toLowerCase()
-      )
 
-      ||
+    return this.farmers.filter(
+      farmer => {
 
-      (farmer.blockName || '')
-      .toLowerCase()
-      .includes(
-        this.searchTerm.toLowerCase()
-      )
+        return (
 
+          (farmer.fullName || '')
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          (farmer.phone || '')
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          (farmer.employeeNo || '')
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          (farmer.username || '')
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          (farmer.email || '')
+            .toLowerCase()
+            .includes(search)
+
+        );
+
+      }
     );
 
   }
 
-  addFarmer(){
 
-  const payload = {
+  // =========================================================
+  // ADD FARMER
+  // =========================================================
 
-    username:
-    this.newFarmer.employeeNo,
+  addFarmer(): void {
 
-    password: '123456',
 
-    employeeNo:
-    this.newFarmer.employeeNo,
+    // -------------------------------------------------------
+    // REFRESH CURRENT SUPERVISOR BLOCK
+    // -------------------------------------------------------
 
-    fullName:
-    this.newFarmer.fullName,
+    this.loadSupervisorBlock();
 
-    phone:
-    this.newFarmer.phone,
 
-    gender:
-    this.newFarmer.gender,
+    // -------------------------------------------------------
+    // BASIC VALIDATION
+    // -------------------------------------------------------
 
-    blockName:
-    this.newFarmer.blockName,
+    if (
 
-    role:'FARMER'
+      !this.newFarmer.employeeNo ||
 
-  };
+      !this.newFarmer.fullName ||
 
-  this.userService
+      !this.newFarmer.username ||
+
+      !this.newFarmer.email ||
+
+      !this.newFarmer.phone ||
+
+      !this.newFarmer.gender
+
+    ) {
+
+      Swal.fire(
+
+        'Missing Information',
+
+        'Please fill in all required farmer details.',
+
+        'warning'
+
+      );
+
+      return;
+
+    }
+
+
+    // -------------------------------------------------------
+    // FARMER PAYLOAD
+    // -------------------------------------------------------
+
+    const payload = {
+
+      username:
+        this.newFarmer.username,
+
+      password:
+        '123456',
+
+      employeeNo:
+        this.newFarmer.employeeNo,
+
+      fullName:
+        this.newFarmer.fullName,
+
+      email:
+        this.newFarmer.email,
+
+      phone:
+        this.newFarmer.phone,
+
+      gender:
+        this.newFarmer.gender,
+
+      blockName:
+        this.currentSupervisorBlock,
+
+      role:
+        'FARMER'
+
+    };
+
+
+    // -------------------------------------------------------
+    // CREATE FARMER
+    // -------------------------------------------------------
+
+    this.userService
       .addUser(payload)
 
       .subscribe({
 
-        next:()=>{
+        next: () => {
 
           Swal.fire(
+
             'Success',
+
             'Farmer registered successfully\nDefault Password: 123456',
+
             'success'
+
           );
 
-          this.showAddModal=false;
 
-          this.newFarmer={
+          // -------------------------------------------------
+          // CLOSE MODAL
+          // -------------------------------------------------
 
-            employeeNo:'',
-            fullName:'',
-            phone:'',
-            blockName:'',
-            gender:'',
-            role:'FARMER'
+          this.showAddModal =
+            false;
+
+
+          // -------------------------------------------------
+          // RESET FORM
+          // -------------------------------------------------
+
+          this.newFarmer = {
+
+            employeeNo: '',
+
+            username: '',
+
+            fullName: '',
+
+            email: '',
+
+            phone: '',
+
+            blockName:
+              this.currentSupervisorBlock,
+
+            gender: '',
+
+            role: 'FARMER'
 
           };
+
+
+          // -------------------------------------------------
+          // RELOAD FARMERS
+          // -------------------------------------------------
 
           this.loadFarmers();
 
         },
 
-        error:(err)=>{
+
+        error: (err) => {
+
+          let message =
+            'Registration failed';
+
+
+          if (
+            typeof err?.error === 'string'
+          ) {
+
+            message =
+              err.error;
+
+          } else if (
+            err?.error?.message
+          ) {
+
+            message =
+              err.error.message;
+
+          }
+
 
           Swal.fire(
+
             'Error',
-            err.error ||
-            'Registration failed',
+
+            message,
+
             'error'
+
           );
 
         }
 
       });
 
-}
+  }
 
-  viewFarmer(farmer: Farmer){
 
-    this.selectedFarmer = farmer;
+  // =========================================================
+  // VIEW FARMER
+  // =========================================================
 
-    this.showViewModal = true;
+  viewFarmer(farmer: Farmer): void {
+
+    this.selectedFarmer =
+      farmer;
+
+    this.showViewModal =
+      true;
 
   }
 
-  editFarmer(farmer: Farmer){
+
+  // =========================================================
+  // EDIT FARMER
+  // =========================================================
+
+  editFarmer(farmer: Farmer): void {
 
     this.selectedFarmer = {
 
@@ -216,73 +528,163 @@ loadFarmers(){
 
     };
 
-    this.showEditModal = true;
+
+    /*
+     * Do not allow the supervisor to
+     * move the farmer to another block.
+     */
+
+    this.selectedFarmer.blockName =
+      this.currentSupervisorBlock;
+
+
+    this.showEditModal =
+      true;
 
   }
 
-  saveEdit(){
 
-  this.userService
+  // =========================================================
+  // SAVE EDIT
+  // =========================================================
+
+  saveEdit(): void {
+
+
+    /*
+     * Always force the current supervisor's
+     * block before sending the update.
+     */
+
+    this.selectedFarmer.blockName =
+      this.currentSupervisorBlock;
+
+
+    this.userService
+
       .updateUser(
+
         this.selectedFarmer.id!,
+
         this.selectedFarmer
+
       )
 
       .subscribe({
 
-        next:()=>{
+        next: () => {
 
           Swal.fire(
+
             'Success',
+
             'Farmer updated successfully',
+
             'success'
+
           );
 
-          this.showEditModal = false;
+
+          this.showEditModal =
+            false;
+
 
           this.loadFarmers();
 
         },
 
-        error:(err)=>{
+
+        error: (err) => {
+
+          let message =
+            'Failed to update farmer';
+
+
+          if (
+            typeof err?.error === 'string'
+          ) {
+
+            message =
+              err.error;
+
+          } else if (
+            err?.error?.message
+          ) {
+
+            message =
+              err.error.message;
+
+          }
+
 
           Swal.fire(
+
             'Error',
-            err.error ||
-            'Failed to update farmer',
+
+            message,
+
             'error'
+
           );
 
         }
 
       });
 
-}
+  }
 
-  toggleStatus(farmer: Farmer){
+
+  // =========================================================
+  // TOGGLE STATUS
+  // =========================================================
+
+  toggleStatus(
+    farmer: Farmer
+  ): void {
 
     this.userService
-        .toggleStatus(
-          farmer.id!
-        )
 
-        .subscribe({
+      .toggleStatus(
+        farmer.id!
+      )
 
-          next:()=>{
+      .subscribe({
 
-            this.loadFarmers();
+        next: () => {
 
-          }
+          this.loadFarmers();
 
-        });
+        },
+
+        error: () => {
+
+          Swal.fire(
+
+            'Error',
+
+            'Failed to update farmer status',
+
+            'error'
+
+          );
+
+        }
+
+      });
 
   }
 
-  get activeFarmersCount(){
+
+  // =========================================================
+  // ACTIVE FARMERS COUNT
+  // =========================================================
+
+  get activeFarmersCount(): number {
 
     return this.farmers.filter(
 
-      farmer => farmer.enabled
+      farmer =>
+        farmer.enabled
 
     ).length;
 

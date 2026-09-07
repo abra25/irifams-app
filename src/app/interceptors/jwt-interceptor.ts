@@ -19,7 +19,7 @@ export const jwtInterceptor: HttpInterceptorFn = (
   // BADILISHA HAPA
   const token = sessionStorage.getItem('token');
 
-  console.log('JWT TOKEN => ', token);
+  // console.log('JWT TOKEN => ', token);
 
   if (token) {
 

@@ -12,57 +12,88 @@ export class InputService {
 
   constructor(private http: HttpClient) {}
 
+  // =========================================================
+  // ALL FARM INPUTS
+  // GET /inputs
+  // =========================================================
+
   getAllInputs(): Observable<any[]> {
-
     return this.http.get<any[]>(this.api);
-
   }
 
-  addInput(data:any){
+  // =========================================================
+  // ADD FARM INPUT
+  // POST /inputs
+  // ADMIN / SUPERVISOR
+  // =========================================================
 
+  addInput(data: any): Observable<any> {
+    return this.http.post<any>(
+      this.api,
+      data
+    );
+  }
 
-  return this.http.post(
-    this.api,
-    data
-  );
+  // =========================================================
+  // UPDATE FARM INPUT
+  // PUT /inputs/{id}
+  // ADMIN / SUPERVISOR
+  // =========================================================
 
-}
+  updateInput(
+    id: number,
+    data: any
+  ): Observable<any> {
 
-  updateInput(id:number,data:any): Observable<any>{
-
-    return this.http.put(
+    return this.http.put<any>(
       `${this.api}/${id}`,
       data
     );
-
   }
 
-  deleteInput(id:number): Observable<any>{
+  // =========================================================
+  // DELETE FARM INPUT
+  // DELETE /inputs/{id}
+  // ADMIN ONLY
+  // =========================================================
 
-    return this.http.delete(
+  deleteInput(id: number): Observable<any> {
+
+    return this.http.delete<any>(
       `${this.api}/${id}`
     );
-
   }
 
+  // =========================================================
+  // DISTRIBUTE FARM INPUT
+  // POST /inputs/{inputId}/distribute
+  // SUPERVISOR ONLY
+  // =========================================================
+
   distributeInput(
+    inputId: number,
+    farmerId: number,
+    quantity: number
+  ): Observable<any> {
 
-  inputId:number,
+    return this.http.post<any>(
+      `${this.api}/${inputId}/distribute?farmerId=${farmerId}&quantity=${quantity}`,
+      {}
+    );
+  }
 
-  farmerId:number,
+  // =========================================================
+  // FARMER DISTRIBUTIONS
+  // GET /inputs/farmer/{farmerId}
+  // FARMER / ADMIN / SUPERVISOR
+  // =========================================================
 
-  quantity:number
+  getFarmerInputs(
+    farmerId: number
+  ): Observable<any[]> {
 
-){
-
-  return this.http.post(
-
-    `${this.api}/${inputId}/distribute?farmerId=${farmerId}&quantity=${quantity}`,
-
-    {}
-
-  );
-
-}
-
+    return this.http.get<any[]>(
+      `${this.api}/farmer/${farmerId}`
+    );
+  }
 }

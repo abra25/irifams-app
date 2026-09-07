@@ -1,109 +1,178 @@
 import { Injectable } from '@angular/core';
+
 import { HttpClient } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
+
 import { environment } from '../enviroments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class RequestService {
 
-  private api = `${environment.apiUrl}/requests`;
+
+  // =========================================================
+  // API BASE URL
+  // =========================================================
+
+  private api =
+    `${environment.apiUrl}/requests`;
+
 
   constructor(
     private http: HttpClient
   ) {}
 
-  //=====================
+
+  // =========================================================
   // ADMIN / SUPERVISOR
-  //=====================
+  // GET ALL REQUESTS
+  // =========================================================
 
-  getAllRequests(): Observable<any[]>{
+  getAllRequests(): Observable<any[]> {
 
-    return this.http.get<any[]>(this.api);
+    return this.http.get<any[]>(
+      this.api
+    );
 
   }
 
+
+  // =========================================================
+  // ADMIN / SUPERVISOR
+  // APPROVE REQUEST
+  // =========================================================
+  /*
+   * Backend automatically:
+   *
+   * 1. Checks request
+   * 2. Checks supervisor block
+   * 3. Checks request status
+   * 4. Calculates quantity / amount
+   * 5. Generates control number
+   * 6. Changes status to WAITING_PAYMENT
+   *
+   * Frontend only sends request ID.
+   *
+   * Frontend does NOT calculate or send amount.
+   */
+
   approveRequest(
+  id: number,
+  quantity?: number
+): Observable<any> {
 
-id:number,
+  const payload: any = {};
 
-amount:number
+  if (
+    quantity !== undefined &&
+    quantity !== null
+  ) {
 
-){
+    payload.quantity = quantity;
 
-return this.http.patch(
+  }
 
-`${this.api}/${id}/approve`,
-
-{
-
-amount
+  return this.http.patch<any>(
+    `${this.api}/${id}/approve`,
+    payload
+  );
 
 }
 
-);
 
-}
+  // =========================================================
+  // ADMIN / SUPERVISOR
+  // REJECT REQUEST
+  // =========================================================
 
-  rejectRequest(id:number){
+  rejectRequest(
+    id: number
+  ): Observable<any> {
 
-    return this.http.patch(
+    return this.http.patch<any>(
       `${this.api}/${id}/reject`,
       {}
     );
 
   }
 
-  generateControlNumber(id:number){
 
-    return this.http.patch(
-      `${this.api}/${id}/generate-control`,
-      {}
-    );
+  // =========================================================
+  // SUPERVISOR
+  // GET REQUESTS IN MY BLOCK
+  // =========================================================
 
-  }
-
-  getMyRequests(){
+  getMyRequests(): Observable<any[]> {
 
     return this.http.get<any[]>(
-
       `${this.api}/my-requests`
-
     );
 
   }
 
-  //=====================
+
+  // =========================================================
+  // GET FARMER REQUESTS BY FARMER ID
+  // ADMIN / SUPERVISOR / FARMER
+  // =========================================================
+
+  getFarmerRequests(
+    farmerId: number
+  ): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      `${this.api}/farmer/${farmerId}`
+    );
+
+  }
+
+
+  // =========================================================
   // FARMER
-  //=====================
+  // SUBMIT SERVICE REQUEST
+  // =========================================================
 
   submitRequest(
+    farmerId: number,
+    plotId: number,
+    data: any
+  ): Observable<any> {
 
-    farmerId:number,
-
-    plotId:number,
-
-    data:any
-
-  ){
-
-    return this.http.post(
-
+    return this.http.post<any>(
       `${this.api}?farmerId=${farmerId}&plotId=${plotId}`,
-
       data
-
     );
 
   }
 
-  getMyFarmRequests(){
+
+  // =========================================================
+  // FARMER
+  // GET MY OWN REQUESTS
+  // =========================================================
+
+  getMyFarmRequests(): Observable<any[]> {
 
     return this.http.get<any[]>(
-
       `${this.api}/my-farm-requests`
+    );
 
+  }
+
+
+  // =========================================================
+  // GET SINGLE REQUEST
+  // =========================================================
+
+  getRequestById(
+    id: number
+  ): Observable<any> {
+
+    return this.http.get<any>(
+      `${this.api}/${id}`
     );
 
   }

@@ -1,5 +1,3 @@
-// services/report.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -13,9 +11,16 @@ export class ReportService {
   private api =
     `${environment.apiUrl}/reports`;
 
+
   constructor(
     private http: HttpClient
   ) {}
+
+
+  // =========================================================
+  // GET SUMMARY REPORT
+  // ADMIN / SUPERVISOR
+  // =========================================================
 
   getSummary(): Observable<any> {
 
@@ -25,18 +30,21 @@ export class ReportService {
 
   }
 
-  exportPdf() {
 
-  return this.http.get(
+  // =========================================================
+  // EXPORT PDF REPORT
+  // ADMIN / SUPERVISOR
+  // =========================================================
 
-    `${this.api}/export/pdf`,
+  exportPdf(): Observable<Blob> {
 
-    {
-      responseType:'blob'
-    }
+    return this.http.get(
+      `${this.api}/export/pdf`,
+      {
+        responseType: 'blob'
+      }
+    );
 
-  );
-
-}
+  }
 
 }

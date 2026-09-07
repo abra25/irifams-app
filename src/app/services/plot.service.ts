@@ -8,17 +8,53 @@ import { environment } from '../enviroments/environment';
 })
 export class PlotService {
 
-  private api = `${environment.apiUrl}/plots`;
+  private api =
+    `${environment.apiUrl}/plots`;
 
-  constructor(private http: HttpClient) {}
+
+  constructor(
+    private http: HttpClient
+  ) {}
+
+
+  // =========================================================
+  // GET ALL PLOTS
+  // ADMIN / SUPERVISOR
+  // =========================================================
 
   getAllPlots(): Observable<any[]> {
 
-    return this.http.get<any[]>(this.api);
+    return this.http.get<any[]>(
+      this.api
+    );
 
   }
 
-  addPlot(farmerId:number, data:any): Observable<any> {
+
+  // =========================================================
+  // GET PLOT BY ID
+  // =========================================================
+
+  getPlotById(
+    id: number
+  ): Observable<any> {
+
+    return this.http.get<any>(
+      `${this.api}/${id}`
+    );
+
+  }
+
+
+  // =========================================================
+  // CREATE PLOT
+  // ADMIN / SUPERVISOR
+  // =========================================================
+
+  addPlot(
+    farmerId: number,
+    data: any
+  ): Observable<any> {
 
     return this.http.post(
       `${this.api}?farmerId=${farmerId}`,
@@ -27,7 +63,16 @@ export class PlotService {
 
   }
 
-  updatePlot(id:number,data:any): Observable<any>{
+
+  // =========================================================
+  // UPDATE PLOT
+  // ADMIN / SUPERVISOR
+  // =========================================================
+
+  updatePlot(
+    id: number,
+    data: any
+  ): Observable<any> {
 
     return this.http.put(
       `${this.api}/${id}`,
@@ -36,35 +81,56 @@ export class PlotService {
 
   }
 
-  getFarmerPlots(farmerId:number){
 
-  return this.http.get<any[]>(
+  // =========================================================
+  // GET FARMER PLOTS
+  // =========================================================
 
-    `${this.api}/farmer/${farmerId}`
+  getFarmerPlots(
+    farmerId: number
+  ): Observable<any[]> {
 
-  );
+    return this.http.get<any[]>(
+      `${this.api}/farmer/${farmerId}`
+    );
 
-}
-getMyFarmPlots(){
-
-  return this.http.get<any[]>(
-
-    `${this.api}/my-farm-plots`
-
-  );
-
-}
-
-  getMyPlots(){
-
-  return this.http.get<any[]>(
-    `${this.api}/my-plots`
-  );
-
-}
+  }
 
 
-  deletePlot(id:number){
+  // =========================================================
+  // GET LOGGED-IN FARMER PLOTS
+  // =========================================================
+
+  getMyFarmPlots(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      `${this.api}/my-farm-plots`
+    );
+
+  }
+
+
+  // =========================================================
+  // GET SUPERVISOR PLOTS
+  // =========================================================
+
+  getMyPlots(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      `${this.api}/my-plots`
+    );
+
+  }
+
+
+  // =========================================================
+  // DELETE PLOT
+  // ADMIN ONLY
+  // =========================================================
+
+  deletePlot(
+    id: number
+  ): Observable<any> {
 
     return this.http.delete(
       `${this.api}/${id}`

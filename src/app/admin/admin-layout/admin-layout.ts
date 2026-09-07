@@ -87,12 +87,6 @@ ngOnInit(){
     },
 
     {
-      label:'Notifications',
-      icon:'fas fa-bell',
-      route:'/admin/notifications'
-    },
-
-    {
       label: 'Activity Logs',
       icon: 'fas fa-history',
       route: '/admin/logs'

@@ -13,33 +13,54 @@
 
     </div>
 
+
     <!-- SUMMARY -->
 
     <div class="summary-grid">
 
         <div class="summary-card">
+
             <h3>{{requests.length}}</h3>
+
             <span>Total Requests</span>
+
         </div>
 
+
         <div class="summary-card">
+
             <h3>
                 {{pendingCount}}
             </h3>
+
             <span>Pending</span>
+
         </div>
 
+
         <div class="summary-card">
-            <h3>{{waitingPaymentCount}}</h3>
+
+            <h3>
+                {{waitingPaymentCount}}
+            </h3>
+
             <span>Waiting Payment</span>
+
         </div>
 
+
         <div class="summary-card">
-            <h3>{{completedCount}}</h3>
+
+            <h3>
+                {{completedCount}}
+            </h3>
+
             <span>Completed</span>
+
         </div>
 
     </div>
+
 
 
     <!-- TOOLBAR -->
@@ -49,45 +70,47 @@
         <input
             type="text"
             placeholder="Search request..."
-            [(ngModel)]="searchTerm">
+            [(ngModel)]="searchTerm"
+        >
+
 
         <div class="tabs">
 
             <button
-                [class.active]="selectedStatus==='All'"
-                (click)="selectedStatus='All'">
-
+                [class.active]="selectedStatus === 'All'"
+                (click)="selectedStatus = 'All'"
+            >
                 All
-
             </button>
 
-            <button
-                [class.active]="selectedStatus==='Pending'"
-                (click)="selectedStatus='Pending'">
 
+            <button
+                [class.active]="selectedStatus === 'Pending'"
+                (click)="selectedStatus = 'Pending'"
+            >
                 Pending
-
             </button>
 
+
             <button
-                [class.active]="selectedStatus==='Waiting_Payment'"
-                (click)="selectedStatus='Waiting_Payment'">
-
-                Waiting_Payment
-
+                [class.active]="selectedStatus === 'Waiting_Payment'"
+                (click)="selectedStatus = 'Waiting_Payment'"
+            >
+                Waiting Payment
             </button>
 
-            <button
-                [class.active]="selectedStatus==='Completed'"
-                (click)="selectedStatus='Completed'">
 
+            <button
+                [class.active]="selectedStatus === 'Completed'"
+                (click)="selectedStatus = 'Completed'"
+            >
                 Completed
-
             </button>
 
         </div>
 
     </div>
+
 
 
     <!-- TABLE -->
@@ -103,131 +126,196 @@
                     <tr>
 
                         <th>ID</th>
+
                         <th>Farmer</th>
+
                         <th>Plot</th>
+
                         <th>Service</th>
+
                         <th>Date</th>
+
                         <th>Amount</th>
+
                         <th>Status</th>
+
                         <th>Payment</th>
+
                         <th>Action</th>
 
                     </tr>
 
                 </thead>
 
+
                 <tbody>
 
-                    <tr *ngFor="let request of filteredRequests">
+                    <tr
+                        *ngFor="let request of filteredRequests"
+                    >
 
-                        <td>{{request.id}}</td>
-
-                        <td>{{request.farmer?.fullName}}</td>
-
-                        <td>{{request.plot?.plotNo}}</td>
-
-                        <td>{{request.serviceType}}</td>
-
-                        <td>{{request.createdAt | date:'dd MMM yyyy'}}</td>
+                        <!-- ID -->
 
                         <td>
-                            TZS {{request.amount || 0 | number}}
+                            {{request.id}}
                         </td>
 
+
+                        <!-- FARMER -->
+
+                        <td>
+                            {{request.farmer?.fullName}}
+                        </td>
+
+
+                        <!-- PLOT -->
+
+                        <td>
+                            {{request.plot?.plotNo}}
+                        </td>
+
+
+                        <!-- SERVICE -->
+
+                        <td>
+                            {{request.serviceType}}
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+                            {{request.createdAt | date:'dd MMM yyyy'}}
+                        </td>
+
+
+                        <!-- AMOUNT -->
+
                         <td>
 
-                            <span class="status-badge"
-      [ngClass]="request.status?.toLowerCase()">
+                            <span
+                                *ngIf="request.amount != null"
+                            >
+                                TZS
+                                {{request.amount | number}}
+                            </span>
 
+                            <span
+                                *ngIf="request.amount == null"
+                            >
+                                Not Set
+                            </span>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <span
+                                class="status-badge"
+                                [ngClass]="request.status?.toLowerCase()"
+                            >
                                 {{request.status}}
+                            </span>
+
+                        </td>
+
+
+                        <!-- PAYMENT -->
+
+                        <td>
+
+                            <span
+                                class="payment-badge"
+                                [ngClass]="
+                                    request.paymentConfirmed
+                                    ? 'paid'
+                                    : 'pending'
+                                "
+                            >
+
+                                {{
+                                    request.paymentConfirmed
+                                    ? 'Paid'
+                                    : 'Pending'
+                                }}
 
                             </span>
 
                         </td>
 
-                         <td>
 
-    <span
-      class="payment-badge"
-      [ngClass]="
-        request.paymentConfirmed
-        ? 'paid'
-        : 'pending'
-      ">
-
-      {{
-        request.paymentConfirmed
-        ? 'Paid'
-        : 'Pending'
-      }}
-
-    </span>
-
-</td>
+                        <!-- ACTION -->
 
                         <td>
 
-    <div class="actions">
-
-        <!-- VIEW -->
-
-        <button
-            class="view-btn"
-            (click)="openDetails(request)">
-
-            <i class="fas fa-eye"></i>
-
-        </button>
+                            <div class="actions">
 
 
-        <!-- APPROVE -->
+                                <!-- VIEW -->
 
-        <button
-            class="approve-btn"
+                                <button
+                                    class="view-btn"
+                                    title="View Request"
+                                    (click)="openDetails(request)"
+                                >
 
-            *ngIf="request.status==='PENDING'"
+                                    <i class="fas fa-eye"></i>
 
-            (click)="approveRequest(request.id)">
-
-            <i class="fas fa-check"></i>
-
-        </button>
-
-
-        <!-- REJECT -->
-
-        <button
-            class="reject-btn"
-
-            *ngIf="request.status==='PENDING'"
-
-            (click)="rejectRequest(request.id)">
-
-            <i class="fas fa-times"></i>
-
-        </button>
+                                </button>
 
 
-        <!-- CONTROL NUMBER -->
 
-        <button
-            class="control-btn"
+                                <!-- APPROVE -->
 
-            *ngIf="
-              request.status==='APPROVED'
-              &&
-              !request.controlNumber
-            "
+                                <button
+                                    class="approve-btn"
+                                    title="Approve Request"
+                                    *ngIf="request.status === 'PENDING'"
+                                    (click)="approveRequest(request.id)"
+                                >
 
-            (click)="generateControlNumber(request.id)">
+                                    <i class="fas fa-check"></i>
 
-            <i class="fas fa-money-check"></i>
+                                </button>
 
-        </button>
 
-    </div>
 
-</td>
+                                <!-- REJECT -->
+
+                                <button
+                                    class="reject-btn"
+                                    title="Reject Request"
+                                    *ngIf="request.status === 'PENDING'"
+                                    (click)="rejectRequest(request.id)"
+                                >
+
+                                    <i class="fas fa-times"></i>
+
+                                </button>
+
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- EMPTY STATE -->
+
+                    <tr *ngIf="filteredRequests.length === 0">
+
+                        <td
+                            colspan="9"
+                            style="text-align: center;"
+                        >
+
+                            No service requests found.
+
+                        </td>
 
                     </tr>
 
@@ -243,18 +331,30 @@
 
 
 
+
 <!-- DETAILS MODAL -->
 
-<div class="modal-overlay"
-     *ngIf="showModal">
+<div
+    class="modal-overlay"
+    *ngIf="showModal"
+>
 
     <div class="modal-card">
 
+
+        <!-- MODAL HEADER -->
+
         <div class="modal-header">
 
-            <h3>Request Details</h3>
+            <h3>
+                Request Details
+            </h3>
 
-            <button (click)="showModal=false">
+
+            <button
+                type="button"
+                (click)="showModal = false"
+            >
 
                 <i class="fas fa-times"></i>
 
@@ -263,76 +363,238 @@
         </div>
 
 
+
+        <!-- MODAL BODY -->
+
         <div class="modal-body">
 
-            <div class="detail-row">
-                <span>Request ID</span>
-                <strong>{{selectedRequest?.id}}</strong>
-            </div>
+
+            <!-- REQUEST ID -->
 
             <div class="detail-row">
-                <span>Farmer</span>
+
+                <span>
+                    Request ID
+                </span>
+
+                <strong>
+                    #{{selectedRequest?.id}}
+                </strong>
+
+            </div>
+
+
+
+            <!-- FARMER -->
+
+            <div class="detail-row">
+
+                <span>
+                    Farmer
+                </span>
+
                 <strong>
                     {{selectedRequest?.farmer?.fullName}}
                 </strong>
+
             </div>
 
+
+
+            <!-- PLOT -->
+
             <div class="detail-row">
-                <span>Plot Number</span>
+
+                <span>
+                    Plot Number
+                </span>
+
                 <strong>
                     {{selectedRequest?.plot?.plotNo}}
                 </strong>
+
             </div>
 
+
+
+            <!-- BLOCK -->
+
             <div class="detail-row">
-                <span>Service Type</span>
+
+                <span>
+                    Block
+                </span>
+
+                <strong>
+                    {{selectedRequest?.plot?.block || 'N/A'}}
+                </strong>
+
+            </div>
+
+
+
+            <!-- PLOT SIZE -->
+
+            <div class="detail-row">
+
+                <span>
+                    Plot Size
+                </span>
+
+                <strong>
+                    {{selectedRequest?.plot?.size || 'N/A'}}
+                    <span *ngIf="selectedRequest?.plot?.size">
+                        acre(s)
+                    </span>
+                </strong>
+
+            </div>
+
+
+
+            <!-- SERVICE -->
+
+            <div class="detail-row">
+
+                <span>
+                    Service Type
+                </span>
+
                 <strong>
                     {{selectedRequest?.serviceType}}
                 </strong>
+
             </div>
 
+
+
+            <!-- PREFERRED DATE -->
+
             <div class="detail-row">
-                <span>Amount</span>
+
+                <span>
+                    Preferred Date
+                </span>
+
                 <strong>
-                    TZS {{selectedRequest?.amount || 0 | number}}
+                    {{
+                        selectedRequest?.preferredDate
+                        | date:'dd MMM yyyy'
+                    }}
                 </strong>
+
             </div>
 
+
+
+            <!-- REQUEST DATE -->
+
             <div class="detail-row">
-                <span>Control Number</span>
+
+                <span>
+                    Request Date
+                </span>
+
+                <strong>
+                    {{
+                        selectedRequest?.createdAt
+                        | date:'dd MMM yyyy'
+                    }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- AMOUNT -->
+
+            <div class="detail-row">
+
+                <span>
+                    Amount
+                </span>
+
+                <strong>
+
+                    <span
+                        *ngIf="selectedRequest?.amount != null"
+                    >
+                        TZS
+                        {{
+                            selectedRequest?.amount
+                            | number
+                        }}
+                    </span>
+
+                    <span
+                        *ngIf="selectedRequest?.amount == null"
+                    >
+                        Not Set
+                    </span>
+
+                </strong>
+
+            </div>
+
+
+
+            <!-- CONTROL NUMBER -->
+
+            <div class="detail-row">
+
+                <span>
+                    Control Number
+                </span>
+
                 <strong>
 
                     {{
-                      selectedRequest?.controlNumber
-                      || 'Not Generated'
+                        selectedRequest?.controlNumber
+                        || 'Not Generated'
                     }}
 
                 </strong>
+
             </div>
 
+
+
+            <!-- PAYMENT -->
+
             <div class="detail-row">
-                <span>Payment Confirmed</span>
+
+                <span>
+                    Payment Confirmed
+                </span>
 
                 <strong>
 
                     {{
-                      selectedRequest?.paymentConfirmed
-                      ? 'Yes'
-                      : 'No'
+                        selectedRequest?.paymentConfirmed
+                        ? 'Yes'
+                        : 'No'
                     }}
 
                 </strong>
 
             </div>
 
+
+
+            <!-- STATUS -->
+
             <div class="detail-row">
-                <span>Status</span>
+
+                <span>
+                    Status
+                </span>
 
                 <strong
                     class="status-text"
                     [ngClass]="
-                      selectedRequest?.status?.toLowerCase()
-                    ">
+                        selectedRequest?.status?.toLowerCase()
+                    "
+                >
 
                     {{selectedRequest?.status}}
 
@@ -340,17 +602,21 @@
 
             </div>
 
-            <div class="detail-row">
 
-                <span>Request Date</span>
+
+            <!-- NOTES -->
+
+            <div
+                class="detail-row"
+                *ngIf="selectedRequest?.notes"
+            >
+
+                <span>
+                    Notes
+                </span>
 
                 <strong>
-
-                    {{
-                      selectedRequest?.createdAt
-                      | date:'dd MMM yyyy'
-                    }}
-
+                    {{selectedRequest?.notes}}
                 </strong>
 
             </div>
@@ -358,7 +624,22 @@
         </div>
 
 
-        
+
+        <!-- MODAL FOOTER -->
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="cancel-btn"
+                (click)="showModal = false"
+            >
+
+                Close
+
+            </button>
+
+        </div>
 
     </div>
 

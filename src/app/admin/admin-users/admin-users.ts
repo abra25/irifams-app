@@ -1,8 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
+
 import { UserService } from '../../services/user.service';
+
 import Swal from 'sweetalert2';
+
 
 interface User {
 
@@ -34,38 +43,66 @@ interface User {
 
 }
 
+
 @Component({
   selector: 'app-admin-users',
-  imports: [CommonModule,FormsModule],
+
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
+
   templateUrl: './admin-users.html',
+
   styleUrl: './admin-users.css',
 })
-export class AdminUsers implements OnInit{
+
+
+export class AdminUsers
+  implements OnInit {
+
 
   constructor(
-  private userService: UserService,
-  private cdr: ChangeDetectorRef
-  ){}
+
+    private userService: UserService,
+
+    private cdr: ChangeDetectorRef
+
+  ) {}
+
+
+  // =========================================================
+  // INIT
+  // =========================================================
 
   ngOnInit(): void {
-    this.loadUsers();
-  }
-  
-  loadUsers(){
 
-   this.userService
+    this.loadUsers();
+
+  }
+
+
+  // =========================================================
+  // LOAD USERS
+  // =========================================================
+
+  loadUsers() {
+
+    this.userService
       .getAllUsers()
       .subscribe({
 
-        next:(res)=>{
+        next: (res) => {
 
-          this.users = [...res];
+          this.users = [
+            ...res
+          ];
 
           this.cdr.detectChanges();
 
         },
 
-        error:(err)=>{
+        error: (err) => {
 
           console.log(err);
 
@@ -79,144 +116,236 @@ export class AdminUsers implements OnInit{
 
       });
 
-}
+  }
+
+
+  // =========================================================
+  // UI STATE
+  // =========================================================
 
   selectedTab = 'All';
 
   searchTerm = '';
 
   showAddModal = false;
+
   showViewModal = false;
+
   showEditModal = false;
+
 
   selectedUser!: User;
 
+
   users: User[] = [];
 
+
+  // =========================================================
+  // NEW USER
+  // =========================================================
+
   newUser: User = {
-  employeeNo:'',
-  fullName:'',
-  email:'',
-  phone:'',
-  role:'',
-  institution:'',
-  blockName:'',
-  gender:'',
-};
+
+    employeeNo: '',
+
+    fullName: '',
+
+    email: '',
+
+    phone: '',
+
+    role: '',
+
+    institution: '',
+
+    blockName: '',
+
+    gender: '',
+
+  };
+
+
+  // =========================================================
+  // FILTER TAB
+  // =========================================================
 
   setTab(tab: string) {
-    this.selectedTab = tab;
+
+    this.selectedTab =
+      tab;
+
   }
+
+
+  // =========================================================
+  // FILTERED USERS
+  // =========================================================
 
   get filteredUsers() {
 
-    return this.users.filter(user => {
+    return this.users.filter(
+      user => {
 
-      const roleMatch =
-        this.selectedTab === 'All'
-        || user.role === this.selectedTab;
+        const roleMatch =
 
-      const searchMatch =
-        user.fullName.toLowerCase()
-        .includes(this.searchTerm.toLowerCase());
+          this.selectedTab === 'All'
 
-      return roleMatch && searchMatch;
+          || user.role ===
+             this.selectedTab;
 
-    });
+
+        const searchMatch =
+
+          user.fullName
+            .toLowerCase()
+            .includes(
+              this.searchTerm
+                .toLowerCase()
+            );
+
+
+        return (
+          roleMatch &&
+          searchMatch
+        );
+
+      }
+    );
 
   }
 
-  addUser(){
 
-  const payload = {
+  // =========================================================
+  // ADD USER
+  // =========================================================
 
-    username: this.newUser.employeeNo,
+  addUser() {
 
-    password: this.newUser.password,
+    const payload = {
 
-    fullName: this.newUser.fullName,
+      username:
+        this.newUser.employeeNo,
 
-    email: this.newUser.email,
+      password:
+        this.newUser.password,
 
-    phone: this.newUser.phone,
+      fullName:
+        this.newUser.fullName,
 
-    gender: this.newUser.gender,
+      email:
+        this.newUser.email,
 
-    role: this.newUser.role,
+      phone:
+        this.newUser.phone,
 
-    blockName: this.newUser.blockName,
+      gender:
+        this.newUser.gender,
 
-    institution: this.newUser.institution
+      role:
+        this.newUser.role,
 
-  };
+      blockName:
+        this.newUser.blockName,
 
-  this.userService
+      institution:
+        this.newUser.institution
+
+    };
+
+
+    this.userService
       .addUser(payload)
       .subscribe({
 
-        next:()=>{
+        next: () => {
 
-  Swal.fire(
-    'Success',
-    'User added successfully',
-    'success'
-  );
+          Swal.fire(
+            'Success',
+            'User added successfully',
+            'success'
+          );
 
-  // reset form
 
-  this.newUser = {
+          // reset form
 
-    employeeNo:'',
-    fullName:'',
-    email:'',
-    phone:'',
-    role:'',
-    institution:'',
-    blockName:'',
-    gender:'',
-    password:''
+          this.newUser = {
 
-  };
+            employeeNo: '',
 
-  // close modal
+            fullName: '',
 
-  this.showAddModal = false;
+            email: '',
 
-  // reload users
+            phone: '',
 
-  this.loadUsers();
+            role: '',
 
-},
+            institution: '',
+
+            blockName: '',
+
+            gender: '',
+
+            password: ''
+
+          };
+
+
+          // close modal
+
+          this.showAddModal =
+            false;
+
+
+          // reload users
+
+          this.loadUsers();
+
+        },
 
       });
 
-}
+  }
 
-get stakeholdersCount() {
 
-  return this.users.filter(
-    u => u.role === 'STAKEHOLDER'
-  ).length;
+  // =========================================================
+  // VIEW USER
+  // =========================================================
 
-}
+  viewUser(user: any) {
 
-  viewUser(user:any) {
+    this.selectedUser =
+      user;
 
-    this.selectedUser = user;
-    this.showViewModal = true;
+    this.showViewModal =
+      true;
 
   }
 
-  editUser(user:any) {
 
-    this.selectedUser = {...user};
-    this.showEditModal = true;
+  // =========================================================
+  // EDIT USER
+  // =========================================================
+
+  editUser(user: any) {
+
+    this.selectedUser = {
+      ...user
+    };
+
+    this.showEditModal =
+      true;
 
   }
 
-  saveUser(){
 
-  this.userService
+  // =========================================================
+  // SAVE USER
+  // =========================================================
+
+  saveUser() {
+
+    this.userService
       .updateUser(
         this.selectedUser.id!,
         this.selectedUser
@@ -224,7 +353,7 @@ get stakeholdersCount() {
 
       .subscribe({
 
-        next:()=>{
+        next: () => {
 
           Swal.fire(
             'Success',
@@ -232,17 +361,22 @@ get stakeholdersCount() {
             'success'
           );
 
-          this.showEditModal = false;
+
+          this.showEditModal =
+            false;
+
 
           this.loadUsers();
 
         },
 
-        error:(err)=>{
+
+        error: (err) => {
 
           Swal.fire(
             'Error',
-            err.error || 'Update failed',
+            err.error ||
+            'Update failed',
             'error'
           );
 
@@ -250,17 +384,22 @@ get stakeholdersCount() {
 
       });
 
-}
+  }
 
-  toggleStatus(user:any){
 
-  this.userService
+  // =========================================================
+  // TOGGLE STATUS
+  // =========================================================
+
+  toggleStatus(user: any) {
+
+    this.userService
 
       .toggleStatus(user.id)
 
       .subscribe({
 
-        next:()=>{
+        next: () => {
 
           this.loadUsers();
 
@@ -268,28 +407,46 @@ get stakeholdersCount() {
 
       });
 
-}
+  }
+
+
+  // =========================================================
+  // FARMERS COUNT
+  // =========================================================
 
   get farmersCount() {
 
     return this.users.filter(
-      u => u.role === 'FARMER'
+      u =>
+        u.role === 'FARMER'
     ).length;
 
   }
+
+
+  // =========================================================
+  // SUPERVISORS COUNT
+  // =========================================================
 
   get supervisorsCount() {
 
     return this.users.filter(
-      u => u.role === 'SUPERVISOR'
+      u =>
+        u.role === 'SUPERVISOR'
     ).length;
 
   }
 
+
+  // =========================================================
+  // ADMINS COUNT
+  // =========================================================
+
   get adminsCount() {
 
     return this.users.filter(
-      u => u.role === 'ADMIN'
+      u =>
+        u.role === 'ADMIN'
     ).length;
 
   }

@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+
 import { HttpClient } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
+
 import { environment } from '../enviroments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,41 +15,45 @@ export class NotificationService {
   private api =
     `${environment.apiUrl}/notifications`;
 
+
   constructor(
     private http: HttpClient
   ) {}
 
-  getUserNotifications(
-      userId:number
-  ):Observable<any[]>{
+
+  // =========================================================
+  // GET MY NOTIFICATIONS
+  // =========================================================
+
+  getMyNotifications(): Observable<any[]> {
 
     return this.http.get<any[]>(
-      `${this.api}/user/${userId}`
+      `${this.api}/my-notifications`
     );
 
   }
 
-  getMyNotifications(){
 
-  return this.http.get<any[]>(
+  // =========================================================
+  // GET MY UNREAD NOTIFICATION COUNT
+  // =========================================================
 
-    `${this.api}/my-notifications`
+  getUnreadCount(): Observable<number> {
 
-  );
+    return this.http.get<number>(
+      `${this.api}/my-unread-count`
+    );
 
-}
+  }
 
-getUnreadCount(){
 
-  return this.http.get<number>(
+  // =========================================================
+  // MARK NOTIFICATION AS READ
+  // =========================================================
 
-    `${this.api}/my-unread-count`
-
-  );
-
-}
-
-  markAsRead(id:number):Observable<any>{
+  markAsRead(
+    id: number
+  ): Observable<any> {
 
     return this.http.patch(
       `${this.api}/${id}/read`,
@@ -54,14 +62,19 @@ getUnreadCount(){
 
   }
 
-  deleteNotification(id:number){
 
-  return this.http.delete(
+  // =========================================================
+  // DELETE MY NOTIFICATION
+  // =========================================================
 
-    `${this.api}/${id}`
+  deleteNotification(
+    id: number
+  ): Observable<any> {
 
-  );
+    return this.http.delete(
+      `${this.api}/${id}`
+    );
 
-}
+  }
 
 }

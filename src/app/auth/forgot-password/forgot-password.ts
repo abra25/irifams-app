@@ -1,210 +1,231 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink
+} from '@angular/router';
+
 import { AuthService } from '../../services/auth.service';
+
 import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-forgot-password',
+
   standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,
     RouterLink
   ],
+
   templateUrl: './forgot-password.html',
+
   styleUrl: './forgot-password.css'
 })
-export class ForgotPassword {
+export class ForgotPassword
+  implements OnInit {
+
+
+  // =========================================================
+  // LOADING
+  // =========================================================
 
   loading = false;
+
+
+  // =========================================================
+  // SUBMITTED
+  // =========================================================
+
   submitted = false;
 
-  formData={
 
-username:'',
+  // =========================================================
+  // FORM DATA
+  // =========================================================
 
-fullName:'',
+  formData = {
+    username: ''
+  };
 
-phone:''
 
-};
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
 
-constructor(
+  constructor(
+    private authService: AuthService,
 
-private authService:AuthService,
+    private router: Router,
 
-private router:Router
+    private route: ActivatedRoute
+  ) {}
 
-){}
-onSubmit(){
 
-if(
+  // =========================================================
+  // INIT
+  // =========================================================
 
-!this.formData.username ||
+  ngOnInit(): void {
 
-!this.formData.fullName ||
+    /*
+     * Check whether this page was opened from
+     * the "Resend OTP" button.
+     *
+     * If a username exists in the URL,
+     * automatically put it into the username field.
+     */
+    this.route.queryParams.subscribe(params => {
 
-!this.formData.phone
+      const username =
+        params['username'] || '';
 
-){
 
-return;
+      if (username) {
 
-}
+        this.formData.username =
+          username;
 
-this.loading=true;
+      }
 
-this.authService
+    });
 
-.forgotPassword(this.formData)
+  }
 
-.subscribe({
 
-next:(res)=>{
+  // =========================================================
+  // SUBMIT PASSWORD RECOVERY
+  // =========================================================
 
-this.loading=false;
+  onSubmit(): void {
 
-Swal.fire({
+    this.submitted = true;
 
-icon:'success',
 
-title:'Temporary Password',
+    const username =
+      this.formData.username.trim();
 
-html:`
 
-<div style="padding:10px">
+    // -------------------------------------------------------
+    // VALIDATE USERNAME
+    // -------------------------------------------------------
 
-<p>
+    if (!username) {
 
-Use this password to login.
+      Swal.fire({
 
-</p>
+        icon: 'warning',
 
-<h1
-id="tempPassword"
+        title: 'Username Required',
 
-style="
+        text:
+          'Please enter your username.'
 
-font-size:48px;
+      });
 
-letter-spacing:8px;
+      return;
 
-color:#5c334a;
+    }
 
-margin:20px 0;
 
-">
+    this.loading = true;
 
-${res.temporaryPassword}
 
-</h1>
+    // -------------------------------------------------------
+    // SEND OTP REQUEST
+    // -------------------------------------------------------
 
-<button
+    this.authService
+      .forgotPassword({
+        username: username
+      })
 
-id="copyBtn"
+      .subscribe({
 
-style="
+        // ===================================================
+        // SUCCESS
+        // ===================================================
 
-padding:10px 18px;
+        next: (res) => {
 
-border:none;
+          this.loading = false;
 
-border-radius:8px;
 
-background:#5c334a;
+          Swal.fire({
 
-color:white;
+            icon: 'success',
 
-cursor:pointer;
+            title: 'OTP Sent',
 
-">
+            text:
+              res?.message ||
+              'A verification code has been sent to your registered email address.',
 
-Copy Password
+            confirmButtonText:
+              'Verify OTP',
 
-</button>
+            allowOutsideClick:
+              false
 
-<br><br>
+          }).then(() => {
 
-<small>
+            this.router.navigate(
 
-This password will disappear in 20 seconds.
+              ['/verify-otp'],
 
-After login you must change it.
+              {
+                queryParams: {
+                  username: username
+                }
+              }
 
-</small>
+            );
 
-</div>
+          });
 
-`,
+        },
 
-timer:20000,
 
-timerProgressBar:true,
+        // ===================================================
+        // ERROR
+        // ===================================================
 
-allowOutsideClick:false,
+        error: (err) => {
 
-didOpen:()=>{
+          this.loading = false;
 
-const btn=
 
-document.getElementById("copyBtn");
+          const message =
+            err?.error?.message ||
+            err?.error ||
+            'Unable to process password recovery request.';
 
-btn?.addEventListener(
 
-"click",
+          Swal.fire({
 
-()=>{
+            icon: 'error',
 
-navigator.clipboard.writeText(
+            title: 'Recovery Failed',
 
-res.temporaryPassword
+            text: message
 
-);
+          });
 
-Swal.showValidationMessage(
+        }
 
-"Password copied."
+      });
 
-);
-
-}
-
-);
-
-}
-
-}).then(()=>{
-
-this.router.navigate(
-
-['/login']
-
-);
-
-});
-
-},
-
-error:(err)=>{
-
-this.loading=false;
-
-Swal.fire(
-
-'Failed',
-
-err.error,
-
-'error'
-
-);
-
-}
-
-});
-
-}
+  }
 
 }

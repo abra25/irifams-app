@@ -1,203 +1,853 @@
-.payments-page{
-    display:flex;
-    flex-direction:column;
-    gap:25px;
+/* =========================================================
+   PAYMENT MODALS - FINAL
+   ========================================================= */
+
+/* OVERLAY */
+.payments-page ~ .modal-overlay,
+.modal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+
+    width: 100vw !important;
+    height: 100vh !important;
+
+    background: rgba(15, 23, 42, 0.62) !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 20px !important;
+    box-sizing: border-box !important;
+
+    overflow-y: auto !important;
+
+    z-index: 99999 !important;
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
 }
 
-.page-header h2{
-    margin:0;
+
+/* =========================================================
+   MODAL CARD
+   ========================================================= */
+
+.modal-overlay .modal-card {
+    position: relative !important;
+
+    width: 100% !important;
+    max-width: 560px !important;
+
+    max-height: calc(100vh - 40px) !important;
+
+    margin: auto !important;
+
+    background: #ffffff !important;
+
+    border-radius: 18px !important;
+
+    overflow: hidden !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.22) !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    animation: paymentModalIn 0.2s ease-out;
 }
 
-.page-header p{
-    color:#777;
-    margin-top:5px;
+
+/* Confirmation modal slightly wider */
+.modal-overlay .payment-modal {
+    max-width: 600px !important;
 }
 
-.summary-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-}
 
-.summary-card{
-    background:#fff;
-    padding:25px;
-    border-radius:18px;
-    display:flex;
-    align-items:center;
-    gap:18px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
-}
+/* =========================================================
+   MODAL ANIMATION
+   ========================================================= */
 
-.summary-card i{
-    width:60px;
-    height:60px;
-    border-radius:15px;
-    background:#eef8f0;
-    color:#145528;
+@keyframes paymentModalIn {
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
 
-    font-size:1.5rem;
-}
-
-.table-card{
-    background:#fff;
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 4px 15px rgba(0,0,0,.05);
-}
-
-.table-responsive{
-    overflow:auto;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    padding:15px;
-    text-align:left;
-}
-
-thead{
-    background:#f5f7fa;
-}
-
-.status-badge{
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:.85rem;
-    font-weight:600;
-}
-
-.paid{
-    background:#d4edda;
-    color:#155724;
-}
-
-.pending{
-    background:#fff3cd;
-    color:#856404;
-}
-
-.view-btn{
-    border:none;
-    width:38px;
-    height:38px;
-    border-radius:10px;
-    background:#145528;
-    color:#fff;
-    cursor:pointer;
-}
-
-.modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.5);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    z-index:9999;
-    padding:20px;
-}
-
-.modal-card{
-    width:100%;
-    max-width:550px;
-    background:#fff;
-    border-radius:18px;
-    overflow:hidden;
-}
-
-.modal-header{
-    padding:20px;
-    display:flex;
-    justify-content:space-between;
-    border-bottom:1px solid #eee;
-}
-
-.modal-header button{
-    border:none;
-    background:none;
-    cursor:pointer;
-    font-size:1.2rem;
-}
-
-.modal-body{
-    padding:25px;
-}
-
-.detail-row{
-    display:flex;
-    justify-content:space-between;
-    padding:15px 0;
-    border-bottom:1px solid #f1f1f1;
-}
-
-@media(max-width:768px){
-
-    .summary-grid{
-        grid-template-columns:1fr;
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 
 }
 
-.waiting\ verification{
-    background:#cfe2ff;
-    color:#084298;
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+.modal-overlay .modal-card .modal-header {
+    width: 100% !important;
+
+    min-height: 68px !important;
+
+    padding: 0 22px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    background: #ffffff !important;
+
+    border-bottom: 1px solid #e9ecef !important;
+
+    flex-shrink: 0 !important;
 }
 
-.rejected{
-    background:#f8d7da;
-    color:#842029;
+
+.modal-overlay .modal-card .modal-header h3 {
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    color: #1f2937 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 1.12rem !important;
+
+    font-weight: 700 !important;
+
+    line-height: 1.3 !important;
 }
 
-.action-buttons{
-    display:flex;
-    gap:10px;
-    align-items:center;
+
+.modal-overlay .modal-card .modal-header button {
+    width: 36px !important;
+    height: 36px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border: none !important;
+
+    border-radius: 9px !important;
+
+    background: #f3f4f6 !important;
+
+    color: #374151 !important;
+
+    cursor: pointer !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 1rem !important;
 }
 
-.pay-btn{
-    border:none;
-    background:#0d6efd;
-    color:#fff;
-    padding:8px 14px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:.85rem;
-    white-space: nowrap;
+
+.modal-overlay .modal-card .modal-header button:hover {
+    background: #e5e7eb !important;
 }
 
-.pay-btn:hover{
-    opacity:.9;
+
+/* =========================================================
+   MODAL BODY
+   ========================================================= */
+
+.modal-overlay .modal-card .modal-body {
+    width: 100% !important;
+
+    padding: 22px !important;
+
+    box-sizing: border-box !important;
+
+    overflow-y: auto !important;
+
+    flex: 1 1 auto !important;
+
+    min-height: 0 !important;
+
+    background: #ffffff !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    scrollbar-width: thin;
 }
 
-.waiting{
-    background:#cfe2ff;
-    color:#084298;
+
+/* =========================================================
+   PAYMENT CONFIRMATION BODY
+   ========================================================= */
+
+.modal-overlay .payment-modal .payment-confirm-body {
+    padding: 20px 22px !important;
 }
 
-.rejected{
-    background:#f8d7da;
-    color:#842029;
+
+/* =========================================================
+   PAYMENT INSTRUCTION
+   ========================================================= */
+
+.modal-overlay .payment-modal .payment-instruction {
+    width: 100% !important;
+
+    margin: 0 0 18px 0 !important;
+
+    padding: 15px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    gap: 12px !important;
+
+    background: #eef8f0 !important;
+
+    border: 1px solid #d8ebdc !important;
+
+    border-radius: 11px !important;
 }
 
-.payment-instruction{
-    margin-top:20px;
-    padding:15px;
-    border-radius:10px;
-    background:#eef8f0;
+
+.modal-overlay .payment-modal .instruction-icon {
+    width: 40px !important;
+    height: 40px !important;
+
+    min-width: 40px !important;
+
+    padding: 0 !important;
+
+    border-radius: 9px !important;
+
+    background: #145528 !important;
+
+    color: #ffffff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-.payment-instruction h4{
-    margin-top:0;
-    color:#145528;
+
+.modal-overlay .payment-modal .instruction-icon i {
+    font-size: 0.95rem !important;
+}
+
+
+.modal-overlay .payment-modal .payment-instruction h4 {
+    margin: 0 0 5px 0 !important;
+
+    color: #145528 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.95rem !important;
+
+    font-weight: 700 !important;
+}
+
+
+.modal-overlay .payment-modal .payment-instruction p {
+    margin: 0 !important;
+
+    color: #56616f !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.83rem !important;
+
+    line-height: 1.5 !important;
+}
+
+
+/* =========================================================
+   DETAIL ROWS
+   ========================================================= */
+
+.modal-overlay .payment-modal .detail-row {
+    width: 100% !important;
+
+    min-height: 45px !important;
+
+    padding: 11px 0 !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    gap: 20px !important;
+
+    border-bottom: 1px solid #edf0f2 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+}
+
+
+.modal-overlay .payment-modal .detail-row > span {
+    color: #667085 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.86rem !important;
+
+    font-weight: 400 !important;
+
+    flex-shrink: 0 !important;
+}
+
+
+.modal-overlay .payment-modal .detail-row > strong {
+    color: #1f2937 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.86rem !important;
+
+    font-weight: 700 !important;
+
+    text-align: right !important;
+
+    word-break: break-word !important;
+}
+
+
+/* =========================================================
+   AMOUNT ROW
+   ========================================================= */
+
+.modal-overlay .payment-modal .amount-row {
+    min-height: 50px !important;
+
+    margin-top: 6px !important;
+
+    padding: 12px 14px !important;
+
+    border: none !important;
+
+    border-radius: 9px !important;
+
+    background: #f8faf9 !important;
+}
+
+
+.modal-overlay .payment-modal .amount-row strong {
+    color: #145528 !important;
+
+    font-size: 0.98rem !important;
+}
+
+
+/* =========================================================
+   CONTROL NUMBER BOX
+   ========================================================= */
+
+.modal-overlay .payment-modal .control-number-box {
+    width: 100% !important;
+
+    margin: 17px 0 !important;
+
+    padding: 14px 16px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: flex-start !important;
+
+    gap: 5px !important;
+
+    background: #f1f8f3 !important;
+
+    border: 1px solid #d6e9da !important;
+
+    border-radius: 10px !important;
+}
+
+
+.modal-overlay .payment-modal .control-number-box span {
+    margin: 0 !important;
+
+    color: #667085 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.76rem !important;
+
+    font-weight: 600 !important;
+}
+
+
+.modal-overlay .payment-modal .control-number-box strong {
+    margin: 0 !important;
+
+    color: #145528 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 1.05rem !important;
+
+    font-weight: 700 !important;
+
+    letter-spacing: 0.3px !important;
+
+    word-break: break-all !important;
+}
+
+
+/* =========================================================
+   FORM GROUP
+   ========================================================= */
+
+.modal-overlay .payment-modal .form-group {
+    width: 100% !important;
+
+    margin: 18px 0 0 0 !important;
+
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+
+.modal-overlay .payment-modal .form-group label {
+    display: block !important;
+
+    margin: 0 0 7px 0 !important;
+
+    color: #344054 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.85rem !important;
+
+    font-weight: 600 !important;
+}
+
+
+.modal-overlay .payment-modal .form-group input {
+    display: block !important;
+
+    width: 100% !important;
+
+    height: 44px !important;
+
+    margin: 0 !important;
+
+    padding: 0 12px !important;
+
+    box-sizing: border-box !important;
+
+    border: 1px solid #d0d5dd !important;
+
+    border-radius: 8px !important;
+
+    outline: none !important;
+
+    background: #ffffff !important;
+
+    color: #1f2937 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.88rem !important;
+
+    line-height: 44px !important;
+
+    appearance: none !important;
+
+    -webkit-appearance: none !important;
+}
+
+
+.modal-overlay .payment-modal .form-group input:focus {
+    border-color: #145528 !important;
+
+    box-shadow:
+        0 0 0 3px rgba(20, 85, 40, 0.10) !important;
+}
+
+
+.modal-overlay .payment-modal .form-group input::placeholder {
+    color: #98a2b3 !important;
+}
+
+
+.modal-overlay .payment-modal .form-group small {
+    display: block !important;
+
+    margin: 6px 0 0 0 !important;
+
+    color: #667085 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.74rem !important;
+
+    line-height: 1.4 !important;
+}
+
+
+/* =========================================================
+   WARNING
+   ========================================================= */
+
+.modal-overlay .payment-modal .payment-warning {
+    width: 100% !important;
+
+    margin: 16px 0 0 0 !important;
+
+    padding: 11px 13px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    gap: 8px !important;
+
+    background: #fff8e6 !important;
+
+    border: 1px solid #f1dfad !important;
+
+    border-radius: 8px !important;
+
+    color: #856404 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.77rem !important;
+
+    line-height: 1.45 !important;
+}
+
+
+.modal-overlay .payment-modal .payment-warning i {
+    flex-shrink: 0 !important;
+
+    margin-top: 2px !important;
+
+    color: #856404 !important;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
+.modal-overlay .modal-card .modal-footer {
+    width: 100% !important;
+
+    min-height: 68px !important;
+
+    padding: 14px 22px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: flex-end !important;
+
+    gap: 10px !important;
+
+    background: #ffffff !important;
+
+    border-top: 1px solid #e9ecef !important;
+
+    flex-shrink: 0 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+}
+
+
+/* =========================================================
+   CANCEL BUTTON
+   ========================================================= */
+
+.modal-overlay .modal-card .modal-footer .cancel-btn {
+    min-width: 82px !important;
+
+    height: 40px !important;
+
+    padding: 0 16px !important;
+
+    margin: 0 !important;
+
+    border: 1px solid #d0d5dd !important;
+
+    border-radius: 8px !important;
+
+    background: #ffffff !important;
+
+    color: #475467 !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.84rem !important;
+
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+}
+
+
+.modal-overlay .modal-card .modal-footer .cancel-btn:hover {
+    background: #f8fafc !important;
+}
+
+
+/* =========================================================
+   CONFIRM BUTTON
+   ========================================================= */
+
+.modal-overlay .modal-card .modal-footer .save-btn {
+    min-width: 145px !important;
+
+    height: 40px !important;
+
+    padding: 0 16px !important;
+
+    margin: 0 !important;
+
+    border: none !important;
+
+    border-radius: 8px !important;
+
+    background: #145528 !important;
+
+    color: #ffffff !important;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif !important;
+
+    font-size: 0.84rem !important;
+
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    gap: 7px !important;
+}
+
+
+.modal-overlay .modal-card .modal-footer .save-btn:hover:not(:disabled) {
+    background: #0e3f1d !important;
+}
+
+
+.modal-overlay .modal-card .modal-footer .save-btn:disabled {
+    opacity: 0.65 !important;
+
+    cursor: not-allowed !important;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.modal-overlay .modal-card .spinner {
+    width: 14px !important;
+    height: 14px !important;
+
+    padding: 0 !important;
+
+    border: 2px solid rgba(255, 255, 255, 0.35) !important;
+
+    border-top-color: #ffffff !important;
+
+    border-radius: 50% !important;
+
+    animation: paymentSpin 0.7s linear infinite !important;
+}
+
+
+@keyframes paymentSpin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   PAYMENT DETAILS MODAL
+   ========================================================= */
+
+.modal-overlay .details-body {
+    padding: 22px !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .modal-overlay {
+        padding: 12px !important;
+    }
+
+    .modal-overlay .modal-card,
+    .modal-overlay .payment-modal {
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        max-height: calc(100vh - 24px) !important;
+
+        border-radius: 14px !important;
+    }
+
+    .modal-overlay .modal-card .modal-header {
+        min-height: 60px !important;
+
+        padding: 0 17px !important;
+    }
+
+    .modal-overlay .modal-card .modal-body {
+        padding: 17px !important;
+    }
+
+    .modal-overlay .payment-modal .payment-confirm-body {
+        padding: 17px !important;
+    }
+
+    .modal-overlay .modal-card .modal-footer {
+        padding: 12px 17px !important;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL SCREEN
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .modal-overlay .payment-modal .detail-row {
+        align-items: flex-start !important;
+
+        flex-direction: column !important;
+
+        gap: 4px !important;
+    }
+
+    .modal-overlay .payment-modal .detail-row > strong {
+        text-align: left !important;
+    }
+
+    .modal-overlay .payment-modal .amount-row {
+        flex-direction: row !important;
+
+        align-items: center !important;
+    }
+
+    .modal-overlay .payment-modal .amount-row > strong {
+        text-align: right !important;
+    }
+
+    .modal-overlay .modal-card .modal-footer {
+        flex-direction: column-reverse !important;
+
+        align-items: stretch !important;
+    }
+
+    .modal-overlay .modal-card .modal-footer .cancel-btn,
+    .modal-overlay .modal-card .modal-footer .save-btn {
+        width: 100% !important;
+
+        min-width: 0 !important;
+    }
+
 }

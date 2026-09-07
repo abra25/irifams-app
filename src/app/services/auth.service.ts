@@ -12,41 +12,53 @@ import { jwtDecode } from 'jwt-decode';
 export class AuthService {
 
   private api = `${environment.apiUrl}/auth`;
+
   private logoutTimer: any;
+
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {}
 
+
+  // =========================================================
+  // LOGIN
+  // =========================================================
+
   login(data: any): Observable<any> {
 
-  return this.http.post<any>(
-    `${this.api}/login`,
-    data
-  ).pipe(
+    return this.http.post<any>(
+      `${this.api}/login`,
+      data
+    ).pipe(
 
-    tap(response => {
+      tap(response => {
 
-      sessionStorage.setItem(
-        'token',
-        response.token
-      );
+        sessionStorage.setItem(
+          'token',
+          response.token
+        );
 
-      sessionStorage.setItem(
-        'user',
-        JSON.stringify(response)
-      );
+        sessionStorage.setItem(
+          'user',
+          JSON.stringify(response)
+        );
 
-      this.startAutoLogout();
+        this.startAutoLogout();
 
-    })
+      })
 
-  );
+    );
 
-}
+  }
 
-  register(data: any) {
+
+  // =========================================================
+  // REGISTER
+  // =========================================================
+
+  register(data: any): Observable<any> {
 
     return this.http.post(
       `${this.api}/register`,
@@ -54,32 +66,102 @@ export class AuthService {
     );
 
   }
-logout(showMessage = true) {
 
-  if (this.logoutTimer) {
 
-    clearTimeout(this.logoutTimer);
+  // =========================================================
+  // FORGOT PASSWORD
+  // =========================================================
 
-  }
+  forgotPassword(
+    data: { username: string }
+  ): Observable<any> {
 
-  sessionStorage.clear();
-  sessionStorage.clear();
-
-  if(showMessage){
-
-    Swal.fire({
-      icon:'success',
-      title:'Logged Out',
-      text:'Session ended successfully.',
-      timer:2000,
-      showConfirmButton:false
-    });
+    return this.http.post<any>(
+      `${this.api}/forgot-password`,
+      data
+    );
 
   }
 
-  this.router.navigate(['/login']);
+
+  // =========================================================
+  // VERIFY OTP
+  // =========================================================
+
+  verifyOtp(
+    data: {
+      username: string;
+      otp: string;
+    }
+  ): Observable<any> {
+
+    return this.http.post<any>(
+      `${this.api}/verify-otp`,
+      data
+    );
+
+  }
+
+
+  // =========================================================
+  // RESET PASSWORD
+  // =========================================================
+
+resetPassword(
+  data: {
+    username: string;
+    recoveryToken: string;
+    newPassword: string;
+  }
+): Observable<string> {
+
+  return this.http.post(
+    `${this.api}/reset-password`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
 
 }
+
+
+  // =========================================================
+  // LOGOUT
+  // =========================================================
+
+  logout(showMessage = true): void {
+
+    if (this.logoutTimer) {
+
+      clearTimeout(this.logoutTimer);
+
+      this.logoutTimer = null;
+
+    }
+
+    sessionStorage.clear();
+
+    if (showMessage) {
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Logged Out',
+        text: 'Session ended successfully.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+    }
+
+    this.router.navigate(['/login']);
+
+  }
+
+
+  // =========================================================
+  // GET TOKEN
+  // =========================================================
 
   getToken(): string | null {
 
@@ -87,30 +169,52 @@ logout(showMessage = true) {
 
   }
 
-  getUser() {
+
+  // =========================================================
+  // GET LOGGED-IN USER
+  // =========================================================
+
+  getUser(): any | null {
 
     const user =
       sessionStorage.getItem('user');
 
-    return user
-      ? JSON.parse(user)
-      : null;
+    if (!user) {
+
+      return null;
+
+    }
+
+    try {
+
+      return JSON.parse(user);
+
+    } catch {
+
+      return null;
+
+    }
 
   }
+
+
+  // =========================================================
+  // CHECK TOKEN EXPIRATION
+  // =========================================================
 
   isTokenExpired(): boolean {
 
     const token = this.getToken();
 
-    if(!token){
+    if (!token) {
 
       return true;
 
     }
 
-    try{
+    try {
 
-      const decoded:any =
+      const decoded: any =
         jwtDecode(token);
 
       const currentTime =
@@ -118,7 +222,7 @@ logout(showMessage = true) {
 
       return decoded.exp < currentTime;
 
-    }catch(error){
+    } catch {
 
       return true;
 
@@ -126,19 +230,28 @@ logout(showMessage = true) {
 
   }
 
+
+  // =========================================================
+  // CHECK LOGIN STATUS
+  // =========================================================
+
   isLoggedIn(): boolean {
 
-    const token = this.getToken();
+    const token =
+      this.getToken();
 
-    const user = this.getUser();
+    const user =
+      this.getUser();
 
-    if(!token || !user){
+
+    if (!token || !user) {
 
       return false;
 
     }
 
-    if(this.isTokenExpired()){
+
+    if (this.isTokenExpired()) {
 
       this.autoLogout();
 
@@ -146,70 +259,99 @@ logout(showMessage = true) {
 
     }
 
+
     return true;
 
   }
 
-  autoLogout(){
 
-  if (this.logoutTimer) {
+  // =========================================================
+  // AUTOMATIC LOGOUT
+  // =========================================================
 
-    clearTimeout(this.logoutTimer);
+  autoLogout(): void {
 
-  }
+    if (this.logoutTimer) {
 
-  sessionStorage.clear();
+      clearTimeout(this.logoutTimer);
 
-  Swal.fire({
-    icon:'warning',
-    title:'Session Expired',
-    text:'Your session has expired. Please login again.'
-  }).then(()=>{
+      this.logoutTimer = null;
 
-    this.router.navigate(['/login']);
+    }
 
-  });
+    sessionStorage.clear();
 
-}
 
-  startAutoLogout() {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Session Expired',
+      text: 'Your session has expired. Please login again.'
+    }).then(() => {
 
-  const token = this.getToken();
+      this.router.navigate(['/login']);
 
-  if (!token) return;
-
-  const decoded: any = jwtDecode(token);
-
-  const expiresAt = decoded.exp * 1000;
-
-  const timeout =
-    expiresAt - Date.now();
-
-  if (timeout <= 0) {
-
-    this.autoLogout();
-    return;
+    });
 
   }
 
-  this.logoutTimer = setTimeout(() => {
 
-    this.autoLogout();
+  // =========================================================
+  // START AUTOMATIC LOGOUT TIMER
+  // =========================================================
 
-  }, timeout);
+  startAutoLogout(): void {
 
-}
+    const token =
+      this.getToken();
 
-forgotPassword(data:any){
+    if (!token) {
 
-  return this.http.post<any>(
+      return;
 
-    `${environment.apiUrl}/auth/forgot-password`,
+    }
 
-    data
 
-  );
+    try {
 
-}
+      const decoded: any =
+        jwtDecode(token);
+
+      const expiresAt =
+        decoded.exp * 1000;
+
+      const timeout =
+        expiresAt - Date.now();
+
+
+      if (timeout <= 0) {
+
+        this.autoLogout();
+
+        return;
+
+      }
+
+
+      if (this.logoutTimer) {
+
+        clearTimeout(this.logoutTimer);
+
+      }
+
+
+      this.logoutTimer =
+        setTimeout(() => {
+
+          this.autoLogout();
+
+        }, timeout);
+
+    } catch {
+
+      this.autoLogout();
+
+    }
+
+  }
 
 }

@@ -1,0 +1,354 @@
+<div class="otp-page">
+
+  <div class="background-shape shape-one"></div>
+  <div class="background-shape shape-two"></div>
+
+
+  <div class="otp-container">
+
+
+    <!-- =====================================================
+         LEFT INFORMATION
+    ====================================================== -->
+
+    <div class="otp-info">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+
+        <div>
+
+          <h2>IRIFAMS</h2>
+
+          <span>
+            Farming Management System
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="info-content">
+
+        <div class="shield-icon">
+
+          <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+
+        <h1>
+
+          Secure Account
+
+          <span>
+            Verification
+          </span>
+
+        </h1>
+
+
+        <p>
+          We have sent a six-digit verification code
+          to your registered email address.
+        </p>
+
+
+        <div class="security-note">
+
+          <i class="fa-solid fa-lock"></i>
+
+          <span>
+            Your account security is important to us.
+            Never share your verification code with anyone.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="info-footer">
+
+        <span>
+
+          <i class="fa-solid fa-circle-check"></i>
+
+          Secure verification
+
+        </span>
+
+
+        <span>
+
+          <i class="fa-solid fa-envelope"></i>
+
+          Email protected
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         OTP CARD
+    ====================================================== -->
+
+    <div class="otp-card">
+
+
+      <!-- MOBILE LOGO -->
+
+      <div class="mobile-logo">
+
+        <div class="brand-icon">
+
+          <i class="fa-solid fa-seedling"></i>
+
+        </div>
+
+        <h2>
+          IRIFAMS
+        </h2>
+
+      </div>
+
+
+      <!-- HEADER -->
+
+      <div class="card-header">
+
+        <div class="otp-icon">
+
+          <i class="fa-solid fa-key"></i>
+
+        </div>
+
+
+        <h2>
+          Verify OTP
+        </h2>
+
+
+        <p>
+          Enter the six-digit verification code
+          sent to your registered email.
+        </p>
+
+      </div>
+
+
+      <!-- USERNAME -->
+
+      <div class="email-info">
+
+        <i class="fa-solid fa-user"></i>
+
+        <div>
+
+          <span>
+            Recovery account
+          </span>
+
+          <strong>
+            {{ username }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+       <!-- =====================================================
+     OTP INPUT
+====================================================== -->
+
+<div class="otp-input-section">
+
+  <label>
+    Enter 6-digit code
+  </label>
+
+
+  <div
+    class="otp-input-wrapper"
+    (click)="focusOtpInput()"
+  >
+
+    <!-- REAL OTP INPUT -->
+    <input
+      #otpInput
+
+      class="real-otp-input"
+
+      type="text"
+
+      inputmode="numeric"
+
+      autocomplete="one-time-code"
+
+      maxlength="6"
+
+      [value]="otpValue"
+
+      (input)="onOtpInput($event)"
+
+      (keydown)="onKeyDown($event)"
+
+      (paste)="onPaste($event)"
+
+      aria-label="Enter six-digit OTP"
+    >
+
+
+    <!-- VISUAL OTP BOXES -->
+
+    <div class="otp-boxes">
+
+      <div
+        *ngFor="let digit of otp; let i = index"
+
+        class="otp-box"
+
+        [class.active]="
+          otpValue.length === i
+        "
+
+        [class.filled]="
+          otp[i] !== ''
+        "
+      >
+
+        {{ otp[i] }}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div> 
+
+      <!-- TIMER -->
+
+      <div class="otp-timer">
+
+        <i class="fa-regular fa-clock"></i>
+
+
+        <span *ngIf="countdown > 0">
+
+          Code expires in
+
+          <strong>
+            {{ formattedCountdown }}
+          </strong>
+
+        </span>
+
+
+        <span
+          class="expired"
+          *ngIf="countdown === 0">
+
+          OTP has expired
+
+        </span>
+
+      </div>
+
+
+      <!-- VERIFY BUTTON -->
+
+      <button
+        type="button"
+        class="verify-btn"
+
+        [disabled]="
+          loading ||
+          !isOtpComplete ||
+          countdown === 0
+        "
+
+        (click)="verifyOtp()">
+
+
+        <span *ngIf="!loading">
+
+          <i class="fa-solid fa-shield-check"></i>
+
+          Verify OTP
+
+        </span>
+
+
+        <span
+          *ngIf="loading"
+          class="loading-content">
+
+          <span class="spinner"></span>
+
+          Verifying...
+
+        </span>
+
+      </button>
+
+
+      <!-- RESEND -->
+
+      <div class="resend-section">
+
+        <span>
+          Didn't receive the code?
+        </span>
+
+
+        <button
+          type="button"
+          class="resend-btn"
+          (click)="resendOtp()">
+
+          Resend OTP
+
+        </button>
+
+      </div>
+
+
+      <!-- BACK -->
+
+      <a
+        routerLink="/reset-password"
+        class="back-link">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Back to Forgot Password
+
+      </a>
+
+
+      <!-- FOOTER -->
+
+      <div class="card-footer">
+
+        <i class="fa-solid fa-lock"></i>
+
+        <span>
+          Your verification is secure and encrypted.
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
